@@ -2,6 +2,20 @@
 #include "../nclgl/Light.h"
 #include "../nclgl/Extra/GLTFLoader.h"
 
+/*
+Objectives
+Trees.
+Leaves falling off of trees.
+Sea water and pond water.
+Maybe fish in pond?
+
+Then for winter.
+Snow particles.
+Snow on ground and extra specular on snow.
+Frozen pond.
+
+Plus need to set up some form of camera trail.*/
+
 
 Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
 	glEnable(GL_DEPTH_TEST);
