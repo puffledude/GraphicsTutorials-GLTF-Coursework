@@ -33,20 +33,25 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
 	quad = Mesh::GenerateQuad();
 
 
-	GLTFLoader::Load("../GLTF/Environment/CourseWorkProject.gltf", Environment);
-	if (Environment.meshes.size() == 0) {
-		return;
-	}
-	SetupDeferred();
-
+	//GLTFLoader::Load("../GLTF/Environment/CourseWorkProject.gltf", Environment);
+	//if (Environment.meshes.size() == 0) {
+	//	return;
+	//}
+	this->LoadEnvironment();
+	this->SetupDeferred();
+	this->SetupShadow();
 	
 
 	
 
-	root = SceneNode();
-	SceneNode* ground = new SceneNode(&Environment, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for environment
-	ground->SetModelScale(Vector3(75.0f, 75.0f, 75.0f));
-	root.AddChild(ground);
+	//root = SceneNode();
+	//SceneNode* ground = new SceneNode(&Environment, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for environment
+	//ground->SetModelScale(Vector3(75.0f, 75.0f, 75.0f));
+	//root.AddChild(ground);
+
+	glEnable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
 	init = true;
 }
@@ -108,7 +113,7 @@ void Renderer::SetupShadow() {
 		return;
 	}
 
-
+	glGenTextures(1, &shadowTex);
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -157,10 +162,10 @@ void Renderer::LoadEnvironment() {
 	root.AddChild(ground);
 	//Vector3 groundLocation = ground->GetWo();
 	sun = new Light(Vector3(0.0f, 70.0f, 0.0f), Vector4(1, 1, 1, 1), 200.0f);
-	Light* pointLight1 = new Light(Vector3(30.0f, 40.0f, 30.0f), Vector4(0.5, 0.5, 0, 1), 15.0f);
+	//Light* pointLight1 = new Light(Vector3(30.0f, 40.0f, 30.0f), Vector4(0.5, 0.5, 0, 1), 15.0f);
 
 	pointLights.push_back(sun);
-	pointLights.push_back(pointLight1);
+	//pointLights.push_back(pointLight1);
 }
 
 void Renderer::UpdateScene(float dt) {
@@ -203,7 +208,7 @@ void Renderer::DrawShadowScene() {
 
 	viewMatrix = Matrix4::BuildViewMatrix(sun->GetPosition(),
 		Vector3(0, 0, 0));
-	projMatrix = Matrix4::Perspective(1.0f, 100.0f, 1.0f, 45.0f);
+	projMatrix = Matrix4::Perspective(1.0f, 500.0f, 1.0f, 45.0f);
 	shadowMatrix = projMatrix * viewMatrix;
 
 	DrawNode(&root);

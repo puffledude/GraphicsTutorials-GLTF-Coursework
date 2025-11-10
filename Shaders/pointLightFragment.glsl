@@ -11,11 +11,14 @@ uniform vec3 lightPos;
 uniform vec4 lightColour;
 uniform float lightRadius;
 uniform mat4 invProjViewMatrix;
+uniform mat4 shadowMatrix;
 
 out vec4 diffuseOutput;
 out vec4 specularOutput;
 
 void main(void){
+float shadowBias = 0.005;
+
 vec2 texCoord = vec2(gl_FragCoord.xy * pixelSize);
 float depth = texture(depthTex, texCoord.xy).r;
 
@@ -48,8 +51,18 @@ float rFactor = clamp(dot(halfDir, normal), 0.0, 1.0);
 float specFactor = clamp(dot(halfDir, normal), 0.0, 1.0);
 specFactor = pow(specFactor, 60.0);
 
+
+//For shadowing
+vec4 lightSpacePos = shadowMatrix * vec4(worldPos, 1.0);
+vec3 projCoords = lightSpacePos.xyz / lightSpacePos.w;
+projCoords = projCoords * 0.5 + 0.5;
+
+float shadowDepth = texture(shadowTex, projCoords.xy).r;
+float shadow = projCoords.z - shadowBias > shadowDepth ? 0.0 : 1.0;
+float visability = shadow;
+
 vec3 attenuated = lightColour.xyz * atten;
 
-diffuseOutput = vec4(attenuated * lambert, 1.0);
-specularOutput = vec4(attenuated * specFactor *0.33, 1.0);
+diffuseOutput = vec4(attenuated * lambert * visability, 1.0);
+specularOutput = vec4(attenuated * specFactor * visability *0.33, 1.0);
 }
