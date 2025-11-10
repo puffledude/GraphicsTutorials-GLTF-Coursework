@@ -10,8 +10,12 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
 	camera = new Camera(0.0f, 180.0f, Vector3(-0.5f, 1.5, -3.0f));
 
 	GLTFLoader::Load("../GLTF/CesiumMan/CesiumMan.gltf", animatedScene);
-	GLTFLoader::Load("../GLTF/Environment/CourseWorkProject.gltf", staticScene);
+	GLTFLoader::Load("../GLTF/Tree/Tree.gltf", staticScene);
 
+	if (staticScene.meshes.size() == 0 ||
+		animatedScene.meshes.size() == 0) {
+		return;
+	}
 	skeletonShader = new Shader("SkinningVertex.glsl","TexturedFragment.glsl");
 	if(!skeletonShader->LoadSuccess()) {
 		return;

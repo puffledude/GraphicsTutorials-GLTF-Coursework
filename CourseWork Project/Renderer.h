@@ -16,6 +16,10 @@ protected:
 	void DrawNode(SceneNode* n);
 	GLTFScene Environment;
 
+	GLTFScene Tree;
+
+	void LoadEnvironment();
+
 	//For Lights
 	Mesh* sphere;
 	Light* sun;
@@ -25,6 +29,9 @@ protected:
 	void GenerateScreenTexture(GLuint& into, bool depth = false);
 
 	void DrawEnvironment();
+
+	void DrawLights();
+	void CombineBuffers();
 
 	//For deferred rendering.
 	Shader* environmentShader;
@@ -47,6 +54,7 @@ protected:
 
 	SceneNode root;
 	Camera* camera;
+
 
 	int currentFrame = 0.0f;
 	float frameTime = 0.0f;

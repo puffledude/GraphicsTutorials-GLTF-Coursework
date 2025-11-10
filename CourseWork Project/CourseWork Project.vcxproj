@@ -137,6 +137,8 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="SunShaderFragment.glsl" />
+    <ClCompile Include="SunShaderVertex.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h" />
@@ -148,6 +150,9 @@
     <None Include="..\Shaders\CombineVertex.glsl" />
     <None Include="..\Shaders\pointLightFragment.glsl" />
     <None Include="..\Shaders\pointLightVertex.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Readme.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

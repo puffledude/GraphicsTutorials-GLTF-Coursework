@@ -102,19 +102,38 @@ void SceneNode::Draw(const OGLRenderer &r)
 	if (mesh) {
 		mesh->Draw();
 	}
-	else if(gltfScene && gltfScene->meshes.size()>0) {
+	else if (gltfScene && gltfScene->meshes.size() > 0) {
 		SharedMesh		mesh = gltfScene->meshes[0];
 		GLTFMaterial	material = gltfScene->materials[0];
 
-		glUniform1i(glGetUniformLocation(shader->GetProgram(), "diffuseTex"), 0);
-		glActiveTexture(GL_TEXTURE0);
 		for (int i = 0; i < mesh->GetSubMeshCount(); ++i) {
 			//Material layer n refers to submesh n
 			GLTFMaterialLayer& layer = material.allLayers[i];
-			glBindTexture(GL_TEXTURE_2D, layer.albedo->GetObjectID());
+
+			// Bind albedo (diffuse) to texture unit 0 if present
+			if (layer.albedo) {
+				GLint loc = -1;
+				if (shader) loc = glGetUniformLocation(shader->GetProgram(), "diffuseTex");
+				if (loc >= 0) glUniform1i(loc, 0);
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, layer.albedo->GetObjectID());
+			}
+
+			// Bind normal map (bump) to texture unit 1 if present
+			if (layer.bump != nullptr) {
+				GLint loc = -1;
+				if (shader) loc = glGetUniformLocation(shader->GetProgram(), "normalTex");
+				if (loc >= 0) glUniform1i(loc, 1);
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_2D, layer.bump->GetObjectID());
+				// optionally restore active unit back to 0
+				//glActiveTexture(GL_TEXTURE0);
+			}
+
 			mesh->DrawSubMesh(i);
 		}
 	}
+
 	else if (heightMap) {
 		heightMap->Draw();
 	}
