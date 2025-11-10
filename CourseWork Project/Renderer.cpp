@@ -245,6 +245,11 @@ void Renderer::DrawLights() {
 		"normalTex"), 1);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, bufferNormalTex);
+
+	glUniform1i(glGetUniformLocation(pointLightShader->GetProgram(),
+		"shadowTex"), 2);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, shadowTex);
 	const Vector3 camPos = camera->GetPosition();
 	glUniform3fv(glGetUniformLocation(pointLightShader->GetProgram(), "cameraPos"), 1, (float*)&camPos);
 
@@ -305,27 +310,45 @@ void Renderer::CombineBuffers() {
 
 void Renderer::DrawNode(SceneNode* n, bool shadow) {
 	if (n->GetMesh()) {
-		 Shader* nodeShader = n->GetShader();
-		//BindShader(nodeShader);
+		Shader* nodeShader = n->GetShader();
+		// Bind the node's shader only for the normal (non-shadow) pass.
+		if (!shadow && nodeShader) {
+			BindShader(nodeShader);
+		}
+
 		modelMatrix = n->GetWorldTransform() * Matrix4::Scale(n->GetModelScale());
 		UpdateShaderMatrices();
 
-		Vector4 nodeCol = n->GetColour();
-		glUniform4fv(glGetUniformLocation(nodeShader->GetProgram(), "nodeColour"), 1, (float*)&nodeCol);
-		glUniform1i(glGetUniformLocation(nodeShader->GetProgram(), "useTexture"), 0);
+		// Set per-node uniforms only when the node's shader is bound (non-shadow).
+		if (!shadow && nodeShader) {
+			Vector4 nodeCol = n->GetColour();
+			glUniform4fv(glGetUniformLocation(nodeShader->GetProgram(), "nodeColour"), 1, (float*)&nodeCol);
+			glUniform1i(glGetUniformLocation(nodeShader->GetProgram(), "useTexture"), 0);
+		}
+
 		n->Draw(*this, shadow);
 	}
 	else if (n->GetGLTFScene()) {
 		Shader* nodeShader = n->GetShader();
-		//BindShader(nodeShader);
-		modelMatrix = n->GetWorldTransform() * Matrix4::Scale(n->GetModelScale());
-		viewMatrix = camera->BuildViewMatrix();
-		projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
-			(float)width / (float)height, 45.0f);
-		UpdateShaderMatrices();
+		// Bind the node's shader for the normal pass only.
+		if (!shadow && nodeShader) {
+			BindShader(nodeShader);
+		}
 
+		modelMatrix = n->GetWorldTransform() * Matrix4::Scale(n->GetModelScale());
+
+		// IMPORTANT: don't overwrite the current view/proj when rendering the shadow map.
+		// The shadow pass sets viewMatrix/projMatrix to the light's matrices before calling DrawNode(..., true).
+		if (!shadow) {
+			viewMatrix = camera->BuildViewMatrix();
+			projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
+				(float)width / (float)height, 45.0f);
+		}
+
+		UpdateShaderMatrices();
 		n->Draw(*this, shadow);
 	}
+
 	for (vector<SceneNode*>::const_iterator i = n->GetChildIteratorStart(); i != n->GetChildIteratorEnd(); ++i) {
 		DrawNode(*i, shadow);
 	}
