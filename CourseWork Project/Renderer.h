@@ -48,7 +48,11 @@ protected:
 	void SetupShadow();
 	void DrawShadowScene();
 
-
+	//For Skybox
+	Shader* skyboxShader;
+	GLuint cubeMap;
+	void LoadCubeMap();
+	void DrawSkybox();
 
 	//gBuffer
 	GLuint gBufferFBO;
