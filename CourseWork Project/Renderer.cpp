@@ -105,8 +105,10 @@ void Renderer::LoadEnvironment() {
 	root.AddChild(ground);
 	//Vector3 groundLocation = ground->GetWo();
 	sun = new Light(Vector3(0.0f, 70.0f, 0.0f), Vector4(1, 1, 1, 1), 200.0f);
-	pointLights.push_back(sun);
+	Light* pointLight1 = new Light(Vector3(30.0f, 40.0f, 30.0f), Vector4(0.5, 0.5, 0, 1), 15.0f);
 
+	pointLights.push_back(sun);
+	pointLights.push_back(pointLight1);
 }
 
 void Renderer::UpdateScene(float dt) {
