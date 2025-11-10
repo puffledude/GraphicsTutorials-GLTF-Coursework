@@ -3,9 +3,11 @@
 #include "../nclgl/Extra/GLTFLoader.h"
 
 /*
+* Finish deferred lighting. Move sun using arrow keys.
+
 Objectives
-Trees.
-Leaves falling off of trees.
+Leaves falling off of trees
+Trees..
 Sea water and pond water.
 Maybe fish in pond?
 
@@ -34,17 +36,32 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
 	if (Environment.meshes.size() == 0) {
 		return;
 	}
+	SetupDeferred();
+
+	
+
+	
+
+	root = SceneNode();
+	SceneNode* ground = new SceneNode(&Environment, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for environment
+	ground->SetModelScale(Vector3(75.0f, 75.0f, 75.0f));
+	root.AddChild(ground);
+
+	init = true;
+}
+
+void Renderer::SetupDeferred() {
 	environmentShader = new Shader("bumpVertex.glsl", "bufferFragment.glsl");
 	pointLightShader = new Shader("pointLightVertex.glsl", "pointLightFragment.glsl");
 	combineShader = new Shader("combineVertex.glsl", "combineFragment.glsl");
 	if (!environmentShader->LoadSuccess() ||
-		!pointLightShader->LoadSuccess()||
-		!combineShader->LoadSuccess()) {
+		!pointLightShader->LoadSuccess() ||
+		!combineShader->LoadSuccess()){
 		return;
 	}
+
 	glGenFramebuffers(1, &gBufferFBO);
 	glGenFramebuffers(1, &pointLightFBO);
-
 
 	GLenum buffers[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 
@@ -82,14 +99,32 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::SetupShadow() {
+	shadowShader = new Shader("shadowVertex.glsl", "shadowFragment.glsl");
+	if (!shadowShader->LoadSuccess()) {
+		return;
+	}
 
 
-	root = SceneNode();
-	SceneNode* ground = new SceneNode(&Environment, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for environment
-	ground->SetModelScale(Vector3(75.0f, 75.0f, 75.0f));
-	root.AddChild(ground);
+	glBindTexture(GL_TEXTURE_2D, shadowTex);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	init = true;
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOWSIZE, SHADOWSIZE, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glGenFramebuffers(1, &shadowFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowTex, 0);
+
+	glDrawBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 }
 
 Renderer::~Renderer(void)	{
@@ -119,9 +154,10 @@ void Renderer::UpdateScene(float dt) {
 
 void Renderer::RenderScene() {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	DrawShadowScene();
 	DrawEnvironment();
-	/*DrawLights();
-	CombineBuffers();*/
+	DrawLights();
+	CombineBuffers();
 	//DrawPostProcessing();
 }
 
@@ -130,18 +166,34 @@ void Renderer::DrawEnvironment() {
 	/*modelMatrix = root.GetWorldTransform() * Matrix4::Scale(root.GetModelScale());
 	root.Draw(*this);*/
 	DrawNode(&root);
-
 }
 
+void Renderer::DrawShadowScene() {
+	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	glViewport(0, 0, SHADOWSIZE, SHADOWSIZE);
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	BindShader(shadowShader);
+
+	viewMatrix = Matrix4::BuildViewMatrix(sun->GetPosition(),
+		Vector3(0, 0, 0));
+	projMatrix = Matrix4::Perspective(1.0f, 100.0f, 1.0f, 45.0f);
+	shadowMatrix = projMatrix * viewMatrix;
+
+	DrawNode(&root);
+
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glViewport(0, 0, width, height);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+}
 
 void Renderer::DrawNode(SceneNode* n) {
 	if (n->GetMesh()) {
 		Shader* nodeShader = n->GetShader();
-		BindShader(nodeShader);
+		//BindShader(nodeShader);
 		modelMatrix = n->GetWorldTransform() * Matrix4::Scale(n->GetModelScale());
 		UpdateShaderMatrices();
-
-		//glUniformMatrix4fv(glGetUniformLocation(nodeShader->GetProgram(), "modelMatrix"), 1, false, model.values);
 
 		Vector4 nodeCol = n->GetColour();
 		glUniform4fv(glGetUniformLocation(nodeShader->GetProgram(), "nodeColour"), 1, (float*)&nodeCol);
@@ -150,11 +202,9 @@ void Renderer::DrawNode(SceneNode* n) {
 	}
 	else if (n->GetGLTFScene()) {
 		Shader* nodeShader = n->GetShader();
-		BindShader(nodeShader);
+		//BindShader(nodeShader);
 		modelMatrix = n->GetWorldTransform() * Matrix4::Scale(n->GetModelScale());
 		UpdateShaderMatrices();
-
-		//glUniformMatrix4fv(glGetUniformLocation(nodeShader->GetProgram(), "modelMatrix"), 1, false, model.values);
 
 		n->Draw(*this);
 	}

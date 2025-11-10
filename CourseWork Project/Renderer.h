@@ -22,7 +22,6 @@ protected:
 
 	vector<Light*> pointLights;
 
-	void GenerateScreenTexture(GLuint& into, bool depth = false);
 
 	void DrawEnvironment();
 
@@ -30,6 +29,19 @@ protected:
 	Shader* environmentShader;
 	Shader* pointLightShader;
 	Shader* combineShader;
+	void GenerateScreenTexture(GLuint& into, bool depth = false);
+	void SetupDeferred();
+
+
+
+	//For shadow Mapping.
+	Shader* shadowShader;
+	GLuint shadowFBO;
+	GLuint shadowTex;
+	void SetupShadow();
+	void DrawShadowScene();
+
+
 
 	//gBuffer
 	GLuint gBufferFBO;
@@ -42,7 +54,7 @@ protected:
 	GLuint lightDiffuseTex;
 	GLuint lightSpecularTex;
 
-
+	unsigned int SHADOWSIZE = 2048;
 	Mesh* quad;
 
 	SceneNode root;
