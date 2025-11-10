@@ -24,6 +24,12 @@
     <ClCompile Include="Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SunShaderVertex.glsl">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="SunShaderFragment.glsl">
+      <Filter>Shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
@@ -49,5 +55,8 @@
     <None Include="..\Shaders\pointLightVertex.glsl">
       <Filter>Shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Readme.txt" />
   </ItemGroup>
 </Project>

@@ -25,16 +25,24 @@ vec3 worldPos = invClipPos.xyz / invClipPos.w;
 float dist = length(lightPos - worldPos);
 float atten = 1.0 - clamp(dist / lightRadius, 0.0, 1.0);
 
+//diffuseOutput = vec4(vec3(atten), 1.0);
+
+
+//diffuseOutput = vec4(vec3(0,0,1),1.0);
+//specularOutput = vec4(vec3(1,0,0),1.0);
+//return;
 if(atten <= 0.0){
 	discard;
 }
 
 vec3 normal = normalize(texture(normalTex, texCoord.xy).xyz * 2.0 - 1.0);
+diffuseOutput = vec4(normal, 1.0);
 vec3 incident = normalize(lightPos - worldPos);
 vec3 viewDir = normalize(cameraPos - worldPos);
 vec3 halfDir = normalize(incident + viewDir);
 
 float lambert = clamp(dot(incident, normal), 0.0, 1.0);
+//diffuseOutput = vec4(lambert, lambert, lambert, 1.0);
 float rFactor = clamp(dot(halfDir, normal), 0.0, 1.0);
 float specFactor = clamp(dot(halfDir, normal), 0.0, 1.0);
 specFactor = pow(specFactor, 60.0);

@@ -20,15 +20,16 @@ Plus need to set up some form of camera trail.*/
 
 
 Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+	
 	
 	projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
 		(float)width / (float)height, 45.0f);
 	camera = new Camera(0.0f, 180.0f, Vector3(50, 40, 30.0f));
-	sun = new Light(Vector3(100.0f, 100.0f, 100.0f), Vector4(1, 1, 1, 1), 200.0f);
-	pointLights.push_back(sun);
+	
 	sphere = Mesh::LoadFromMeshFile("Sphere.msh");
+	if (!sphere) {
+		return;
+	}
 	quad = Mesh::GenerateQuad();
 
 
@@ -145,6 +146,23 @@ Renderer::~Renderer(void)	{
 	glDeleteFramebuffers(1, &pointLightFBO);
 }
 
+void Renderer::LoadEnvironment() {
+	GLTFLoader::Load("../GLTF/Environment/CourseWorkProject.gltf", Environment);
+	if (Environment.meshes.size() == 0) {
+		return;
+	}
+	this->root = SceneNode();
+	SceneNode* ground = new SceneNode(&Environment, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for environment
+	ground->SetModelScale(Vector3(75.0f, 75.0f, 75.0f));
+	root.AddChild(ground);
+	//Vector3 groundLocation = ground->GetWo();
+	sun = new Light(Vector3(0.0f, 70.0f, 0.0f), Vector4(1, 1, 1, 1), 200.0f);
+	Light* pointLight1 = new Light(Vector3(30.0f, 40.0f, 30.0f), Vector4(0.5, 0.5, 0, 1), 15.0f);
+
+	pointLights.push_back(sun);
+	pointLights.push_back(pointLight1);
+}
+
 void Renderer::UpdateScene(float dt) {
 	camera->UpdateCamera(dt);
 	viewMatrix = camera->BuildViewMatrix();
@@ -158,15 +176,22 @@ void Renderer::RenderScene() {
 	DrawEnvironment();
 	DrawLights();
 	CombineBuffers();
+	std::cout << "Camera location is : " << camera->GetPosition()<< std::endl;
 	//DrawPostProcessing();
 }
 
 void Renderer::DrawEnvironment() {
-	BindShader(environmentShader);
+	//BindShader(environmentShader);
 	/*modelMatrix = root.GetWorldTransform() * Matrix4::Scale(root.GetModelScale());
 	root.Draw(*this);*/
+	glBindFramebuffer(GL_FRAMEBUFFER, gBufferFBO);
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
 	DrawNode(&root);
-}
+	/*for (Light* l : pointLights) {
+		
+		sphere->Draw();
+	}*/
 
 void Renderer::DrawShadowScene() {
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
@@ -188,6 +213,90 @@ void Renderer::DrawShadowScene() {
 
 }
 
+void Renderer::DrawLights() {
+	glBindFramebuffer(GL_FRAMEBUFFER, pointLightFBO);
+	// Use the point light shader before setting uniforms
+	BindShader(pointLightShader);
+
+	
+
+	glClearColor(0, 0, 0, 1);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glBlendFunc(GL_ONE, GL_ONE);
+	glCullFace(GL_FRONT);
+	glDepthFunc(GL_ALWAYS);
+	glDepthMask(GL_FALSE);
+
+
+	glUniform1i(glGetUniformLocation(pointLightShader->GetProgram(),
+		"depthTex"), 0);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, bufferDepthTex);
+
+	glUniform1i(glGetUniformLocation(pointLightShader->GetProgram(),
+		"normalTex"), 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, bufferNormalTex);
+	const Vector3 camPos = camera->GetPosition();
+	glUniform3fv(glGetUniformLocation(pointLightShader->GetProgram(), "cameraPos"), 1, (float*)&camPos);
+
+	glUniform2f(glad_glGetUniformLocation(pointLightShader->GetProgram(),
+		"pixelSize"), 1.0f / width, 1.0f / (float)height);
+
+	Matrix4 invViewProj = (projMatrix * viewMatrix).Inverse();
+	glUniformMatrix4fv(glGetUniformLocation(pointLightShader->GetProgram(),
+		"invProjViewMatrix"), 1, false, invViewProj.values);
+
+	UpdateShaderMatrices();
+	for(Light* l : pointLights) {
+		SetShaderLight(*l);
+		sphere->Draw();
+	}
+	/*for (int i = 0; i < pointLights.size(); ++i) {
+		Light& l = pointLights[i];
+		SetShaderLight(l);
+		sphere->Draw();
+	}*/
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glCullFace(GL_BACK);
+	glDepthFunc(GL_LEQUAL);
+
+	glDepthMask(GL_TRUE);
+
+	glClearColor(0.2f, 0.2f, 0.2f, 1);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+
+void Renderer::CombineBuffers() {
+	BindShader(combineShader);
+	modelMatrix.ToIdentity();
+	viewMatrix.ToIdentity();
+	projMatrix.ToIdentity();
+	UpdateShaderMatrices();
+
+	glUniform1i(glGetUniformLocation(combineShader->GetProgram(),
+		"diffuseTex"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, bufferColourTex);
+
+	glUniform1i(glGetUniformLocation(combineShader->GetProgram(),
+		"diffuseLight"), 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, lightDiffuseTex);
+
+	glUniform1i(glGetUniformLocation(combineShader->GetProgram(),
+		"specularLight"), 2);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, lightSpecularTex);
+	quad->Draw();
+}
+
+
+
 void Renderer::DrawNode(SceneNode* n) {
 	if (n->GetMesh()) {
 		Shader* nodeShader = n->GetShader();
@@ -204,6 +313,9 @@ void Renderer::DrawNode(SceneNode* n) {
 		Shader* nodeShader = n->GetShader();
 		//BindShader(nodeShader);
 		modelMatrix = n->GetWorldTransform() * Matrix4::Scale(n->GetModelScale());
+		viewMatrix = camera->BuildViewMatrix();
+		projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
+			(float)width / (float)height, 45.0f);
 		UpdateShaderMatrices();
 
 		n->Draw(*this);
