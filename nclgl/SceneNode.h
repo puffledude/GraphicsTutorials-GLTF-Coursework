@@ -79,7 +79,7 @@ public:
 	void DeleteChild(SceneNode* s);
 
 	virtual void Update(float dt);
-	virtual void Draw(const OGLRenderer &r);
+	virtual void Draw(const OGLRenderer &r, bool shadow=false);
 
 	std::vector<SceneNode*>::const_iterator GetChildIteratorStart(){
 		return children.begin();

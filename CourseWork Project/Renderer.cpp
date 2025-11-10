@@ -37,10 +37,10 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
 	//if (Environment.meshes.size() == 0) {
 	//	return;
 	//}
-	this->LoadEnvironment();
 	this->SetupDeferred();
 	this->SetupShadow();
-	
+	this->LoadEnvironment();
+
 
 	
 
@@ -211,7 +211,7 @@ void Renderer::DrawShadowScene() {
 	projMatrix = Matrix4::Perspective(1.0f, 500.0f, 1.0f, 45.0f);
 	shadowMatrix = projMatrix * viewMatrix;
 
-	DrawNode(&root);
+	DrawNode(&root, true);
 
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glViewport(0, 0, width, height);
@@ -303,9 +303,9 @@ void Renderer::CombineBuffers() {
 
 
 
-void Renderer::DrawNode(SceneNode* n) {
+void Renderer::DrawNode(SceneNode* n, bool shadow) {
 	if (n->GetMesh()) {
-		Shader* nodeShader = n->GetShader();
+		 Shader* nodeShader = n->GetShader();
 		//BindShader(nodeShader);
 		modelMatrix = n->GetWorldTransform() * Matrix4::Scale(n->GetModelScale());
 		UpdateShaderMatrices();
@@ -313,7 +313,7 @@ void Renderer::DrawNode(SceneNode* n) {
 		Vector4 nodeCol = n->GetColour();
 		glUniform4fv(glGetUniformLocation(nodeShader->GetProgram(), "nodeColour"), 1, (float*)&nodeCol);
 		glUniform1i(glGetUniformLocation(nodeShader->GetProgram(), "useTexture"), 0);
-		n->Draw(*this);
+		n->Draw(*this, shadow);
 	}
 	else if (n->GetGLTFScene()) {
 		Shader* nodeShader = n->GetShader();
@@ -324,10 +324,10 @@ void Renderer::DrawNode(SceneNode* n) {
 			(float)width / (float)height, 45.0f);
 		UpdateShaderMatrices();
 
-		n->Draw(*this);
+		n->Draw(*this, shadow);
 	}
 	for (vector<SceneNode*>::const_iterator i = n->GetChildIteratorStart(); i != n->GetChildIteratorEnd(); ++i) {
-		DrawNode(*i);
+		DrawNode(*i, shadow);
 	}
 }
 

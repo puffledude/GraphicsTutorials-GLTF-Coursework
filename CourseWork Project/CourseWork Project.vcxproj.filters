@@ -55,6 +55,12 @@
     <None Include="..\Shaders\pointLightVertex.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="..\Shaders\ShadowFragment.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\ShadowVertex.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Readme.txt" />

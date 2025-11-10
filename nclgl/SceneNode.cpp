@@ -96,7 +96,7 @@ void SceneNode::DeleteChild(SceneNode* s)
 	}
 }
 
-void SceneNode::Draw(const OGLRenderer &r)
+void SceneNode::Draw(const OGLRenderer &r, bool shadow)
 {
 	
 	if (mesh) {
@@ -109,7 +109,11 @@ void SceneNode::Draw(const OGLRenderer &r)
 		for (int i = 0; i < mesh->GetSubMeshCount(); ++i) {
 			//Material layer n refers to submesh n
 			GLTFMaterialLayer& layer = material.allLayers[i];
-
+			if (shadow) {
+				// In shadow pass, only care about depth, so skip texture binding
+				mesh->DrawSubMesh(i);
+				continue;
+			}
 			// Bind albedo (diffuse) to texture unit 0 if present
 			if (layer.albedo) {
 				GLint loc = -1;

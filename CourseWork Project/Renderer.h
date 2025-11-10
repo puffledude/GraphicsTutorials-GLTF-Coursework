@@ -13,7 +13,7 @@ public:
 	void RenderScene()				override;
 	void UpdateScene(float dt)	override;
 protected:
-	void DrawNode(SceneNode* n);
+	void DrawNode(SceneNode* n, bool shadow=false);
 	GLTFScene Environment;
 
 	GLTFScene Tree;
