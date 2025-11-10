@@ -181,7 +181,7 @@ void Renderer::RenderScene() {
 }
 
 void Renderer::DrawEnvironment() {
-	//BindShader(environmentShader);
+	BindShader(environmentShader);
 	/*modelMatrix = root.GetWorldTransform() * Matrix4::Scale(root.GetModelScale());
 	root.Draw(*this);*/
 	glBindFramebuffer(GL_FRAMEBUFFER, gBufferFBO);
@@ -189,10 +189,11 @@ void Renderer::DrawEnvironment() {
 
 	DrawNode(&root);
 	/*for (Light* l : pointLights) {
-		
+
 		sphere->Draw();
 	}*/
-
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
 void Renderer::DrawShadowScene() {
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
