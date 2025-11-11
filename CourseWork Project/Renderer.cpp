@@ -18,14 +18,13 @@ Frozen pond.
 
 Plus need to set up some form of camera trail.*/
 
-
 Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
-	
-	
+
+
 	projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
 		(float)width / (float)height, 45.0f);
 	camera = new Camera(0.0f, 180.0f, Vector3(50, 40, 30.0f));
-	
+
 	sphere = Mesh::LoadFromMeshFile("Sphere.msh");
 	if (!sphere) {
 		return;
@@ -43,7 +42,6 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
 	this->LoadSkyBox();
 
 
-	
 
 	//root = SceneNode();
 	//SceneNode* ground = new SceneNode(&Environment, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for environment
@@ -153,7 +151,13 @@ void Renderer::LoadSkyBox() {
 }
 
 void Renderer::DrawSkybox(bool shadow) {
+	// Draw skybox using LEQUAL so it will render correctly when depth already exists
+	GLint prevDepthFunc = 0;
+	glGetIntegerv(GL_DEPTH_FUNC, &prevDepthFunc);
+
 	glDepthMask(GL_FALSE);
+	glDepthFunc(GL_LEQUAL);
+
 	if (!shadow) {
 		BindShader(skyboxShader);
 		glUniform1i(glGetUniformLocation(skyboxShader->GetProgram(),
@@ -174,6 +178,9 @@ void Renderer::DrawSkybox(bool shadow) {
 	UpdateShaderMatrices();
 	quad->Draw();
 	glDepthMask(GL_TRUE);
+
+	// restore previous depth func
+	glDepthFunc(prevDepthFunc);
 }
 
 
@@ -221,23 +228,36 @@ void Renderer::UpdateScene(float dt) {
 
 void Renderer::RenderScene() {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-	//DrawSkybox(); // Draw skybox first to avoid being written into g-buffer / affected by lighting
+
+	// --- Strategy ---
+	// Keep the skybox visually behind scene geometry and unaffected by lighting.
+	// The reliable approach for a deferred renderer is:
+	// 1) Perform the deferred passes (g-buffer, lighting, combine) into the default framebuffer.
+	// 2) Copy the depth buffer from the g-buffer into the default framebuffer's depth buffer.
+	// 3) Draw the skybox last using depth test (LEQUAL) so skybox only fills pixels where no geometry exists.
+	// The code below implements that flow. This avoids having the skybox be written into the g-buffer
+	// (so it is unaffected by lighting) and prevents it from overwriting scene pixels.
+
+	DrawSkybox();
 	DrawShadowScene();
 
 	DrawEnvironment();
 
 	DrawLights();
-	CombineBuffers();
-	// Copy depth from g-buffer to default framebuffer so skybox won't overwrite scene
-	//glBindFramebuffer(GL_READ_FRAMEBUFFER, gBufferFBO);
-	//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	//glBlitFramebuffer(0, 0, width, height,
-	//			0, 0, width, height,
-	//			GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	// Draw skybox last to avoid it being written into g-buffer / affected by lighting
-	//DrawSkybox();
+	CombineBuffers();
+
+	// Copy depth from g-buffer to default framebuffer so skybox won't overwrite scene
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, gBufferFBO);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glBlitFramebuffer(0, 0, width, height,
+				0, 0, width, height,
+				GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// Draw skybox last so it is depth-tested against the scene depth and won't overwrite scene pixels
+	
+
 	//std::cout << "Camera location is : " << camera->GetPosition()<< std::endl;
 	//DrawPostProcessing();
 }
@@ -246,16 +266,21 @@ void Renderer::DrawEnvironment(bool shadow) {
 	//BindShader(environmentShader);
 	/*modelMatrix = root.GetWorldTransform() * Matrix4::Scale(root.GetModelScale());
 	root.Draw(*this);*/
-	glBindFramebuffer(GL_FRAMEBUFFER, gBufferFBO);
-	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-	DrawSkybox(shadow); // skybox should not be drawn into the g-buffer (avoids being affected by lighting)
+	if (!shadow) {
+		glBindFramebuffer(GL_FRAMEBUFFER, gBufferFBO);
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	}
+
+	// Removed skybox draw from here so it won't be rendered into the g-buffer.
+	// Skybox will be drawn after combine with the scene depth copied into the default framebuffer.
 
 	DrawNode(&root, shadow);
 	/*for (Light* l : pointLights) {
 
 		sphere->Draw();
 	}*/
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	if (!shadow){ glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+
 }
 void Renderer::DrawShadowScene() {
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
@@ -269,7 +294,7 @@ void Renderer::DrawShadowScene() {
 	projMatrix = Matrix4::Perspective(1.0f, 1000, 1.0f, 45.0f);
 	shadowMatrix = projMatrix * viewMatrix;
 
-	DrawEnvironment();
+	DrawEnvironment(true);
 
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glViewport(0, 0, width, height);
@@ -282,7 +307,7 @@ void Renderer::DrawLights() {
 	// Use the point light shader before setting uniforms
 	BindShader(pointLightShader);
 
-	
+
 
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -323,11 +348,7 @@ void Renderer::DrawLights() {
 		SetShaderLight(*l);
 		sphere->Draw();
 	}
-	/*for (int i = 0; i < pointLights.size(); ++i) {
-		Light& l = pointLights[i];
-		SetShaderLight(l);
-		sphere->Draw();
-	}*/
+
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glCullFace(GL_BACK);
@@ -361,6 +382,12 @@ void Renderer::CombineBuffers() {
 		"specularLight"), 2);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, lightSpecularTex);
+
+	glUniform1i(glGetUniformLocation(combineShader->GetProgram(),
+		"depthTex"), 3);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, bufferDepthTex);
+
 	quad->Draw();
 }
 
