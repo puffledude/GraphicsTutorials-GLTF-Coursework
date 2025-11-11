@@ -52,7 +52,7 @@ protected:
 	Shader* skyboxShader;
 	GLuint cubeMap;
 	void LoadCubeMap();
-	void DrawSkybox();
+	//void DrawSkybox();
 
 	//gBuffer
 	GLuint gBufferFBO;

@@ -40,6 +40,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
 	this->SetupDeferred();
 	this->SetupShadow();
 	this->LoadEnvironment();
+	this->LoadCubeMap();
 
 
 	
@@ -133,6 +134,25 @@ void Renderer::SetupShadow() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 }
+
+void Renderer::LoadCubeMap() {
+	skyboxShader = new Shader("skyboxVertex.glsl", "skyboxFragment.glsl");
+	if (!skyboxShader->LoadSuccess()) {
+		return;
+	}
+	this->cubeMap = SOIL_load_OGL_cubemap(
+		TEXTUREDIR"CubeMapRight.jpg", TEXTUREDIR"CubeMapLeft.jpg",
+		TEXTUREDIR"CubeMapUp.jpg", TEXTUREDIR"CubeMapDown.jpg",
+		TEXTUREDIR"CubeMapBack.jpg", TEXTUREDIR"CubeMapFront.jpg",
+		SOIL_LOAD_RGB,
+		SOIL_CREATE_NEW_ID,
+		0
+	);
+	if (!this->cubeMap) {
+		return;
+	}
+}
+
 
 Renderer::~Renderer(void)	{
 	delete environmentShader;
