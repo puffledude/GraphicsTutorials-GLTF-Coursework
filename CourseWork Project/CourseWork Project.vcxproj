@@ -152,6 +152,8 @@
     <None Include="..\Shaders\pointLightVertex.glsl" />
     <None Include="..\Shaders\ShadowFragment.glsl" />
     <None Include="..\Shaders\ShadowVertex.glsl" />
+    <None Include="..\Shaders\SkyboxFragment.glsl" />
+    <None Include="..\Shaders\SkyboxVertex.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Readme.txt" />

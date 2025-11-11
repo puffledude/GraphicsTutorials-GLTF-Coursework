@@ -61,6 +61,12 @@
     <None Include="..\Shaders\ShadowVertex.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="..\Shaders\SkyboxFragment.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\SkyboxVertex.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Readme.txt" />

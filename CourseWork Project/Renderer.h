@@ -50,9 +50,9 @@ protected:
 
 	//For Skybox
 	Shader* skyboxShader;
-	GLuint cubeMap;
-	void LoadCubeMap();
-	//void DrawSkybox();
+	UniqueOGLTexture cubeMap;
+	void LoadSkyBox();
+	void DrawSkybox();
 
 	//gBuffer
 	GLuint gBufferFBO;

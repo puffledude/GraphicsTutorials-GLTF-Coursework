@@ -40,7 +40,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
 	this->SetupDeferred();
 	this->SetupShadow();
 	this->LoadEnvironment();
-	this->LoadCubeMap();
+	this->LoadSkyBox();
 
 
 	
@@ -135,23 +135,31 @@ void Renderer::SetupShadow() {
 
 }
 
-void Renderer::LoadCubeMap() {
+void Renderer::LoadSkyBox() {
 	skyboxShader = new Shader("skyboxVertex.glsl", "skyboxFragment.glsl");
 	if (!skyboxShader->LoadSuccess()) {
 		return;
 	}
-	this->cubeMap = SOIL_load_OGL_cubemap(
-		TEXTUREDIR"CubeMapRight.jpg", TEXTUREDIR"CubeMapLeft.jpg",
-		TEXTUREDIR"CubeMapUp.jpg", TEXTUREDIR"CubeMapDown.jpg",
-		TEXTUREDIR"CubeMapBack.jpg", TEXTUREDIR"CubeMapFront.jpg",
-		SOIL_LOAD_RGB,
-		SOIL_CREATE_NEW_ID,
-		0
-	);
+	cubeMap = OGLTexture::LoadCubemap(
+		TEXTUREDIR"CubeMapRight.jpg",
+		TEXTUREDIR"CubeMapLeft.jpg",
+		TEXTUREDIR"CubeMapUp.jpg",
+		TEXTUREDIR"CubeMapDown.jpg",
+		TEXTUREDIR"CubeMapFront.jpg",
+		TEXTUREDIR"CubeMapBack.jpg");
 	if (!this->cubeMap) {
 		return;
 	}
 }
+
+//void Renderer::DrawSkybox() {
+//	glDepthMask(GL_FALSE);
+//	BindShader(skyboxShader);
+//	glUniform1i(glGetUniformLocation(skyboxShader->GetProgram(),
+//		"cubeTex"), 0);
+//	glActiveTexture(GL_TEXTURE0);
+//	glBindTexture(GL_TEXTURE_CUBE_MAP, (GLuint*)cubeMap);
+//}
 
 
 Renderer::~Renderer(void)	{
@@ -189,7 +197,6 @@ void Renderer::LoadEnvironment() {
 	pointLights.push_back(sun);
 	pointLights.push_back(pointLight1);
 }
-
 void Renderer::UpdateScene(float dt) {
 	camera->UpdateCamera(dt);
 	viewMatrix = camera->BuildViewMatrix();
