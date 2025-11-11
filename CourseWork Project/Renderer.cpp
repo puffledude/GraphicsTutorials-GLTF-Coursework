@@ -19,8 +19,6 @@ Frozen pond.
 Plus need to set up some form of camera trail.*/
 
 Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
-
-
 	projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
 		(float)width / (float)height, 45.0f);
 	camera = new Camera(0.0f, 180.0f, Vector3(50, 40, 30.0f));
@@ -30,24 +28,10 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
 		return;
 	}
 	quad = Mesh::GenerateQuad();
-
-
-	//GLTFLoader::Load("../GLTF/Environment/CourseWorkProject.gltf", Environment);
-	//if (Environment.meshes.size() == 0) {
-	//	return;
-	//}
 	this->SetupDeferred();
 	this->SetupShadow();
 	this->LoadEnvironment();
 	this->LoadSkyBox();
-
-
-
-	//root = SceneNode();
-	//SceneNode* ground = new SceneNode(&Environment, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for environment
-	//ground->SetModelScale(Vector3(75.0f, 75.0f, 75.0f));
-	//root.AddChild(ground);
-
 	glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -133,18 +117,21 @@ void Renderer::SetupShadow() {
 
 }
 
-void Renderer::LoadSkyBox() {
+void Renderer::LoadSkyBox() { //Actual load order is right, left, up, down , front, back. Need to either rename or just keep it.
 	skyboxShader = new Shader("skyboxVertex.glsl", "skyboxFragment.glsl");
 	if (!skyboxShader->LoadSuccess()) {
 		return;
 	}
 	cubeMap = OGLTexture::LoadCubemap(
-		TEXTUREDIR"CubeMapRight.jpg",
 		TEXTUREDIR"CubeMapLeft.jpg",
+
+		TEXTUREDIR"CubeMapRight.jpg",
 		TEXTUREDIR"CubeMapUp.jpg",
+
 		TEXTUREDIR"CubeMapDown.jpg",
-		TEXTUREDIR"CubeMapFront.jpg",
-		TEXTUREDIR"CubeMapBack.jpg");
+		TEXTUREDIR"CubeMapBack.jpg",
+		TEXTUREDIR"CubeMapFront.jpg"
+		);
 	if (!this->cubeMap) {
 		return;
 	}
@@ -213,7 +200,7 @@ void Renderer::LoadEnvironment() {
 	ground->SetModelScale(Vector3(75.0f, 75.0f, 75.0f));
 	root.AddChild(ground);
 	//Vector3 groundLocation = ground->GetWo();
-	sun = new Light(Vector3(0.0f, 70.0f, 0.0f), Vector4(1, 1, 1, 1), 200.0f);
+	sun = new Light(Vector3(23.6744, 58.4126, 3.97436), Vector4(1, 1, 1, 1), 100.0f);
 	Light* pointLight1 = new Light(Vector3(30.0f, 40.0f, 30.0f), Vector4(0.5, 0.5, 0, 1), 15.0f);
 
 	pointLights.push_back(sun);
@@ -226,19 +213,12 @@ void Renderer::UpdateScene(float dt) {
 	root.Update(dt);
 }
 
+/// <summary>
+/// Renders Scene. Skybox -> Shadow Scene -> Environment fill -> Lighting calc -> Combine Buffers.
+/// </summary>
 void Renderer::RenderScene() {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-	// --- Strategy ---
-	// Keep the skybox visually behind scene geometry and unaffected by lighting.
-	// The reliable approach for a deferred renderer is:
-	// 1) Perform the deferred passes (g-buffer, lighting, combine) into the default framebuffer.
-	// 2) Copy the depth buffer from the g-buffer into the default framebuffer's depth buffer.
-	// 3) Draw the skybox last using depth test (LEQUAL) so skybox only fills pixels where no geometry exists.
-	// The code below implements that flow. This avoids having the skybox be written into the g-buffer
-	// (so it is unaffected by lighting) and prevents it from overwriting scene pixels.
-
-	DrawSkybox();
+	DrawSkybox();  
 	DrawShadowScene();
 
 	DrawEnvironment();
@@ -248,17 +228,14 @@ void Renderer::RenderScene() {
 	CombineBuffers();
 
 	// Copy depth from g-buffer to default framebuffer so skybox won't overwrite scene
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, gBufferFBO);
+	/*glBindFramebuffer(GL_READ_FRAMEBUFFER, gBufferFBO);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glBlitFramebuffer(0, 0, width, height,
 				0, 0, width, height,
 				GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);*/	
 
-	// Draw skybox last so it is depth-tested against the scene depth and won't overwrite scene pixels
-	
-
-	//std::cout << "Camera location is : " << camera->GetPosition()<< std::endl;
+	std::cout << "Camera location is : " << camera->GetPosition()<< std::endl;
 	//DrawPostProcessing();
 }
 
