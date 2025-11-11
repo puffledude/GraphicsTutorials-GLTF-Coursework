@@ -152,14 +152,29 @@ void Renderer::LoadSkyBox() {
 	}
 }
 
-//void Renderer::DrawSkybox() {
-//	glDepthMask(GL_FALSE);
-//	BindShader(skyboxShader);
-//	glUniform1i(glGetUniformLocation(skyboxShader->GetProgram(),
-//		"cubeTex"), 0);
-//	glActiveTexture(GL_TEXTURE0);
-//	glBindTexture(GL_TEXTURE_CUBE_MAP, (GLuint*)cubeMap);
-//}
+void Renderer::DrawSkybox(bool shadow) {
+	glDepthMask(GL_FALSE);
+	if (!shadow) {
+		BindShader(skyboxShader);
+		glUniform1i(glGetUniformLocation(skyboxShader->GetProgram(),
+			"cubeTex"), 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->GetObjectID());
+
+		// Use a view matrix without translation so the skybox appears infinitely far away
+		Matrix4 camView = camera->BuildViewMatrix();
+		// zero out translation components (values 12,13,14 hold translation)
+		camView.values[12] = 0.0f;
+		camView.values[13] = 0.0f;
+		camView.values[14] = 0.0f;
+		viewMatrix = camView;
+		projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
+			(float)width / (float)height, 45.0f);
+	}
+	UpdateShaderMatrices();
+	quad->Draw();
+	glDepthMask(GL_TRUE);
+}
 
 
 Renderer::~Renderer(void)	{
@@ -191,7 +206,7 @@ void Renderer::LoadEnvironment() {
 	ground->SetModelScale(Vector3(75.0f, 75.0f, 75.0f));
 	root.AddChild(ground);
 	//Vector3 groundLocation = ground->GetWo();
-	sun = new Light(Vector3(0.0f, 0.0f, 0.0f), Vector4(1, 1, 1, 1), 50.0f);
+	sun = new Light(Vector3(0.0f, 70.0f, 0.0f), Vector4(1, 1, 1, 1), 200.0f);
 	Light* pointLight1 = new Light(Vector3(30.0f, 40.0f, 30.0f), Vector4(0.5, 0.5, 0, 1), 15.0f);
 
 	pointLights.push_back(sun);
@@ -210,18 +225,29 @@ void Renderer::RenderScene() {
 	DrawEnvironment();
 	DrawLights();
 	CombineBuffers();
+	// Copy depth from g-buffer to default framebuffer so skybox won't overwrite scene
+	//glBindFramebuffer(GL_READ_FRAMEBUFFER, gBufferFBO);
+	//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	//glBlitFramebuffer(0, 0, width, height,
+	//			0, 0, width, height,
+	//			GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// Draw skybox last to avoid it being written into g-buffer / affected by lighting
+	DrawSkybox();
 	std::cout << "Camera location is : " << camera->GetPosition()<< std::endl;
 	//DrawPostProcessing();
 }
 
-void Renderer::DrawEnvironment() {
-	BindShader(environmentShader);
+void Renderer::DrawEnvironment(bool shadow) {
+	//BindShader(environmentShader);
 	/*modelMatrix = root.GetWorldTransform() * Matrix4::Scale(root.GetModelScale());
 	root.Draw(*this);*/
 	glBindFramebuffer(GL_FRAMEBUFFER, gBufferFBO);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	DrawSkybox(shadow); // skybox should not be drawn into the g-buffer (avoids being affected by lighting)
 
-	DrawNode(&root);
+	DrawNode(&root, shadow);
 	/*for (Light* l : pointLights) {
 
 		sphere->Draw();
@@ -240,7 +266,7 @@ void Renderer::DrawShadowScene() {
 	projMatrix = Matrix4::Perspective(1.0f, 1000, 1.0f, 45.0f);
 	shadowMatrix = projMatrix * viewMatrix;
 
-	DrawNode(&root, true);
+	DrawEnvironment();
 
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glViewport(0, 0, width, height);

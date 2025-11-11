@@ -94,7 +94,7 @@ UniqueOGLTexture OGLTexture::LoadCubemap(
 	std::vector<char*> texData(6, nullptr);
 
 	for (int i = 0; i < 6; ++i) {
-		//TextureLoader::LoadTexture(*filenames[i], texData[i], width[i], height[i], channels[i], flags[i]);
+		LoadTexture(*filenames[i], texData[i], width[i], height[i], channels[i], flags[i]);
 		if (i > 0 && (width[i] != width[0] || height[0] != height[0])) {
 			std::cout << __FUNCTION__ << " cubemap input textures don't match in size?\n";
 			return nullptr;

@@ -27,7 +27,7 @@ protected:
 	vector<Light*> pointLights;
 
 
-	void DrawEnvironment();
+	void DrawEnvironment(bool shadow=false);
 
 	void DrawLights();
 	void CombineBuffers();
@@ -52,7 +52,7 @@ protected:
 	Shader* skyboxShader;
 	UniqueOGLTexture cubeMap;
 	void LoadSkyBox();
-	void DrawSkybox();
+	void DrawSkybox(bool shadow = false);
 
 	//gBuffer
 	GLuint gBufferFBO;
@@ -64,6 +64,9 @@ protected:
 	GLuint pointLightFBO;
 	GLuint lightDiffuseTex;
 	GLuint lightSpecularTex;
+	// Skybox render target
+	GLuint skyboxFBO;
+	GLuint skyboxTex;
 
 	unsigned int SHADOWSIZE = 2048;
 	Mesh* quad;
