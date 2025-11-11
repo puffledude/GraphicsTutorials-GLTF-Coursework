@@ -221,8 +221,11 @@ void Renderer::UpdateScene(float dt) {
 
 void Renderer::RenderScene() {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	//DrawSkybox(); // Draw skybox first to avoid being written into g-buffer / affected by lighting
 	DrawShadowScene();
+
 	DrawEnvironment();
+
 	DrawLights();
 	CombineBuffers();
 	// Copy depth from g-buffer to default framebuffer so skybox won't overwrite scene
@@ -234,8 +237,8 @@ void Renderer::RenderScene() {
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// Draw skybox last to avoid it being written into g-buffer / affected by lighting
-	DrawSkybox();
-	std::cout << "Camera location is : " << camera->GetPosition()<< std::endl;
+	//DrawSkybox();
+	//std::cout << "Camera location is : " << camera->GetPosition()<< std::endl;
 	//DrawPostProcessing();
 }
 

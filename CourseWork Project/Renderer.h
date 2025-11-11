@@ -64,9 +64,6 @@ protected:
 	GLuint pointLightFBO;
 	GLuint lightDiffuseTex;
 	GLuint lightSpecularTex;
-	// Skybox render target
-	GLuint skyboxFBO;
-	GLuint skyboxTex;
 
 	unsigned int SHADOWSIZE = 2048;
 	Mesh* quad;
