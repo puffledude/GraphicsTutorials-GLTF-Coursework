@@ -45,9 +45,10 @@
 					"attributes":{
 						"POSITION":0,
 						"NORMAL":1,
-						"TEXCOORD_0":2
+						"TEXCOORD_0":2,
+						"TANGENT":3
 					},
-					"indices":3,
+					"indices":4,
 					"material":0
 				}
 			]
@@ -79,7 +80,7 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":4362598,
+			"count":4364372,
 			"max":[
 				1,
 				0.5095522403717041,
@@ -95,17 +96,23 @@
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":4362598,
+			"count":4364372,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":4362598,
+			"count":4364372,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
+			"componentType":5126,
+			"count":4364372,
+			"type":"VEC4"
+		},
+		{
+			"bufferView":4,
 			"componentType":5125,
 			"count":25141254,
 			"type":"SCALAR"
@@ -114,26 +121,32 @@
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":52351176,
+			"byteLength":52372464,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":52351176,
-			"byteOffset":52351176,
+			"byteLength":52372464,
+			"byteOffset":52372464,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":34900784,
-			"byteOffset":104702352,
+			"byteLength":34914976,
+			"byteOffset":104744928,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":69829952,
+			"byteOffset":139659904,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":100565016,
-			"byteOffset":139603136,
+			"byteOffset":209489856,
 			"target":34963
 		}
 	],
@@ -145,7 +158,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":240168152,
+			"byteLength":310054872,
 			"uri":"CourseWorkProject.bin"
 		}
 	]
