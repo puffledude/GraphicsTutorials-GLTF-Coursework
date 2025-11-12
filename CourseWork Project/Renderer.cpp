@@ -117,6 +117,28 @@ void Renderer::SetupShadow() {
 
 }
 
+void Renderer::LoadEnvironment() {
+	GLTFLoader::Load("../GLTF/Environment/CourseWorkProject.gltf", Environment);
+	if (Environment.meshes.size() == 0) {
+		return;
+	}
+	this->root = SceneNode();
+	SceneNode* ground = new SceneNode(&Environment, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for environment
+	ground->SetModelScale(Vector3(75.0f, 75.0f, 75.0f));
+	root.AddChild(ground);
+	sun = new Light(Vector3(23.6744, 58.4126, 3.97436), Vector4(1, 1, 1, 1), 100.0f);
+	Light* pointLight1 = new Light(Vector3(30.0f, 40.0f, 30.0f), Vector4(0.5, 0.5, 0, 1), 15.0f);
+
+	pointLights.push_back(sun);
+	pointLights.push_back(pointLight1);
+}
+void Renderer::UpdateScene(float dt) {
+	camera->UpdateCamera(dt);
+	viewMatrix = camera->BuildViewMatrix();
+	gameFrameTime = dt;
+	root.Update(dt);
+}
+
 void Renderer::LoadSkyBox() { //Actual load order is right, left, up, down , front, back. Need to either rename or just keep it.
 	skyboxShader = new Shader("skyboxVertex.glsl", "skyboxFragment.glsl");
 	if (!skyboxShader->LoadSuccess()) {
@@ -137,38 +159,7 @@ void Renderer::LoadSkyBox() { //Actual load order is right, left, up, down , fro
 	}
 }
 
-void Renderer::DrawSkybox(bool shadow) {
-	// Draw skybox using LEQUAL so it will render correctly when depth already exists
-	GLint prevDepthFunc = 0;
-	glGetIntegerv(GL_DEPTH_FUNC, &prevDepthFunc);
 
-	glDepthMask(GL_FALSE);
-	glDepthFunc(GL_LEQUAL);
-
-	if (!shadow) {
-		BindShader(skyboxShader);
-		glUniform1i(glGetUniformLocation(skyboxShader->GetProgram(),
-			"cubeTex"), 0);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->GetObjectID());
-
-		// Use a view matrix without translation so the skybox appears infinitely far away
-		Matrix4 camView = camera->BuildViewMatrix();
-		// zero out translation components (values 12,13,14 hold translation)
-		camView.values[12] = 0.0f;
-		camView.values[13] = 0.0f;
-		camView.values[14] = 0.0f;
-		viewMatrix = camView;
-		projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
-			(float)width / (float)height, 45.0f);
-	}
-	UpdateShaderMatrices();
-	quad->Draw();
-	glDepthMask(GL_TRUE);
-
-	// restore previous depth func
-	glDepthFunc(prevDepthFunc);
-}
 
 
 Renderer::~Renderer(void)	{
@@ -190,28 +181,7 @@ Renderer::~Renderer(void)	{
 	glDeleteFramebuffers(1, &pointLightFBO);
 }
 
-void Renderer::LoadEnvironment() {
-	GLTFLoader::Load("../GLTF/Environment/CourseWorkProject.gltf", Environment);
-	if (Environment.meshes.size() == 0) {
-		return;
-	}
-	this->root = SceneNode();
-	SceneNode* ground = new SceneNode(&Environment, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for environment
-	ground->SetModelScale(Vector3(75.0f, 75.0f, 75.0f));
-	root.AddChild(ground);
-	//Vector3 groundLocation = ground->GetWo();
-	sun = new Light(Vector3(23.6744, 58.4126, 3.97436), Vector4(1, 1, 1, 1), 100.0f);
-	Light* pointLight1 = new Light(Vector3(30.0f, 40.0f, 30.0f), Vector4(0.5, 0.5, 0, 1), 15.0f);
 
-	pointLights.push_back(sun);
-	pointLights.push_back(pointLight1);
-}
-void Renderer::UpdateScene(float dt) {
-	camera->UpdateCamera(dt);
-	viewMatrix = camera->BuildViewMatrix();
-	gameFrameTime = dt;
-	root.Update(dt);
-}
 
 /// <summary>
 /// Renders Scene. Skybox -> Shadow Scene -> Environment fill -> Lighting calc -> Combine Buffers.
@@ -226,14 +196,6 @@ void Renderer::RenderScene() {
 	DrawLights();
 
 	CombineBuffers();
-
-	// Copy depth from g-buffer to default framebuffer so skybox won't overwrite scene
-	/*glBindFramebuffer(GL_READ_FRAMEBUFFER, gBufferFBO);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glBlitFramebuffer(0, 0, width, height,
-				0, 0, width, height,
-				GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);*/	
 
 	std::cout << "Camera location is : " << camera->GetPosition()<< std::endl;
 	//DrawPostProcessing();
@@ -335,6 +297,39 @@ void Renderer::DrawLights() {
 
 	glClearColor(0.2f, 0.2f, 0.2f, 1);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::DrawSkybox(bool shadow) {
+	// Draw skybox using LEQUAL so it will render correctly when depth already exists
+	GLint prevDepthFunc = 0;
+	glGetIntegerv(GL_DEPTH_FUNC, &prevDepthFunc);
+
+	glDepthMask(GL_FALSE);
+	glDepthFunc(GL_LEQUAL);
+
+	if (!shadow) {
+		BindShader(skyboxShader);
+		glUniform1i(glGetUniformLocation(skyboxShader->GetProgram(),
+			"cubeTex"), 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->GetObjectID());
+
+		// Use a view matrix without translation so the skybox appears infinitely far away
+		Matrix4 camView = camera->BuildViewMatrix();
+		// zero out translation components (values 12,13,14 hold translation)
+		camView.values[12] = 0.0f;
+		camView.values[13] = 0.0f;
+		camView.values[14] = 0.0f;
+		viewMatrix = camView;
+		projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
+			(float)width / (float)height, 45.0f);
+	}
+	UpdateShaderMatrices();
+	quad->Draw();
+	glDepthMask(GL_TRUE);
+
+	// restore previous depth func
+	glDepthFunc(prevDepthFunc);
 }
 
 
