@@ -142,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="waterStruct.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shaders\bufferFragment.glsl" />
@@ -154,6 +155,8 @@
     <None Include="..\Shaders\ShadowVertex.glsl" />
     <None Include="..\Shaders\SkyboxFragment.glsl" />
     <None Include="..\Shaders\SkyboxVertex.glsl" />
+    <None Include="..\Shaders\WaterFragment.glsl" />
+    <None Include="..\Shaders\WaterVertex.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Readme.txt" />

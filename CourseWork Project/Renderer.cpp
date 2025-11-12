@@ -28,11 +28,14 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
 		return;
 	}
 	quad = Mesh::GenerateQuad();
+	cone = Mesh::LoadFromMeshFile("Cone.msh");
 	this->SetupDeferred();
 	this->SetupShadow();
 	this->LoadEnvironment();
 	this->LoadSkyBox();
+	this->LoadWater();
 	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
@@ -159,7 +162,22 @@ void Renderer::LoadSkyBox() { //Actual load order is right, left, up, down , fro
 	}
 }
 
+void Renderer::LoadWater() {
+	waterShader = new Shader("waterVertex.glsl", "waterFragment.glsl");
+	if (!waterShader->LoadSuccess()) {
+		return;
+	}
+	waterTex = OGLTexture::TextureFromFile(
+		TEXTUREDIR"waterTex.png");
+	if (!waterTex) {
+		return;
+	}
+	/*Matrix4 seaModelMatrix = Matrix4::Translation(Vector3(0, 32, 0)) *
+		Matrix4::Scale(Vector3(75.0f, 1.0f, 75.0f))*
+		Matrix4::Rotation(-90, Vector3(1, 0, 0));
+	waterData.emplace_back(seaModelMatrix, waterShader);*/
 
+}
 
 
 Renderer::~Renderer(void)	{
@@ -168,6 +186,9 @@ Renderer::~Renderer(void)	{
 
 	delete pointLightShader;
 	delete combineShader;
+	delete shadowShader;
+	delete skyboxShader;
+	delete waterShader;
 	delete sphere;
 	delete quad;
 	glDeleteTextures(1, &bufferColourTex);
@@ -208,18 +229,21 @@ void Renderer::DrawEnvironment(bool shadow) {
 	if (!shadow) {
 		glBindFramebuffer(GL_FRAMEBUFFER, gBufferFBO);
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+		
 	}
 
 	// Removed skybox draw from here so it won't be rendered into the g-buffer.
 	// Skybox will be drawn after combine with the scene depth copied into the default framebuffer.
 
 	DrawNode(&root, shadow);
+	DrawWater(shadow);
 	/*for (Light* l : pointLights) {
 
 		sphere->Draw();
 	}*/
-	if (!shadow){ glBindFramebuffer(GL_FRAMEBUFFER, 0); }
-
+	if (!shadow){ 
+		
+	glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 }
 void Renderer::DrawShadowScene() {
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
@@ -410,6 +434,38 @@ void Renderer::DrawNode(SceneNode* n, bool shadow) {
 		DrawNode(*i, shadow);
 	}
 }
+
+void Renderer::DrawWater(bool shadow) {
+	if (!shadow) {
+	BindShader(waterShader);
+	const Vector3 camPos = camera->GetPosition();
+	glUniform3fv(glGetUniformLocation(waterShader->GetProgram(), "cameraPos"), 1, (float*)&camPos);
+	glUniform1i(glGetUniformLocation(waterShader->GetProgram(), "diffuseTex"), 0);
+	glUniform1i(glGetUniformLocation(waterShader->GetProgram(), "cubeTex"), 2);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, waterTex->GetObjectID());
+
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->GetObjectID());
+	}
+	
+
+	//Want to cover entrie size of the scene at height 32. Go from x,z(0,0) to x,z (75,75)
+
+	modelMatrix = Matrix4::Translation(Vector3(0,32,0)) *
+		Matrix4::Scale(Vector3(75.0f, 1.0f, 75.0f))*
+		Matrix4::Rotation(-90, Vector3(1, 0, 0));
+	UpdateShaderMatrices();
+	quad->Draw();
+
+	modelMatrix = Matrix4::Translation(Vector3(37.5f, 34.5, 29.0)) *
+		Matrix4::Scale(Vector3(5.0f, 3.0f, 5.0f))*
+		Matrix4::Rotation(90, Vector3(1, 0, 0));
+	UpdateShaderMatrices();
+	cone->Draw();
+}
+
 
 void Renderer::GenerateScreenTexture(GLuint& into, bool depth) {
 	glGenTextures(1, &into);

@@ -4,7 +4,7 @@
 #include "../NCLGL/Extra/GLTFLoader.h"
 #include "../NCLGL/SceneNode.h"
 #include "../nclgl/Light.h"
-
+#include "waterStruct.h"
 class Renderer : public OGLRenderer {
 public:
 	Renderer(Window& parent);
@@ -22,6 +22,7 @@ protected:
 
 	//For Lights
 	Mesh* sphere;
+	Mesh* cone;
 	Light* sun;
 
 	vector<Light*> pointLights;
@@ -64,6 +65,14 @@ protected:
 	GLuint pointLightFBO;
 	GLuint lightDiffuseTex;
 	GLuint lightSpecularTex;
+
+	//Water stuff
+	UniqueOGLTexture waterTex;
+	Shader* waterShader;
+	vector<WaterStruct> waterData;
+	void LoadWater();
+	void DrawWater(bool shadow = false);
+
 
 	unsigned int SHADOWSIZE = 2048;
 	Mesh* quad;
