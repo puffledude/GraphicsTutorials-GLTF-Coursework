@@ -62,9 +62,9 @@ void Renderer::DrawStaticScene() {
 	glUniform1i(glGetUniformLocation(staticShader->GetProgram(), "diffuseTex"), 0);
 
 	modelMatrix = Matrix4::Translation({ -1,1.5,0 })
-				/** Matrix4::Rotation(180.0f, Vector3(0, 1, 0))
-				* Matrix4::Rotation(90.0f, Vector3(1, 0, 0))*/
-				* Matrix4::Scale({ 75,75,75 });
+				* Matrix4::Rotation(180.0f, Vector3(0, 1, 0))
+				//* Matrix4::Rotation(90.0f, Vector3(1, 0, 0))
+				* Matrix4::Scale({ 2,2,2 });
 
 	UpdateShaderMatrices();
 
