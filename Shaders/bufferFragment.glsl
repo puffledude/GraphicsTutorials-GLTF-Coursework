@@ -21,6 +21,10 @@ mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.norm
 vec3 normal = texture(normalTex, IN.texCoord).rgb * 2.0 - 1.0;
 normal = normalize(TBN * normalize(normal));
 
+if (texture(diffuseTex, IN.texCoord).a < 0.1){
+	discard;
+}
+
 fragColour[0] = texture(diffuseTex, IN.texCoord);
 fragColour[1] = vec4(normal * 0.5 + 0.5, 1.0);
 }
