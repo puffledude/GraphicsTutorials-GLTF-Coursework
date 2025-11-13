@@ -10,8 +10,9 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
 	camera = new Camera(0.0f, 180.0f, Vector3(-0.5f, 1.5, -3.0f));
 
 	GLTFLoader::Load("../GLTF/CesiumMan/CesiumMan.gltf", animatedScene);
-	GLTFLoader::Load("../GLTF/Tree/Tree.gltf", staticScene);
-
+	GLTFLoader::Load("../GLTF/Campfire/Campfire.gltf", staticScene);
+	std::cout<<"Loaded static scene with "<< staticScene.meshes.size()<<" meshes and "
+		<< staticScene.materials.size() << " materials." << std::endl;
 	if (staticScene.meshes.size() == 0 ||
 		animatedScene.meshes.size() == 0) {
 		return;
@@ -64,7 +65,7 @@ void Renderer::DrawStaticScene() {
 	modelMatrix = Matrix4::Translation({ -1,1.5,0 })
 				* Matrix4::Rotation(180.0f, Vector3(0, 1, 0))
 				//* Matrix4::Rotation(90.0f, Vector3(1, 0, 0))
-				* Matrix4::Scale({ 2,2,2 });
+				* Matrix4::Scale({ 0.3,0.3,0.3 });
 
 	UpdateShaderMatrices();
 

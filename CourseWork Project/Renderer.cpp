@@ -129,6 +129,7 @@ void Renderer::LoadEnvironment() {
 	if (Environment.meshes.size() == 0) {
 		return;
 	}
+	GLTFLoader::Load("../GLTF/Campfire/Campfire.gltf", Campfire);
 	this->root = SceneNode();
 	SceneNode* ground = new SceneNode(&Environment, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for environment
 	ground->SetModelScale(Vector3(75.0f, 75.0f, 75.0f));
@@ -152,6 +153,12 @@ void Renderer::LoadEnvironment() {
 		treeNode->SetModelScale(Vector3(0.1, 0.1, 0.1));
 		ground->AddChild(treeNode);
 	}
+	SceneNode* campfireNode = new SceneNode(&Campfire, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for campfire
+	campfireNode->SetTransform(Matrix4::Translation(Vector3(34.5433, 36.0f, 26.3742)));
+	campfireNode->SetModelScale(Vector3(1.0f, 1.0f, 1.0f));
+	ground->AddChild(campfireNode);
+
+
 	//SceneNode* treeNode = new SceneNode(&Tree, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for trees
 	//treeNode->SetTransform(Matrix4::Translation(Vector3(44.5433, 36.0f, 26.3742)));
 	//treeNode->SetModelScale(Vector3(0.1, 0.1, 0.1));

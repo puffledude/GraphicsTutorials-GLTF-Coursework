@@ -14,9 +14,11 @@ public:
 	void UpdateScene(float dt)	override;
 protected:
 	void DrawNode(SceneNode* n, bool shadow=false);
+	
+	//GLTF Models
 	GLTFScene Environment;
-
 	GLTFScene Tree;
+	GLTFScene Campfire;
 
 	void LoadEnvironment();
 
