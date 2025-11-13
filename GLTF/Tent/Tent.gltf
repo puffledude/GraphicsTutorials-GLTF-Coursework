@@ -8,92 +8,42 @@
 		{
 			"name":"Scene",
 			"nodes":[
-				8
+				4
 			]
 		}
 	],
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"Ropes_Ropes_0"
+			"name":"tent_Mat_0",
+			"translation":[
+				0,
+				3.814697265625e-06,
+				3.814697265625e-06
+			]
 		},
 		{
 			"children":[
 				0
 			],
-			"name":"Ropes",
-			"rotation":[
-				-0.70710688829422,
-				0,
-				0,
-				0.7071066498756409
-			],
-			"scale":[
-				30,
-				29.999998092651367,
-				29.999998092651367
-			]
-		},
-		{
-			"mesh":1,
-			"name":"Sticks_Stick_0"
-		},
-		{
-			"children":[
-				2
-			],
-			"name":"Sticks",
-			"rotation":[
-				-0.70710688829422,
-				0,
-				0,
-				0.7071066498756409
-			],
-			"scale":[
-				30,
-				29.999998092651367,
-				29.999998092651367
-			]
-		},
-		{
-			"mesh":2,
-			"name":"Tent_Tent_0",
-			"scale":[
-				0.30000001192092896,
-				0.30000001192092896,
-				0.30000001192092896
+			"name":"tent",
+			"translation":[
+				-5.820373058319092,
+				-40.821311950683594,
+				54.370704650878906
 			]
 		},
 		{
 			"children":[
-				4
-			],
-			"name":"Tent",
-			"rotation":[
-				-0.70710688829422,
-				0,
-				0,
-				0.7071066498756409
-			],
-			"scale":[
-				100,
-				99.99999237060547,
-				99.99999237060547
-			]
-		},
-		{
-			"children":[
-				1,
-				3,
-				5
+				1
 			],
 			"name":"RootNode"
 		},
 		{
 			"children":[
-				6
+				2
 			],
-			"name":"Tent.fbx",
+			"name":"tent_low_uvfix.fbx",
 			"rotation":[
 				0.70710688829422,
 				0,
@@ -103,7 +53,7 @@
 		},
 		{
 			"children":[
-				7
+				3
 			],
 			"name":"Sketchfab_model",
 			"rotation":[
@@ -117,7 +67,7 @@
 	"materials":[
 		{
 			"doubleSided":true,
-			"name":"Ropes.001",
+			"name":"material",
 			"normalTexture":{
 				"index":0
 			},
@@ -125,87 +75,25 @@
 				"baseColorTexture":{
 					"index":1
 				},
-				"metallicFactor":0,
-				"roughnessFactor":0.8211145401000977
-			}
-		},
-		{
-			"doubleSided":true,
-			"name":"Stick.001",
-			"normalTexture":{
-				"index":2
-			},
-			"pbrMetallicRoughness":{
-				"baseColorTexture":{
-					"index":3
-				},
-				"metallicFactor":0,
-				"roughnessFactor":0.8211145401000977
-			}
-		},
-		{
-			"doubleSided":true,
-			"name":"Tent.001",
-			"normalTexture":{
-				"index":4
-			},
-			"pbrMetallicRoughness":{
-				"baseColorTexture":{
-					"index":5
-				},
-				"metallicFactor":0,
 				"metallicRoughnessTexture":{
-					"index":6
+					"index":2
 				}
 			}
 		}
 	],
 	"meshes":[
 		{
-			"name":"Ropes_Ropes_0.001",
+			"name":"tent_Mat_0",
 			"primitives":[
 				{
 					"attributes":{
 						"POSITION":0,
 						"NORMAL":1,
 						"TEXCOORD_0":2,
-						"TEXCOORD_1":3,
-						"TANGENT":4
+						"TANGENT":3
 					},
-					"indices":5,
+					"indices":4,
 					"material":0
-				}
-			]
-		},
-		{
-			"name":"Sticks_Stick_0.001",
-			"primitives":[
-				{
-					"attributes":{
-						"POSITION":6,
-						"NORMAL":7,
-						"TEXCOORD_0":8,
-						"TEXCOORD_1":9,
-						"TANGENT":10
-					},
-					"indices":11,
-					"material":1
-				}
-			]
-		},
-		{
-			"name":"Tent_Tent_0.001",
-			"primitives":[
-				{
-					"attributes":{
-						"POSITION":12,
-						"NORMAL":13,
-						"TEXCOORD_0":14,
-						"TEXCOORD_1":15,
-						"TANGENT":16
-					},
-					"indices":17,
-					"material":2
 				}
 			]
 		}
@@ -222,308 +110,96 @@
 		{
 			"sampler":0,
 			"source":2
-		},
-		{
-			"sampler":0,
-			"source":3
-		},
-		{
-			"sampler":0,
-			"source":4
-		},
-		{
-			"sampler":0,
-			"source":5
-		},
-		{
-			"sampler":0,
-			"source":6
 		}
 	],
 	"images":[
 		{
 			"mimeType":"image/png",
-			"name":"Image_3",
-			"uri":"Image_3.png"
+			"name":"Image_2",
+			"uri":"Image_2.png"
 		},
 		{
-			"mimeType":"image/jpeg",
-			"name":"Image_2",
-			"uri":"Image_2.jpg"
+			"mimeType":"image/png",
+			"name":"Image_0",
+			"uri":"Image_0.png"
 		},
 		{
 			"mimeType":"image/png",
 			"name":"Image_1",
 			"uri":"Image_1.png"
-		},
-		{
-			"mimeType":"image/jpeg",
-			"name":"Image_0",
-			"uri":"Image_0.jpg"
-		},
-		{
-			"mimeType":"image/png",
-			"name":"Image_6",
-			"uri":"Image_6.png"
-		},
-		{
-			"mimeType":"image/jpeg",
-			"name":"Image_4",
-			"uri":"Image_4.jpg"
-		},
-		{
-			"mimeType":"image/png",
-			"name":"Image_5",
-			"uri":"Image_5.png"
 		}
 	],
 	"accessors":[
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":2651,
+			"count":3125,
 			"max":[
-				1.329103708267212,
-				1.1235488653182983,
-				2.0481956005096436
+				100.97991180419922,
+				135.5931396484375,
+				60.07636642456055
 			],
 			"min":[
-				-1.329103708267212,
-				-1.0905969142913818,
-				0.43712717294692993
+				-83.46479797363281,
+				-43.31768035888672,
+				-187.91856384277344
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":2651,
+			"count":3125,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":2651,
+			"count":3125,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5126,
-			"count":2651,
-			"type":"VEC2"
+			"count":3125,
+			"type":"VEC4"
 		},
 		{
 			"bufferView":4,
-			"componentType":5126,
-			"count":2651,
-			"type":"VEC4"
-		},
-		{
-			"bufferView":5,
 			"componentType":5123,
-			"count":8136,
-			"type":"SCALAR"
-		},
-		{
-			"bufferView":6,
-			"componentType":5126,
-			"count":1892,
-			"max":[
-				2.0985491275787354,
-				1.124403953552246,
-				2.2653889656066895
-			],
-			"min":[
-				-2.085825204849243,
-				-1.3077694177627563,
-				-0.002738475799560547
-			],
-			"type":"VEC3"
-		},
-		{
-			"bufferView":7,
-			"componentType":5126,
-			"count":1892,
-			"type":"VEC3"
-		},
-		{
-			"bufferView":8,
-			"componentType":5126,
-			"count":1892,
-			"type":"VEC2"
-		},
-		{
-			"bufferView":9,
-			"componentType":5126,
-			"count":1892,
-			"type":"VEC2"
-		},
-		{
-			"bufferView":10,
-			"componentType":5126,
-			"count":1892,
-			"type":"VEC4"
-		},
-		{
-			"bufferView":11,
-			"componentType":5123,
-			"count":9624,
-			"type":"SCALAR"
-		},
-		{
-			"bufferView":12,
-			"componentType":5126,
-			"count":1714,
-			"max":[
-				1.5109626054763794,
-				1.3636044263839722,
-				2.0405397415161133
-			],
-			"min":[
-				-1.473142385482788,
-				-1.4748376607894897,
-				-0.009161841124296188
-			],
-			"type":"VEC3"
-		},
-		{
-			"bufferView":13,
-			"componentType":5126,
-			"count":1714,
-			"type":"VEC3"
-		},
-		{
-			"bufferView":14,
-			"componentType":5126,
-			"count":1714,
-			"type":"VEC2"
-		},
-		{
-			"bufferView":15,
-			"componentType":5126,
-			"count":1714,
-			"type":"VEC2"
-		},
-		{
-			"bufferView":16,
-			"componentType":5126,
-			"count":1714,
-			"type":"VEC4"
-		},
-		{
-			"bufferView":17,
-			"componentType":5123,
-			"count":9843,
+			"count":15570,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":31812,
+			"byteLength":37500,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":31812,
-			"byteOffset":31812,
+			"byteLength":37500,
+			"byteOffset":37500,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":21208,
-			"byteOffset":63624,
+			"byteLength":25000,
+			"byteOffset":75000,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":21208,
-			"byteOffset":84832,
+			"byteLength":50000,
+			"byteOffset":100000,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":42416,
-			"byteOffset":106040,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":16272,
-			"byteOffset":148456,
-			"target":34963
-		},
-		{
-			"buffer":0,
-			"byteLength":22704,
-			"byteOffset":164728,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":22704,
-			"byteOffset":187432,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":15136,
-			"byteOffset":210136,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":15136,
-			"byteOffset":225272,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":30272,
-			"byteOffset":240408,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":19248,
-			"byteOffset":270680,
-			"target":34963
-		},
-		{
-			"buffer":0,
-			"byteLength":20568,
-			"byteOffset":289928,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":20568,
-			"byteOffset":310496,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":13712,
-			"byteOffset":331064,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":13712,
-			"byteOffset":344776,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":27424,
-			"byteOffset":358488,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":19686,
-			"byteOffset":385912,
+			"byteLength":31140,
+			"byteOffset":150000,
 			"target":34963
 		}
 	],
@@ -535,7 +211,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":405600,
+			"byteLength":181140,
 			"uri":"Tent.bin"
 		}
 	]

@@ -10,7 +10,7 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
 	camera = new Camera(0.0f, 180.0f, Vector3(-0.5f, 1.5, -3.0f));
 
 	GLTFLoader::Load("../GLTF/CesiumMan/CesiumMan.gltf", animatedScene);
-	GLTFLoader::Load("../GLTF/Campfire/Campfire.gltf", staticScene);
+	GLTFLoader::Load("../GLTF/Tent/Tent.gltf", staticScene);
 	std::cout<<"Loaded static scene with "<< staticScene.meshes.size()<<" meshes and "
 		<< staticScene.materials.size() << " materials." << std::endl;
 	if (staticScene.meshes.size() == 0 ||

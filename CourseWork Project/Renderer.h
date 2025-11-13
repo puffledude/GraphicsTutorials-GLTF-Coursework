@@ -19,6 +19,7 @@ protected:
 	GLTFScene Environment;
 	GLTFScene Tree;
 	GLTFScene Campfire;
+	GLTFScene Tent;
 
 	void LoadEnvironment();
 
@@ -26,7 +27,7 @@ protected:
 	Mesh* sphere;
 	Mesh* cone;
 	Mesh* quad;
-	Mesh* tree;
+	//Mesh* tree;
 
 	//Lights
 	Light* sun;

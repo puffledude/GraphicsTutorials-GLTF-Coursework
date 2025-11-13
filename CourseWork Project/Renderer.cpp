@@ -130,6 +130,13 @@ void Renderer::LoadEnvironment() {
 		return;
 	}
 	GLTFLoader::Load("../GLTF/Campfire/Campfire.gltf", Campfire);
+	if (Campfire.meshes.size() == 0) {
+		return;
+	}
+	GLTFLoader::Load("../GLTF/Tent/Tent.gltf", Tent);
+	if (Tent.meshes.size() == 0) {
+		return;
+	}
 	this->root = SceneNode();
 	SceneNode* ground = new SceneNode(&Environment, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for environment
 	ground->SetModelScale(Vector3(75.0f, 75.0f, 75.0f));
@@ -158,11 +165,11 @@ void Renderer::LoadEnvironment() {
 	campfireNode->SetModelScale(Vector3(0.0003f, 0.0003f, 0.0003f));
 	ground->AddChild(campfireNode);
 
+	SceneNode* tentNode = new SceneNode(&Tent, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for tent
+	tentNode->SetTransform(Matrix4::Translation(Vector3(30.5615, 38.3325, 35.5342)) * Matrix4::Rotation(-90,Vector3(0,1,0)));
+	tentNode->SetModelScale(Vector3(0.01f, 0.01f, 0.01f));
+	ground->AddChild(tentNode);
 
-	//SceneNode* treeNode = new SceneNode(&Tree, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for trees
-	//treeNode->SetTransform(Matrix4::Translation(Vector3(44.5433, 36.0f, 26.3742)));
-	//treeNode->SetModelScale(Vector3(0.1, 0.1, 0.1));
-	//ground->AddChild(treeNode);
 	sun = new Light(Vector3(23.6744, 58.4126, 3.97436), Vector4(1, 1, 1, 1), 100.0f);
 	Light* campFireLight = new Light(Vector3(27.4, 38.9918, 34.3), Vector4(0.5, 0.5, 0, 1), 5.0f);
 
