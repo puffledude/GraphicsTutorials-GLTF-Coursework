@@ -154,8 +154,8 @@ void Renderer::LoadEnvironment() {
 		ground->AddChild(treeNode);
 	}
 	SceneNode* campfireNode = new SceneNode(&Campfire, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for campfire
-	campfireNode->SetTransform(Matrix4::Translation(Vector3(34.5433, 36.0f, 26.3742)));
-	campfireNode->SetModelScale(Vector3(1.0f, 1.0f, 1.0f));
+	campfireNode->SetTransform(Matrix4::Translation(Vector3(28.9073, 37.9502, 35.55)) * Matrix4::Rotation(90,Vector3(-90,0,0)));
+	campfireNode->SetModelScale(Vector3(0.0003f, 0.0003f, 0.0003f));
 	ground->AddChild(campfireNode);
 
 
@@ -164,10 +164,11 @@ void Renderer::LoadEnvironment() {
 	//treeNode->SetModelScale(Vector3(0.1, 0.1, 0.1));
 	//ground->AddChild(treeNode);
 	sun = new Light(Vector3(23.6744, 58.4126, 3.97436), Vector4(1, 1, 1, 1), 100.0f);
-	Light* pointLight1 = new Light(Vector3(30.0f, 40.0f, 30.0f), Vector4(0.5, 0.5, 0, 1), 15.0f);
+	Light* campFireLight = new Light(Vector3(27.4, 38.9918, 34.3), Vector4(0.5, 0.5, 0, 1), 5.0f);
 
 	pointLights.push_back(sun);
-	pointLights.push_back(pointLight1);
+	pointLights.push_back(campFireLight);
+	centre = new Light(Vector3(36.8914, 30.1335, 34.4191), Vector4(0, 0, 0, 0), 0);
 }
 void Renderer::UpdateScene(float dt) {
 	camera->UpdateCamera(dt);
@@ -287,7 +288,7 @@ void Renderer::DrawShadowScene() {
 	BindShader(shadowShader);
 
 	viewMatrix = Matrix4::BuildViewMatrix(sun->GetPosition(),
-		Vector3(0, 0, 0));
+		centre->GetPosition());
 	projMatrix = Matrix4::Perspective(1.0f, 1000, 1.0f, 45.0f);
 	shadowMatrix = projMatrix * viewMatrix;
 

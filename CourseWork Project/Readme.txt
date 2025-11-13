@@ -4,5 +4,9 @@ Terraain created by me using the community version of Gaea2.
 Code is a mix of my own and taken from the opengl Tutorials.
 
 Tree model taken from https://sketchfab.com/3d-models/trees-low-poly-1d2dcca2ccb1496c85b7cc5789a2a261
-Trees Low Poly by Igor_k used under creative commons Attribution licence.
+Trees Low Poly by Igor_k (uploaded 17.01.21) used under creative commons Attribution licence.
+
+Campfire model taken from https://sketchfab.com/3d-models/bonfire-6f61e3ee52594ba0a416b2eb30d40efe
+Bonfire by Toxagrom (uploaded 23.12.23) used under creative commons Attribution licence.
+
 

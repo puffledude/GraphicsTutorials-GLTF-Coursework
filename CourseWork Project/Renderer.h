@@ -32,6 +32,8 @@ protected:
 	Light* sun;
 	vector<Light*> pointLights;
 
+	//Centre point
+	Light* centre;
 
 	void DrawEnvironment(bool shadow=false);
 

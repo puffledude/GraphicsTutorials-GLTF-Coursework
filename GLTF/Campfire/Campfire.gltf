@@ -8,52 +8,79 @@
 		{
 			"name":"Scene",
 			"nodes":[
-				6
+				5
 			]
 		}
 	],
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"campfire_model:subtool14_campfire_model6_stone2_0"
-		},
-		{
-			"mesh":1,
-			"name":"campfire_model:subtool14_campfire_model6_stone_0"
-		},
-		{
-			"mesh":2,
-			"name":"campfire_model:subtool14_campfire_model6_wood_0"
-		},
-		{
-			"children":[
+			"name":"Koster_low_Koster1_0",
+			"translation":[
 				0,
-				1,
-				2
-			],
-			"name":"campfire_model:subtool14"
+				-6.619677151320502e-06,
+				4.75678825750947e-06
+			]
 		},
 		{
 			"children":[
-				3
+				0
+			],
+			"name":"Object_4",
+			"translation":[
+				3097.15234375,
+				844.396728515625,
+				123.17578887939453
+			]
+		},
+		{
+			"children":[
+				1
+			],
+			"name":"Koster_low",
+			"rotation":[
+				-0.70710688829422,
+				0,
+				0,
+				0.7071066498756409
+			],
+			"scale":[
+				0.1484520137310028,
+				0.148452028632164,
+				0.148452028632164
+			],
+			"translation":[
+				-5389.14111328125,
+				-10.971649169921875,
+				512.0758056640625
+			]
+		},
+		{
+			"children":[
+				2
 			],
 			"name":"RootNode"
 		},
 		{
 			"children":[
-				4
+				3
 			],
-			"name":"8e156acce6294511aac49a657a75e889.fbx",
+			"name":"804b7c00de7044d4b8cdab7d4b298189.fbx",
 			"rotation":[
 				0.70710688829422,
 				0,
 				0,
 				0.7071066498756409
+			],
+			"scale":[
+				0.0010000000474974513,
+				0.0010000001639127731,
+				0.0010000001639127731
 			]
 		},
 		{
 			"children":[
-				5
+				4
 			],
 			"name":"Sketchfab_model",
 			"rotation":[
@@ -67,7 +94,7 @@
 	"materials":[
 		{
 			"doubleSided":true,
-			"name":"campfire_model6_stone2",
+			"name":"Koster1",
 			"normalTexture":{
 				"index":0
 			},
@@ -78,59 +105,15 @@
 				"baseColorTexture":{
 					"index":2
 				},
-				"metallicFactor":0.22016607224941254,
 				"metallicRoughnessTexture":{
 					"index":1
-				}
-			}
-		},
-		{
-			"doubleSided":true,
-			"name":"campfire_model6_stone",
-			"normalTexture":{
-				"index":3
-			},
-			"pbrMetallicRoughness":{
-				"baseColorTexture":{
-					"index":4
-				},
-				"metallicFactor":0.23230478167533875,
-				"metallicRoughnessTexture":{
-					"index":5
-				}
-			}
-		},
-		{
-			"doubleSided":true,
-			"emissiveFactor":[
-				1,
-				1,
-				1
-			],
-			"emissiveTexture":{
-				"index":6
-			},
-			"name":"campfire_model6_wood",
-			"normalTexture":{
-				"index":7
-			},
-			"occlusionTexture":{
-				"index":8
-			},
-			"pbrMetallicRoughness":{
-				"baseColorTexture":{
-					"index":9
-				},
-				"metallicFactor":0,
-				"metallicRoughnessTexture":{
-					"index":8
 				}
 			}
 		}
 	],
 	"meshes":[
 		{
-			"name":"campfire_model:subtool14_campfire_model6_stone2_0",
+			"name":"Koster_low_Koster1_0",
 			"primitives":[
 				{
 					"attributes":{
@@ -141,36 +124,6 @@
 					},
 					"indices":4,
 					"material":0
-				}
-			]
-		},
-		{
-			"name":"campfire_model:subtool14_campfire_model6_stone_0",
-			"primitives":[
-				{
-					"attributes":{
-						"POSITION":5,
-						"NORMAL":6,
-						"TEXCOORD_0":7,
-						"TANGENT":8
-					},
-					"indices":9,
-					"material":1
-				}
-			]
-		},
-		{
-			"name":"campfire_model:subtool14_campfire_model6_wood_0",
-			"primitives":[
-				{
-					"attributes":{
-						"POSITION":10,
-						"NORMAL":11,
-						"TEXCOORD_0":12,
-						"TANGENT":13
-					},
-					"indices":14,
-					"material":2
 				}
 			]
 		}
@@ -187,299 +140,96 @@
 		{
 			"sampler":0,
 			"source":2
-		},
-		{
-			"sampler":0,
-			"source":3
-		},
-		{
-			"sampler":0,
-			"source":4
-		},
-		{
-			"sampler":0,
-			"source":5
-		},
-		{
-			"sampler":0,
-			"source":6
-		},
-		{
-			"sampler":0,
-			"source":7
-		},
-		{
-			"sampler":0,
-			"source":8
-		},
-		{
-			"sampler":0,
-			"source":9
 		}
 	],
 	"images":[
 		{
 			"mimeType":"image/png",
-			"name":"campfire_model6_stone2_normal",
-			"uri":"campfire_model6_stone2_normal.png"
+			"name":"Image_2",
+			"uri":"Image_2.png"
 		},
 		{
 			"mimeType":"image/png",
-			"name":"campfire_model6_stone2_metallicRoughness",
-			"uri":"campfire_model6_stone2_metallicRoughness.png"
+			"name":"Image_1",
+			"uri":"Image_1.png"
 		},
 		{
 			"mimeType":"image/png",
-			"name":"campfire_model6_stone2_baseColor",
-			"uri":"campfire_model6_stone2_baseColor.png"
-		},
-		{
-			"mimeType":"image/png",
-			"name":"campfire_model6_stone_normal",
-			"uri":"campfire_model6_stone_normal.png"
-		},
-		{
-			"mimeType":"image/png",
-			"name":"campfire_model6_stone_baseColor",
-			"uri":"campfire_model6_stone_baseColor.png"
-		},
-		{
-			"mimeType":"image/png",
-			"name":"campfire_model6_stone_metallicRoughness",
-			"uri":"campfire_model6_stone_metallicRoughness.png"
-		},
-		{
-			"mimeType":"image/png",
-			"name":"campfire_model6_wood_emissive",
-			"uri":"campfire_model6_wood_emissive.png"
-		},
-		{
-			"mimeType":"image/png",
-			"name":"campfire_model6_wood_normal",
-			"uri":"campfire_model6_wood_normal.png"
-		},
-		{
-			"mimeType":"image/png",
-			"name":"campfire_model6_wood_metallicRoughness",
-			"uri":"campfire_model6_wood_metallicRoughness.png"
-		},
-		{
-			"mimeType":"image/png",
-			"name":"campfire_model6_wood_baseColor",
-			"uri":"campfire_model6_wood_baseColor.png"
+			"name":"Image_0",
+			"uri":"Image_0.png"
 		}
 	],
 	"accessors":[
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":1470,
+			"count":1184,
 			"max":[
-				3.940741539001465,
-				2.396153450012207,
-				4.408881187438965
+				1388.7205810546875,
+				3545.71142578125,
+				3859.826171875
 			],
 			"min":[
-				-4.078296184539795,
-				-0.14906930923461914,
-				-3.61665415763855
+				-7583.0283203125,
+				-5234.505859375,
+				-889.9371337890625
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":1470,
+			"count":1184,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":1470,
+			"count":1184,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5126,
-			"count":1470,
+			"count":1184,
 			"type":"VEC4"
 		},
 		{
 			"bufferView":4,
 			"componentType":5123,
-			"count":1470,
-			"type":"SCALAR"
-		},
-		{
-			"bufferView":5,
-			"componentType":5126,
-			"count":1830,
-			"max":[
-				4.833526134490967,
-				3.6911497116088867,
-				2.7277672290802
-			],
-			"min":[
-				-3.5341217517852783,
-				-0.1439189910888672,
-				-6.050844192504883
-			],
-			"type":"VEC3"
-		},
-		{
-			"bufferView":6,
-			"componentType":5126,
-			"count":1830,
-			"type":"VEC3"
-		},
-		{
-			"bufferView":7,
-			"componentType":5126,
-			"count":1830,
-			"type":"VEC2"
-		},
-		{
-			"bufferView":8,
-			"componentType":5126,
-			"count":1830,
-			"type":"VEC4"
-		},
-		{
-			"bufferView":9,
-			"componentType":5123,
-			"count":1830,
-			"type":"SCALAR"
-		},
-		{
-			"bufferView":10,
-			"componentType":5126,
-			"count":838,
-			"max":[
-				2.9557993412017822,
-				4.714932441711426,
-				2.9668049812316895
-			],
-			"min":[
-				-2.010793447494507,
-				-0.04477357864379883,
-				-2.7114508152008057
-			],
-			"type":"VEC3"
-		},
-		{
-			"bufferView":11,
-			"componentType":5126,
-			"count":838,
-			"type":"VEC3"
-		},
-		{
-			"bufferView":12,
-			"componentType":5126,
-			"count":838,
-			"type":"VEC2"
-		},
-		{
-			"bufferView":13,
-			"componentType":5126,
-			"count":838,
-			"type":"VEC4"
-		},
-		{
-			"bufferView":14,
-			"componentType":5123,
-			"count":1116,
+			"count":5430,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":17640,
+			"byteLength":14208,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":17640,
-			"byteOffset":17640,
+			"byteLength":14208,
+			"byteOffset":14208,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":11760,
-			"byteOffset":35280,
+			"byteLength":9472,
+			"byteOffset":28416,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":23520,
-			"byteOffset":47040,
+			"byteLength":18944,
+			"byteOffset":37888,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":2940,
-			"byteOffset":70560,
-			"target":34963
-		},
-		{
-			"buffer":0,
-			"byteLength":21960,
-			"byteOffset":73500,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":21960,
-			"byteOffset":95460,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":14640,
-			"byteOffset":117420,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":29280,
-			"byteOffset":132060,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":3660,
-			"byteOffset":161340,
-			"target":34963
-		},
-		{
-			"buffer":0,
-			"byteLength":10056,
-			"byteOffset":165000,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":10056,
-			"byteOffset":175056,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":6704,
-			"byteOffset":185112,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":13408,
-			"byteOffset":191816,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":2232,
-			"byteOffset":205224,
+			"byteLength":10860,
+			"byteOffset":56832,
 			"target":34963
 		}
 	],
@@ -491,7 +241,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":207456,
+			"byteLength":67692,
 			"uri":"Campfire.bin"
 		}
 	]
