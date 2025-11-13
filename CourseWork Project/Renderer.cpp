@@ -134,6 +134,13 @@ void Renderer::LoadEnvironment() {
 
 	pointLights.push_back(sun);
 	pointLights.push_back(pointLight1);
+
+	tree = Mesh::LoadFromMeshFile("Tree.msh");
+	MeshMaterial* treeMat = new MeshMaterial("Tree.mat");
+	SceneNode* treeNode = new SceneNode(tree, treeMat, nullptr , Vector4(1, 1, 1, 1), environmentShader);
+	treeNode->SetTransform(Matrix4::Translation(Vector3(1, 30, 1)));
+	treeNode->SetModelScale(Vector3(1, 1, 1));
+	ground->AddChild(treeNode);
 }
 void Renderer::UpdateScene(float dt) {
 	camera->UpdateCamera(dt);
@@ -399,13 +406,6 @@ void Renderer::DrawNode(SceneNode* n, bool shadow) {
 
 		modelMatrix = n->GetWorldTransform() * Matrix4::Scale(n->GetModelScale());
 		UpdateShaderMatrices();
-
-		// Set per-node uniforms only when the node's shader is bound (non-shadow).
-		if (!shadow && nodeShader) {
-			Vector4 nodeCol = n->GetColour();
-			glUniform4fv(glGetUniformLocation(nodeShader->GetProgram(), "nodeColour"), 1, (float*)&nodeCol);
-			glUniform1i(glGetUniformLocation(nodeShader->GetProgram(), "useTexture"), 0);
-		}
 
 		n->Draw(*this, shadow);
 	}

@@ -35,7 +35,8 @@ MeshMaterial::MeshMaterial(const std::string& filename) {
 		string name;
 		int count;
 
-		std::getline(file, name);
+		//std::getline(file, name);
+		file >> name;
 		file >> count;
 
 		for (int j = 0; j < count; ++j) {

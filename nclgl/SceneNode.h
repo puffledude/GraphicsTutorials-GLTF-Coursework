@@ -5,6 +5,8 @@
 #include "Vector3.h"
 #include "Vector4.h"
 #include "Mesh.h"
+#include "MeshMaterial.h"
+#include "MeshAnimation.h"
 #include <vector>
 
 
@@ -12,10 +14,15 @@ class SceneNode{
 
 public:
 	SceneNode();
-	SceneNode(Mesh* m,Vector4 colour = Vector4(1.0f, 1.0f, 1.0f, 1.0f), Shader* shader=nullptr);
+	SceneNode(Mesh* m, MeshMaterial* mat = nullptr, MeshAnimation* anim = nullptr,  Vector4 colour = Vector4(1.0f, 1.0f, 1.0f, 1.0f), Shader* shader=nullptr);
 	SceneNode(GLTFScene* gltfScene, Vector4 colour = Vector4(1.0f, 1.0f, 1.0f, 1.0f), Shader* shader=nullptr);
 	SceneNode(HeightMap* heightMap, Vector4 colour = Vector4(1.0f, 1.0f, 1.0f, 1.0f), Shader* shader = nullptr);
 	~SceneNode(void);
+
+	SceneNode(const SceneNode&) = delete;
+	SceneNode& operator=(const SceneNode&) = delete;
+	SceneNode(SceneNode&&) noexcept = default;
+	SceneNode& operator=(SceneNode&&) noexcept = default;
 
 	void SetTransform(const Matrix4& matrix) {
 		transform = matrix;
@@ -122,7 +129,12 @@ protected:
 
 	SceneNode* parent;
 	Mesh* mesh;
-	
+	MeshMaterial* material;
+	MeshAnimation* animation;
+	vector<UniqueOGLTexture>materialTextures;
+	float frameTime;
+	int currentFrame=0;
+
 	GLTFScene* gltfScene;
 	HeightMap* heightMap;
 	Shader* shader;

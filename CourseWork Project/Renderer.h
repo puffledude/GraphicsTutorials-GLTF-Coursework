@@ -16,15 +16,16 @@ protected:
 	void DrawNode(SceneNode* n, bool shadow=false);
 	GLTFScene Environment;
 
-	GLTFScene Tree;
-
 	void LoadEnvironment();
 
-	//For Lights
+	//Meshes
 	Mesh* sphere;
 	Mesh* cone;
-	Light* sun;
+	Mesh* quad;
+	Mesh* tree;
 
+	//Lights
+	Light* sun;
 	vector<Light*> pointLights;
 
 
@@ -75,7 +76,7 @@ protected:
 
 
 	unsigned int SHADOWSIZE = 2048;
-	Mesh* quad;
+	
 
 	SceneNode root;
 	Camera* camera;
