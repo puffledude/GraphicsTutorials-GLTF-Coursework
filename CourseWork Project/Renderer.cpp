@@ -168,13 +168,6 @@ void Renderer::LoadEnvironment() {
 
 	pointLights.push_back(sun);
 	pointLights.push_back(pointLight1);
-
-	tree = Mesh::LoadFromMeshFile("Tree.msh");
-	MeshMaterial* treeMat = new MeshMaterial("Tree.mat");
-	SceneNode* treeNode = new SceneNode(tree, treeMat, nullptr , Vector4(1, 1, 1, 1), environmentShader);
-	treeNode->SetTransform(Matrix4::Translation(Vector3(1, 30, 1)));
-	treeNode->SetModelScale(Vector3(1, 1, 1));
-	ground->AddChild(treeNode);
 }
 void Renderer::UpdateScene(float dt) {
 	camera->UpdateCamera(dt);
