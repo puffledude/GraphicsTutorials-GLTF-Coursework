@@ -135,12 +135,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Emitter.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="SunShaderFragment.glsl" />
     <ClCompile Include="SunShaderVertex.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Emitter.h" />
+    <ClInclude Include="particle.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="waterStruct.h" />
   </ItemGroup>

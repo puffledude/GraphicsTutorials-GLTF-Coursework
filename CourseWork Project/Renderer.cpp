@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "../nclgl/Light.h"
 #include "../nclgl/Extra/GLTFLoader.h"
+#include "particle.h"
 
 /*
 * Finish deferred lighting. Move sun using arrow keys.
@@ -140,6 +141,7 @@ void Renderer::LoadEnvironment() {
 	this->root = SceneNode();
 	SceneNode* ground = new SceneNode(&Environment, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for environment
 	ground->SetModelScale(Vector3(75.0f, 75.0f, 75.0f));
+	ground->SetBoundingRadius(1000.0f);
 	root.AddChild(ground);
 	Vector3 treePositions[] = {
 		Vector3(44.5433, 36.0f, 26.3742),
@@ -158,16 +160,19 @@ void Renderer::LoadEnvironment() {
 		SceneNode* treeNode = new SceneNode(&Tree, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for trees
 		treeNode->SetTransform(Matrix4::Translation(pos));
 		treeNode->SetModelScale(Vector3(0.1, 0.1, 0.1));
+		treeNode->SetBoundingRadius(7.0f);
 		ground->AddChild(treeNode);
 	}
 	SceneNode* campfireNode = new SceneNode(&Campfire, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for campfire
 	campfireNode->SetTransform(Matrix4::Translation(Vector3(28.9073, 37.9502, 35.55)) * Matrix4::Rotation(90,Vector3(-90,0,0)));
 	campfireNode->SetModelScale(Vector3(0.0003f, 0.0003f, 0.0003f));
+	campfireNode->SetBoundingRadius(3.0f);
 	ground->AddChild(campfireNode);
 
 	SceneNode* tentNode = new SceneNode(&Tent, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for tent
 	tentNode->SetTransform(Matrix4::Translation(Vector3(30.5615, 38.3325, 35.5342)) * Matrix4::Rotation(-90,Vector3(0,1,0)));
 	tentNode->SetModelScale(Vector3(0.01f, 0.01f, 0.01f));
+	tentNode->SetBoundingRadius(5.0f);
 	ground->AddChild(tentNode);
 
 	sun = new Light(Vector3(23.6744, 58.4126, 3.97436), Vector4(1, 1, 1, 1), 100.0f);
@@ -471,6 +476,7 @@ void Renderer::DrawNode(SceneNode* n, bool shadow) {
 }
 
 void Renderer::DrawWater(bool shadow) {
+	glDisable(GL_BLEND);
 	if (!shadow) {
 	BindShader(waterShader);
 	const Vector3 camPos = camera->GetPosition();
@@ -499,6 +505,7 @@ void Renderer::DrawWater(bool shadow) {
 		Matrix4::Rotation(90, Vector3(1, 0, 0));
 	UpdateShaderMatrices();
 	cone->Draw();
+	glEnable(GL_BLEND);
 }
 
 

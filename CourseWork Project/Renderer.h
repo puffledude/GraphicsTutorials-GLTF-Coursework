@@ -5,6 +5,7 @@
 #include "../NCLGL/SceneNode.h"
 #include "../nclgl/Light.h"
 #include "waterStruct.h"
+#include "particle.h"
 class Renderer : public OGLRenderer {
 public:
 	Renderer(Window& parent);
