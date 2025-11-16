@@ -50,7 +50,7 @@ void Emitter::Update(float dt) {
 		// subtract the emitted fraction of time
 		emitTimer -= (float)toEmit / emitRate;
 	}
-	for (int i = 0; i < toEmit; i++) {
+	for (int i = 0; i < toEmit; i++) { //Refresh dead particles here
 		if (aliveCount >= maxParticles) {
 			break; // No more room for new particles
 		}
@@ -81,7 +81,7 @@ void Emitter::Update(float dt) {
 	}
 
 	
-	updateInstanceData();
+	UpdateInstanceData();
 }
 
 void Emitter::Emit() {
@@ -100,7 +100,7 @@ std::vector<InstanceAtributes> Emitter::GetAttributeData()const {
 	return attribs;
 }
 
-void Emitter::updateInstanceData() {
+void Emitter::UpdateInstanceData() {
 	//Need to either make this return or inject straight into the mesh object.
 	//Then all I need is to do drawing maybe and then shader writing.
 

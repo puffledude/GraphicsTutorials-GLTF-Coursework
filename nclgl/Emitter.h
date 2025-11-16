@@ -3,6 +3,7 @@
 #include "../nclgl/Vector3.h"
 #include "../nclgl/Vector4.h"
 #include "../nclgl/extra/OGLTexture.h"
+#include <random>
 #include <vector>
 
 class Emitter
@@ -31,7 +32,8 @@ public:
 
 
 protected:
-	void updateInstanceData();
+	void UpdateInstanceData();
+	Vector3 GetRandomDirection(std::mt19937& mt);
 	std::vector<InstanceAtributes> GetAttributeData() const;
 	Mesh* particleMesh;
 	Vector4 particleColour;
