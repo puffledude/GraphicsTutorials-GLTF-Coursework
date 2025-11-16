@@ -42,7 +42,7 @@ Emitter::Emitter(Vector3 position, unsigned int amount, Vector4 colour, Mesh* sh
 void Emitter::Update(float dt) {
 
 	std::mt19937 mt((std::random_device())());
-	std::uniform_real_distribution<float> velDist(0.0f, 3.0f);
+	std::uniform_real_distribution<float> velDist(0.0f, 4.0f);
 	std::uniform_real_distribution<float> lifeDist(0.1f, 0.5f);
 	emitTimer += dt;
 	int toEmit = (int)floor(emitRate * emitTimer);
@@ -57,7 +57,7 @@ void Emitter::Update(float dt) {
 
 		Particle& p = particles[aliveCount++];
 		p.position = position; // Start at emitter position
-		p.direction = Vector3(0, 1, 0);
+		p.direction = GetRandomDirection(mt);
 		p.velocity = velDist(mt);
 		p.life = lifeDist(mt);
 		p.startLife = p.life;
@@ -87,7 +87,6 @@ void Emitter::Update(float dt) {
 void Emitter::Emit() {
 	//glUseProgram(shader->GetProgram());
 	particleMesh->DrawInstances(aliveCount);
-
 }
 
 
@@ -129,4 +128,18 @@ void Emitter::UpdateInstanceData() {
 	glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
 	glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(InstanceData), instanceData.data(), GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+Vector3 Emitter::GetRandomDirection(std::mt19937& mt) {
+	//std::uniform_real_distribution<float> dist(0, 1.0f);
+	std::uniform_real_distribution<float> dist(-20.0f, 20.0f);
+	Vector3 dir = Vector3(0.0f, 1.0f, 0.0f);
+	dir = Matrix4::Rotation(dist(mt), Vector3(1.0f, 0.0f, 0.0f)) * Matrix4::Rotation(dist(mt), Vector3(0,0,1))* dir;
+	dir.Normalise();
+	/*Vector3 dir;
+	dir.x = dist(mt);
+	dir.y = dist(mt);
+	dir.z = dist(mt);
+	dir.Normalise();*/
+	return dir;
 }
