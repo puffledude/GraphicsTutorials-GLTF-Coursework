@@ -219,11 +219,6 @@ void Renderer::LoadWater() {
 	if (!waterTex) {
 		return;
 	}
-	/*Matrix4 seaModelMatrix = Matrix4::Translation(Vector3(0, 32, 0)) *
-		Matrix4::Scale(Vector3(75.0f, 1.0f, 75.0f))*
-		Matrix4::Rotation(-90, Vector3(1, 0, 0));
-	waterData.emplace_back(seaModelMatrix, waterShader);*/
-
 }
 
 

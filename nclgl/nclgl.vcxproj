@@ -22,6 +22,7 @@
     <ClCompile Include="..\Third Party\glad\glad.c" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ComputeShader.cpp" />
+    <ClCompile Include="Emitter.cpp" />
     <ClCompile Include="Extra\GLTFLoader.cpp" />
     <ClCompile Include="Extra\OGLTexture.cpp" />
     <ClCompile Include="GameTimer.cpp" />
@@ -44,6 +45,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="ComputeShader.h" />
+    <ClInclude Include="Emitter.h" />
     <ClInclude Include="Extra\GLTFLoader.h" />
     <ClInclude Include="Extra\json.hpp" />
     <ClInclude Include="Extra\OGLTexture.h" />
@@ -61,6 +63,7 @@
     <ClInclude Include="MeshMaterial.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="OGLRenderer.h" />
+    <ClInclude Include="particle.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="SceneNode.h" />
     <ClInclude Include="Shader.h" />

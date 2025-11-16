@@ -8,25 +8,33 @@
 class Emitter
 {
 public:
-	Emitter(Vector4 colour, unsigned int amount, UniqueOGLTexture* texture);
+	Emitter(Vector3 position, unsigned int amount, Vector4 colour, Mesh shape);
 	~Emitter();
 
 	void Update(float dt);
-	void setColour(const Vector4& col) { particleColour = col; }
-	Vector4 getColour() { return particleColour; }
+
 
 	void setPosition(const Vector3& pos) { position = pos; }
 	Vector3 getPosition() { return position; }
+
+	const std::vector<Particle>& GetParticles() const { return particles; }
+
 
 	void setParticleNumber(unsigned int num) { particles.resize(num); }
 	unsigned int getParticleNumber() { return particles.size(); }
 
 
 protected:
-	Vector3 position;
+	void Emit(unsigned int count);
+	void updateAtributeData();
+	std::vector<InstanceAtributes> GetAttributeData() const;
+	Mesh particleMesh;
 	Vector4 particleColour;
 	UniqueOGLTexture* texture;
+	Vector3 position;
 	std::vector<Particle> particles;
+	unsigned int maxParticles;
+	int aliveCount;
 	float emitTimer;
 	float emitRate;
 

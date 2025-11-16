@@ -22,6 +22,8 @@ _-_-_-_-_-_-_-""  ""
 #include <vector>
 #include <string>
 
+#include "particle.h"
+
 //A handy enumerator, to determine which member of the bufferObject array
 //holds which data
 enum MeshBuffer {
@@ -58,6 +60,7 @@ public:
 	~Mesh(void);
 
 	void Draw();
+	void DrawInstances(int numInstances);
 	void DrawSubMesh(int i);
 
 	static Mesh* LoadFromMeshFile(const std::string& name);
@@ -117,12 +120,16 @@ public:
 	void GenerateNormals();
 	bool GetVertexIndiciesForTri(unsigned int i, unsigned int& a, unsigned int& b, unsigned int& c) const;
 
-
+	void AddInstanceBuffer(GLuint buffer, std::vector<InstanceAtributes>& attribs);
 protected:
 	void	BufferData();
 
 	void GenerateTangents();
 	Vector4 GenerateTangent(int a, int b, int c);
+
+	//For instancing support
+	
+	GLuint instanceVBO;
 
 	GLuint	arrayObject;
 

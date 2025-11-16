@@ -39,6 +39,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="HeightMap.cpp" />
+    <ClCompile Include="Emitter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -96,6 +97,8 @@
     <ClInclude Include="SceneNode.h" />
     <ClInclude Include="HeightMap.h" />
     <ClInclude Include="Light.h" />
+    <ClInclude Include="Emitter.h" />
+    <ClInclude Include="particle.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GLAD">

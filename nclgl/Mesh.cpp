@@ -115,6 +115,10 @@ void Mesh::Draw()	{
 	glBindVertexArray(0);	
 }
 
+void Mesh::DrawInstances(int numInstances) {
+
+}
+
 void Mesh::DrawSubMesh(int i) {
 	if (i < 0 || i >= (int)meshLayers.size()) {
 		return;
@@ -655,4 +659,27 @@ Mesh* Mesh::GenerateQuad() {
 
 	m->BufferData();
 	return m;
+}
+
+/// <summary>
+/// Creates an instance vbo to the mesh for instanced rendering, with the given attributes.
+/// </summary>
+/// <param name="attribs"> A vector containing the attributes. Each attribute needs a location, size, type, isitNormalized, a stride
+/// and an offset.</param>
+void Mesh::AddInstanceBuffer(GLuint buffer, std::vector<InstanceAtributes>& attribs) {
+	instanceVBO = buffer;
+	glBindVertexArray(arrayObject);
+	glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+
+	
+	for (const auto& a : attribs)
+	{
+		glEnableVertexAttribArray(a.location);
+		glVertexAttribPointer(a.location, a.size, a.type,
+			a.normalized, a.stride, a.offset);
+		glVertexAttribDivisor(a.location, 1);
+	}
+
+	glBindVertexArray(0);
+
 }
