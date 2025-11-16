@@ -30,12 +30,21 @@
     <ClCompile Include="SunShaderFragment.glsl">
       <Filter>Shaders</Filter>
     </ClCompile>
+    <ClCompile Include="..\nclgl\Emitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="waterStruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nclgl\Emitter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nclgl\particle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

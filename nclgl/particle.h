@@ -8,6 +8,8 @@ struct Particle {
 	Vector3 direction;
 	Vector4 colour;
 	float velocity;
+	float startLife;
+	float size;
 	float life;
 };
 

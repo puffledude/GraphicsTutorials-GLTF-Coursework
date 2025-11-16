@@ -1,5 +1,6 @@
 #include "Emitter.h"
 #include "particle.h"
+#include <algorithm>
 #include <random>
 
 /// <summary>
@@ -59,6 +60,8 @@ void Emitter::Update(float dt) {
 		p.direction = Vector3(0, 1, 0);
 		p.velocity = velDist(mt);
 		p.life = lifeDist(mt);
+		p.startLife = p.life;
+		p.size = 0.4f;
 
 	}
 	for (size_t i = 0; i < aliveCount; i++) {  // For all alive particles
@@ -105,8 +108,22 @@ void Emitter::updateInstanceData() {
 	for (int i = 0; i < aliveCount; ++i) {
 		InstanceData data;
 		data.pos = particles[i].position;
-		data.colour = particles[i].colour;
-		data.size = 0.4f; // Set a default size, could be modified based on particle properties
+		float ratio = 0.0f;
+		if (particles[i].startLife > 0.0f) {
+			ratio = std::clamp(particles[i].life / particles[i].startLife, 0.0f, 1.0f);
+		}
+		// pick grey level (you can tweak this)
+		const Vector4 grey(0.5f, 0.5f, 0.5f, particles[i].colour.w);
+
+		// lerp: result = original * ratio + grey * (1 - ratio)
+		data.colour = Vector4(
+			particles[i].colour.x * ratio + grey.x * (1.0f - ratio),
+			particles[i].colour.y * ratio + grey.y * (1.0f - ratio),
+			particles[i].colour.z * ratio + grey.z * (1.0f - ratio),
+			particles[i].colour.w // keep alpha from the original colour (or lerp if desired)
+		);
+		particles[i].size = 0.4f * ratio; // Particles shrink over their lifetime
+		data.size = particles[i].size; // Set a default size, could be modified based on particle properties
 		instanceData.push_back(data);
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
