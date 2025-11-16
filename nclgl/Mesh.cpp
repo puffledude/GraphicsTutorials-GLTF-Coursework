@@ -116,7 +116,14 @@ void Mesh::Draw()	{
 }
 
 void Mesh::DrawInstances(int numInstances) {
-
+	glBindVertexArray(arrayObject);
+	if (bufferObject[INDEX_BUFFER]) {
+		glDrawElementsInstanced(type, numIndices, GL_UNSIGNED_INT, nullptr ,numInstances);
+	}
+	else {
+		glDrawArraysInstanced(type, 0, numVertices, numInstances);
+	}
+	glBindVertexArray(0);
 }
 
 void Mesh::DrawSubMesh(int i) {
@@ -681,5 +688,5 @@ void Mesh::AddInstanceBuffer(GLuint buffer, std::vector<InstanceAtributes>& attr
 	}
 
 	glBindVertexArray(0);
-
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

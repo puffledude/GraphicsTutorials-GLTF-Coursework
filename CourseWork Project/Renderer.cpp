@@ -1,7 +1,6 @@
 #include "Renderer.h"
 #include "../nclgl/Light.h"
 #include "../nclgl/Extra/GLTFLoader.h"
-#include "particle.h"
 
 /*
 * Finish deferred lighting. Move sun using arrow keys.
@@ -30,15 +29,18 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
 	}
 	quad = Mesh::GenerateQuad();
 	cone = Mesh::LoadFromMeshFile("Cone.msh");
+	
 	this->SetupDeferred();
 	this->SetupShadow();
 	this->LoadEnvironment();
 	this->LoadSkyBox();
 	this->LoadWater();
+	Shader* fireShader = new Shader("FireVertexShader.glsl", "FireFragmentShader.glsl");
+	fireEmitter = new Emitter(Vector3(28.0235, 38.3, 35.7914), 1000, Vector4(1, 0.5, 0, 1), nullptr, fireShader);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
 	init = true;
 }
@@ -47,6 +49,7 @@ void Renderer::SetupDeferred() {
 	environmentShader = new Shader("bumpVertex.glsl", "bufferFragment.glsl");
 	pointLightShader = new Shader("pointLightVertex.glsl", "pointLightFragment.glsl");
 	combineShader = new Shader("combineVertex.glsl", "combineFragment.glsl");
+
 	if (!environmentShader->LoadSuccess() ||
 		!pointLightShader->LoadSuccess() ||
 		!combineShader->LoadSuccess()){
@@ -187,6 +190,7 @@ void Renderer::UpdateScene(float dt) {
 	viewMatrix = camera->BuildViewMatrix();
 	gameFrameTime = dt;
 	root.Update(dt);
+	fireEmitter->Update(dt);
 }
 
 void Renderer::LoadSkyBox() { //Actual load order is right, left, up, down , front, back. Need to either rename or just keep it.
@@ -279,6 +283,23 @@ void Renderer::DrawEnvironment(bool shadow) {
 
 	DrawNode(&root, shadow);
 	DrawWater(shadow);
+	modelMatrix.ToIdentity();
+
+	if (!shadow && fireEmitter) {
+		// Particles store world positions in the instance data, so use identity model matrix
+		modelMatrix.ToIdentity();
+
+		// Make sure view/proj are the camera's (shadow pass may have changed them)
+		viewMatrix = camera->BuildViewMatrix();
+		projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
+			(float)width / (float)height, 45.0f);
+
+		// Bind particle shader and upload matrices/uniforms
+		BindShader(fireEmitter->GetShader());
+		UpdateShaderMatrices();
+	}
+
+	fireEmitter->Emit();
 	/*for (Light* l : pointLights) {
 
 		sphere->Draw();

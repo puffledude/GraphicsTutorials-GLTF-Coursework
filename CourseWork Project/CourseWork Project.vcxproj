@@ -149,6 +149,8 @@
     <None Include="..\Shaders\bumpVertex.glsl" />
     <None Include="..\Shaders\CombineFragment.glsl" />
     <None Include="..\Shaders\CombineVertex.glsl" />
+    <None Include="..\Shaders\FireFragmentShader.glsl" />
+    <None Include="..\Shaders\FireVertexShader.glsl" />
     <None Include="..\Shaders\pointLightFragment.glsl" />
     <None Include="..\Shaders\pointLightVertex.glsl" />
     <None Include="..\Shaders\ShadowFragment.glsl" />

@@ -76,6 +76,12 @@
     <None Include="..\Shaders\WaterVertex.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="..\Shaders\FireFragmentShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\FireVertexShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Readme.txt" />

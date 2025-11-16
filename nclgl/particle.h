@@ -1,6 +1,7 @@
 #pragma once
 #include "Vector3.h"
 #include "Vector4.h"
+#include "glad/glad.h"
 
 struct Particle {
 	Vector3 position;

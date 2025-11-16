@@ -4,8 +4,8 @@
 #include "../NCLGL/Extra/GLTFLoader.h"
 #include "../NCLGL/SceneNode.h"
 #include "../nclgl/Light.h"
+#include "../nclgl/Emitter.h"
 #include "waterStruct.h"
-#include "particle.h"
 class Renderer : public OGLRenderer {
 public:
 	Renderer(Window& parent);
@@ -50,6 +50,8 @@ protected:
 	void SetupDeferred();
 
 
+	//For particle emitting
+	Emitter* fireEmitter;
 
 	//For shadow Mapping.
 	Shader* shadowShader;
