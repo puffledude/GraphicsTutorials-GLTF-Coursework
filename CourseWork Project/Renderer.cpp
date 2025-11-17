@@ -30,13 +30,15 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
 	quad = Mesh::GenerateQuad();
 	cone = Mesh::LoadFromMeshFile("Cone.msh");
 	
+	Shader* fireShader = new Shader("FireVertexShader.glsl", "FireFragmentShader.glsl");
+	fireEmitter = new Emitter(Vector3(28.0235, 38.3, 35.7914), 100, Vector4(1, 0.5, 0, 1), nullptr, fireShader);
 	this->SetupDeferred();
 	this->SetupShadow();
 	this->LoadEnvironment();
 	this->LoadSkyBox();
 	this->LoadWater();
-	Shader* fireShader = new Shader("FireVertexShader.glsl", "FireFragmentShader.glsl");
-	fireEmitter = new Emitter(Vector3(28.0235, 38.3, 35.7914), 1000, Vector4(1, 0.5, 0, 1), nullptr, fireShader);
+	
+	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
@@ -183,6 +185,7 @@ void Renderer::LoadEnvironment() {
 
 	pointLights.push_back(sun);
 	pointLights.push_back(campFireLight);
+	this->fireEmitter->SetLight(campFireLight);
 	centre = new Light(Vector3(36.8914, 30.1335, 34.4191), Vector4(0, 0, 0, 0), 0);
 }
 void Renderer::UpdateScene(float dt) {

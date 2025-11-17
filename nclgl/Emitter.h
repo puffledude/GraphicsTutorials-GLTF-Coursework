@@ -3,6 +3,7 @@
 #include "../nclgl/Vector3.h"
 #include "../nclgl/Vector4.h"
 #include "../nclgl/extra/OGLTexture.h"
+#include "Light.h"
 #include <random>
 #include <vector>
 
@@ -10,6 +11,7 @@ class Emitter
 {
 public:
 	Emitter(Vector3 position, unsigned int amount, Vector4 colour, Mesh* shape, Shader* shaderProgram);
+	Emitter(Vector3 position, unsigned int amount, Vector4 colour, Mesh* shape, Shader* shaderProgram, Light* light);
 	~Emitter();
 
 	void Update(float dt);
@@ -30,6 +32,11 @@ public:
 	}
 	unsigned int getParticleNumber() { return particles.size(); }
 
+	Light* GetLight() const { return light; }
+	void SetLight(Light* newLight) {
+		light = newLight;
+		maxLightRadius = newLight->GetRadius();
+	}
 
 protected:
 	void UpdateInstanceData();
@@ -40,6 +47,8 @@ protected:
 	UniqueOGLTexture* texture;
 	Vector3 position;
 
+	Light* light;
+	float maxLightRadius;
 	GLuint instanceVBO;
 	std::vector<Particle> particles;
 	unsigned int maxParticles;

@@ -11,6 +11,7 @@
 /// <param name="texture">Texture of the particles</param>
 Emitter::Emitter(Vector3 position, unsigned int amount, Vector4 colour, Mesh* shape, Shader* shaderProgram)
 {
+	light = nullptr;
 	this->position = position;
 	particleColour = colour;
 	//texture = texture;
@@ -38,6 +39,40 @@ Emitter::Emitter(Vector3 position, unsigned int amount, Vector4 colour, Mesh* sh
 	glGenBuffers(1, &instanceVBO);
 	particleMesh->AddInstanceBuffer(instanceVBO, attributeData);
 }
+
+
+Emitter::Emitter(Vector3 position, unsigned int amount, Vector4 colour, Mesh* shape, Shader* shaderProgram, Light* light) {
+	this->position = position;
+	particleColour = colour;
+	//texture = texture;
+	shader = shaderProgram;
+	maxParticles = amount;
+	emitTimer = 0.0f;
+	emitRate = 100.0f; // Emit 100 particles per second
+	//texture = texture;
+	if (!shape) {
+		shape = Mesh::GenerateQuad();
+	}
+	particleMesh = shape;
+	particles.reserve(amount);
+	for (int i = 0; i < amount; ++i) {
+		Particle p;
+		p.colour = particleColour;
+		p.velocity = 0.0f; // Default velocity
+		p.direction = Vector3(0.0f, 1.0f, 0.0f); // Default upward direction
+		p.life = 0.0f; // Initialize all particles as dead
+		particles.push_back(p);
+	}
+	aliveCount = 0;
+	//Next steps here is to generate the instance attributes and the vbo and pass them through to the mesh object.
+	std::vector<InstanceAtributes> attributeData = GetAttributeData();
+	glGenBuffers(1, &instanceVBO);
+	particleMesh->AddInstanceBuffer(instanceVBO, attributeData);
+	this->light = light;
+	this->maxLightRadius = light->GetRadius();
+	light->SetRadius(0.0f); // Start with light off
+}
+
 
 void Emitter::Update(float dt) {
 
@@ -79,7 +114,8 @@ void Emitter::Update(float dt) {
 		p.position += p.direction * p.velocity * dt;
 		p.velocity *= 0.98f; //Slow down over time
 	}
-
+	std::cout << "Alive Particles: " << aliveCount << std::endl;
+	if (light){ light->SetRadius(maxLightRadius * ((float)aliveCount*2 / (float)maxParticles)); }
 	
 	UpdateInstanceData();
 }
