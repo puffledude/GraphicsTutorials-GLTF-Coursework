@@ -239,7 +239,6 @@ void Renderer::loadWinterScene() {
 	campfireNode->SetBoundingRadius(3.0f);
 	ground->AddChild(campfireNode);
 	Light* campFireLight = new Light(Vector3(27.4, 38.9918, 34.3), Vector4(0.5, 0.5, 0, 1), 5.0f);
-	//sun = new Light(Vector3(23.6744, 58.4126, 3.97436), Vector4(1, 1, 1, 1), 100.0f);
 
 	pointLights->push_back(sun);
 	pointLights->push_back(campFireLight);
@@ -250,7 +249,6 @@ void Renderer::loadWinterScene() {
 	houseNode->SetModelScale(Vector3(0.5f, 0.5f, 0.5f));
 	ground->AddChild(houseNode);
 
-	//Put house here.
 
 
 	/*sun = new Light(Vector3(23.6744, 58.4126, 3.97436), Vector4(1, 1, 1, 1), 100.0f);
