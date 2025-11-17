@@ -13,6 +13,10 @@ public:
 
 	void RenderScene()				override;
 	void UpdateScene(float dt)	override;
+
+	void switchSeason();
+
+
 protected:
 	void DrawNode(SceneNode* n, bool shadow=false);
 	
@@ -32,7 +36,9 @@ protected:
 
 	//Lights
 	Light* sun;
-	vector<Light*> pointLights;
+	vector<Light*> summerPointLights;
+	vector<Light*> winterPointLights;
+	vector<Light*>* pointLights;
 
 	//Centre point
 	Light* centre;
@@ -52,6 +58,7 @@ protected:
 
 	//For particle emitting
 	Emitter* fireEmitter;
+	UniqueOGLTexture fireTex;
 
 	//For shadow Mapping.
 	Shader* shadowShader;
@@ -88,7 +95,14 @@ protected:
 	unsigned int SHADOWSIZE = 2048;
 	
 
-	SceneNode root;
+	SceneNode summerRoot;
+	void loadSummerScene();
+	SceneNode winterRoot;
+	void loadWinterScene();
+	bool isSummer = true;
+	
+
+
 	Camera* camera;
 
 

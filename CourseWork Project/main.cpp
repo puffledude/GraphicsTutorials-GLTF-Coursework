@@ -3,7 +3,7 @@
 
 int main() {
 	Window w("Make your own project!", 1280, 720, false);
-
+	float cooldown = 0.2f;
 	if (!w.HasInitialised()) {
 		return -1;
 	}
@@ -20,6 +20,11 @@ int main() {
 		if (Window::GetKeyboard()->KeyDown(KEYBOARD_F5)) {
 			Shader::ReloadAllShaders();
 		}
+		if (Window::GetKeyboard()->KeyDown(KEYBOARD_C) &&cooldown<=0.0f) {
+			cooldown = 0.2f;
+			renderer.switchSeason();
+		}
+		cooldown -= w.GetTimer()->GetTimeDeltaSeconds();
 	}
 	return 0;
 }

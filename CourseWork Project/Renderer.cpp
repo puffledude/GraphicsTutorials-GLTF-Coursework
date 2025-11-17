@@ -30,13 +30,15 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
 	quad = Mesh::GenerateQuad();
 	cone = Mesh::LoadFromMeshFile("Cone.msh");
 	
-	Shader* fireShader = new Shader("FireVertexShader.glsl", "FireFragmentShader.glsl");
-	fireEmitter = new Emitter(Vector3(28.0235, 38.3, 35.7914), 100, Vector4(1, 0.5, 0, 1), nullptr, fireShader);
 	this->SetupDeferred();
 	this->SetupShadow();
 	this->LoadEnvironment();
 	this->LoadSkyBox();
 	this->LoadWater();
+	Shader* fireShader = new Shader("FireVertexShader.glsl", "FireFragmentShader.glsl");
+	fireEmitter = new Emitter(Vector3(28.0235, 38.3, 35.7914), 100, Vector4(1, 0.5, 0, 1), nullptr, fireShader);
+	fireTex = OGLTexture::TextureFromFile(TEXTUREDIR"fire.png");
+	
 	
 	
 	glEnable(GL_BLEND);
@@ -143,11 +145,26 @@ void Renderer::LoadEnvironment() {
 	if (Tent.meshes.size() == 0) {
 		return;
 	}
-	this->root = SceneNode();
+	summerPointLights = vector<Light*>();
+	winterPointLights = vector<Light*>();
+	sun = new Light(Vector3(23.6744, 58.4126, 3.97436), Vector4(1, 1, 1, 1), 100.0f);
+	pointLights = &summerPointLights;
+	loadSummerScene();
+	pointLights = &winterPointLights;
+	loadWinterScene();
+
+	
+	
+	
+	centre = new Light(Vector3(36.8914, 30.1335, 34.4191), Vector4(0, 0, 0, 0), 0);
+}
+
+void Renderer::loadSummerScene() {
+	this->summerRoot = SceneNode();
 	SceneNode* ground = new SceneNode(&Environment, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for environment
 	ground->SetModelScale(Vector3(75.0f, 75.0f, 75.0f));
 	ground->SetBoundingRadius(1000.0f);
-	root.AddChild(ground);
+	summerRoot.AddChild(ground);
 	Vector3 treePositions[] = {
 		Vector3(44.5433, 36.0f, 26.3742),
 		Vector3(23.1988,36.5f,32.4063),
@@ -169,30 +186,76 @@ void Renderer::LoadEnvironment() {
 		ground->AddChild(treeNode);
 	}
 	SceneNode* campfireNode = new SceneNode(&Campfire, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for campfire
-	campfireNode->SetTransform(Matrix4::Translation(Vector3(28.9073, 37.9502, 35.55)) * Matrix4::Rotation(90,Vector3(-90,0,0)));
+	campfireNode->SetTransform(Matrix4::Translation(Vector3(28.9073, 37.9502, 35.55)) * Matrix4::Rotation(90, Vector3(-90, 0, 0)));
 	campfireNode->SetModelScale(Vector3(0.0003f, 0.0003f, 0.0003f));
 	campfireNode->SetBoundingRadius(3.0f);
 	ground->AddChild(campfireNode);
 
 	SceneNode* tentNode = new SceneNode(&Tent, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for tent
-	tentNode->SetTransform(Matrix4::Translation(Vector3(30.5615, 38.3325, 35.5342)) * Matrix4::Rotation(-90,Vector3(0,1,0)));
+	tentNode->SetTransform(Matrix4::Translation(Vector3(30.5615, 38.3325, 35.5342)) * Matrix4::Rotation(-90, Vector3(0, 1, 0)));
 	tentNode->SetModelScale(Vector3(0.01f, 0.01f, 0.01f));
 	tentNode->SetBoundingRadius(5.0f);
 	ground->AddChild(tentNode);
+	
 
-	sun = new Light(Vector3(23.6744, 58.4126, 3.97436), Vector4(1, 1, 1, 1), 100.0f);
+
+	pointLights->push_back(sun);
+
 	Light* campFireLight = new Light(Vector3(27.4, 38.9918, 34.3), Vector4(0.5, 0.5, 0, 1), 5.0f);
-
-	pointLights.push_back(sun);
-	pointLights.push_back(campFireLight);
-	this->fireEmitter->SetLight(campFireLight);
-	centre = new Light(Vector3(36.8914, 30.1335, 34.4191), Vector4(0, 0, 0, 0), 0);
+	pointLights->push_back(campFireLight);
+	//this->fireEmitter->SetLight(campFireLight);
 }
+
+
+void Renderer::loadWinterScene() {
+
+	SceneNode* ground = new SceneNode(&Environment, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for environment
+	ground->SetModelScale(Vector3(75.0f, 75.0f, 75.0f));
+	ground->SetBoundingRadius(1000.0f);
+	winterRoot.AddChild(ground);
+
+	Vector3 treePositions[] = {
+		Vector3(44.5433, 36.0f, 26.3742),
+		Vector3(23.1988,36.5f,32.4063),
+		Vector3(50.0999,37.3,33.0351),
+		Vector3(45.7918,37.0f,40.43),
+		Vector3(37.3799,37.4,51.1133),
+		Vector3(33.1454,36.44,43.647),
+		Vector3(44.4436,36.4546,48.1839) };
+	for (Vector3 pos : treePositions) {
+		SceneNode* treeNode = new SceneNode(&Tree, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for trees
+		treeNode->SetTransform(Matrix4::Translation(pos));
+		treeNode->SetModelScale(Vector3(0.1, 0.1, 0.1));
+		treeNode->SetBoundingRadius(7.0f);
+		ground->AddChild(treeNode);
+	}
+
+	SceneNode* campfireNode = new SceneNode(&Campfire, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for campfire
+	campfireNode->SetTransform(Matrix4::Translation(Vector3(28.9073, 37.9502, 35.55)) * Matrix4::Rotation(90, Vector3(-90, 0, 0)));
+	campfireNode->SetModelScale(Vector3(0.0003f, 0.0003f, 0.0003f));
+	campfireNode->SetBoundingRadius(3.0f);
+	ground->AddChild(campfireNode);
+	Light* campFireLight = new Light(Vector3(27.4, 38.9918, 34.3), Vector4(0.5, 0.5, 0, 1), 5.0f);
+	//sun = new Light(Vector3(23.6744, 58.4126, 3.97436), Vector4(1, 1, 1, 1), 100.0f);
+
+	pointLights->push_back(sun);
+	pointLights->push_back(campFireLight);
+	
+
+	//Put house here.
+
+
+	/*sun = new Light(Vector3(23.6744, 58.4126, 3.97436), Vector4(1, 1, 1, 1), 100.0f);
+	pointLights->push_back(sun);*/
+}
+
+
 void Renderer::UpdateScene(float dt) {
 	camera->UpdateCamera(dt);
 	viewMatrix = camera->BuildViewMatrix();
 	gameFrameTime = dt;
-	root.Update(dt);
+	summerRoot.Update(dt);
+	winterRoot.Update(dt);
 	fireEmitter->Update(dt);
 }
 
@@ -251,7 +314,17 @@ Renderer::~Renderer(void)	{
 	glDeleteFramebuffers(1, &pointLightFBO);
 }
 
-
+void Renderer::switchSeason() {
+	isSummer = !isSummer;
+	if (pointLights == &summerPointLights) {
+		pointLights = &winterPointLights;
+		
+	}
+	else {
+		pointLights = &summerPointLights;
+	}
+	fireEmitter->SetLight((*pointLights)[1]);
+}
 
 /// <summary>
 /// Renders Scene. Skybox -> Shadow Scene -> Environment fill -> Lighting calc -> Combine Buffers.
@@ -278,13 +351,13 @@ void Renderer::DrawEnvironment(bool shadow) {
 	if (!shadow) {
 		glBindFramebuffer(GL_FRAMEBUFFER, gBufferFBO);
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-		
+
 	}
 
 	// Removed skybox draw from here so it won't be rendered into the g-buffer.
 	// Skybox will be drawn after combine with the scene depth copied into the default framebuffer.
-
-	DrawNode(&root, shadow);
+	if (isSummer) { DrawNode(&summerRoot, shadow); }
+	else { DrawNode(&winterRoot, shadow); }
 	DrawWater(shadow);
 	modelMatrix.ToIdentity();
 
@@ -299,7 +372,12 @@ void Renderer::DrawEnvironment(bool shadow) {
 
 		// Bind particle shader and upload matrices/uniforms
 		glDisable(GL_CULL_FACE);
-		BindShader(fireEmitter->GetShader());
+		Shader* fireShader = fireEmitter->GetShader();
+		BindShader(fireShader);
+		glUniform1i(glGetUniformLocation(fireShader->GetProgram(),
+			"diffuseTex"), 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, fireTex->GetObjectID());
 		UpdateShaderMatrices();
 	}
 
@@ -375,7 +453,7 @@ void Renderer::DrawLights() {
 		"invProjViewMatrix"), 1, false, invViewProj.values);
 
 	UpdateShaderMatrices();
-	for(Light* l : pointLights) {
+	for(Light* l : *pointLights) {
 		SetShaderLight(*l);
 		sphere->Draw();
 	}

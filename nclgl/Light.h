@@ -20,6 +20,7 @@ public:
 		this->colour = col;
 		this->radius = radius;
 		this->specular = spec;
+		this->defaultRadius = radius; // store the original intended radius
 	}
 
 	~Light(void) {};
@@ -37,31 +38,8 @@ public:
 	float GetRadius() const { return radius; }
 	void SetRadius(float val) { radius = val; }
 
-
-
-	/*const Vector3 GetPosition() const {
-		return position;
-	}
-	void SetPosition(const Vector3& val) {
-		position = val;
-	}
-
-	const Vector4 GetColour() const {
-		return colour;
-	}
-	void SetColour(const Vector4& val) {
-		colour = val;
-	}
-
-	float GetRadius() const {
-		return radius;
-	}
-	void SetRadius(float val) {
-		radius = val;
-	}*/
-
-
-
+	// Returns the original configured radius for this light (unchanged by runtime effects)
+	float GetDefaultRadius() const { return defaultRadius; }
 
 
 protected:
@@ -69,4 +47,5 @@ protected:
 	Vector4 colour;
 	Vector4 specular;
 	float	radius;
+	float	defaultRadius{0.0f};
 };

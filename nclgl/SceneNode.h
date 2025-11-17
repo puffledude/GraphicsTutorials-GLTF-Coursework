@@ -7,6 +7,8 @@
 #include "Mesh.h"
 #include "MeshMaterial.h"
 #include "MeshAnimation.h"
+#include "Emitter.h"
+#include "Light.h"
 #include <vector>
 
 
@@ -17,6 +19,8 @@ public:
 	SceneNode(Mesh* m, MeshMaterial* mat = nullptr, MeshAnimation* anim = nullptr,  Vector4 colour = Vector4(1.0f, 1.0f, 1.0f, 1.0f), Shader* shader=nullptr);
 	SceneNode(GLTFScene* gltfScene, Vector4 colour = Vector4(1.0f, 1.0f, 1.0f, 1.0f), Shader* shader=nullptr);
 	SceneNode(HeightMap* heightMap, Vector4 colour = Vector4(1.0f, 1.0f, 1.0f, 1.0f), Shader* shader = nullptr);
+	//SceneNode(Light* light, Vector4 colour = Vector4(1.0f, 1.0f, 1.0f, 1.0f)); //Lights don't need shaders
+	//SceneNode(Emitter* emitter, Shader* shader = nullptr); //Emitters may have shaders
 	~SceneNode(void);
 
 	SceneNode(const SceneNode&) = delete;

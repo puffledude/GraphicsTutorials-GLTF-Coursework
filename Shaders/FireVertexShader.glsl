@@ -11,6 +11,7 @@ uniform mat4 projMatrix;
 
 out Vertex{
 	vec4 colour;
+	vec3 worldPos;
 } OUT;
 
 void main(void){
@@ -28,7 +29,8 @@ void main(void){
 
 	// Compose final position in view-space (z stays at centerVS.z)
 	vec4 posVS = centreVS + vec4(quadOffset, 0.0, 0.0); //Position in viewspace is the centre + offset
-
+	vec3 worldPos = (modelMatrix * vec4(instancePos, 1.0)).xyz;
+	OUT.worldPos = worldPos;
 	gl_Position = projMatrix * posVS;
 
 

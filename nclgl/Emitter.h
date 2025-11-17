@@ -35,7 +35,10 @@ public:
 	Light* GetLight() const { return light; }
 	void SetLight(Light* newLight) {
 		light = newLight;
-		maxLightRadius = newLight->GetRadius();
+		if (newLight) {
+			// Use the configured default radius of the Light, not its current runtime radius
+			maxLightRadius = newLight->GetDefaultRadius();
+		}
 	}
 
 protected:
