@@ -2,7 +2,7 @@
 
 uniform sampler2D diffuseTex;
 uniform sampler2D normalTex;
-
+uniform vec3 cameraPos;
 in Vertex{
 
 	vec4 colour;
@@ -28,10 +28,18 @@ if (texture(diffuseTex, IN.texCoord).a < 0.1){
 
 float up = clamp(dot(normalize(IN.normal), vec3(0,1,0)), 0.0, 1.0);
 float amount = pow(up, 3.0);
+amount *= smoothstep(0.0, 1.0, IN.normal.y); //Snooth out the transition. If less than or equal to 0, return 0. If greater than or equal to 1, return 1. 
+//Else return a smooth interpolation between 0 and 1.
+vec3 viewDir = normalize(cameraPos - IN.worldPos);
+float fresnel = pow(1.0 - max(dot(normalize(viewDir), normal), 0.0), 5.0);
+fresnel *= amount; // only on snow
 
 vec4 snow = vec4(1.0);
 vec4 texIn = texture(diffuseTex, IN.texCoord);
+
+
 vec4 output = mix(texIn, snow, amount);
+output.rgb = mix(output.rgb, vec3(1.0), fresnel);
 output.a = texIn.a;
 fragColour[0] = output;
 //fragColour[0] = texture(diffuseTex, IN.texCoord);

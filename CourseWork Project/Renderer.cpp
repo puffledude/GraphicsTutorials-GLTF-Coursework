@@ -579,6 +579,11 @@ void Renderer::DrawNode(SceneNode* n, bool shadow) {
 			viewMatrix = camera->BuildViewMatrix();
 			projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
 				(float)width / (float)height, 45.0f);
+			int loc = glGetUniformLocation(nodeShader->GetProgram(), "cameraPos");
+			if (loc >= 0) {
+				const Vector3 camPos = camera->GetPosition();
+				glUniform3fv(loc, 1, (float*)&camPos);
+			}
 		}
 
 		UpdateShaderMatrices();
