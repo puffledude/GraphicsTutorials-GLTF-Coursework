@@ -40,7 +40,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 
 	init = true;
 }
@@ -295,11 +295,13 @@ void Renderer::DrawEnvironment(bool shadow) {
 			(float)width / (float)height, 45.0f);
 
 		// Bind particle shader and upload matrices/uniforms
+		glDisable(GL_CULL_FACE);
 		BindShader(fireEmitter->GetShader());
 		UpdateShaderMatrices();
 	}
 
 	fireEmitter->Emit();
+	if (!shadow && fireEmitter) { glEnable(GL_CULL_FACE); }
 	/*for (Light* l : pointLights) {
 
 		sphere->Draw();

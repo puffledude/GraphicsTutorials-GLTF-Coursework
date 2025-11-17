@@ -131,15 +131,9 @@ void Emitter::UpdateInstanceData() {
 }
 
 Vector3 Emitter::GetRandomDirection(std::mt19937& mt) {
-	//std::uniform_real_distribution<float> dist(0, 1.0f);
 	std::uniform_real_distribution<float> dist(-20.0f, 20.0f);
 	Vector3 dir = Vector3(0.0f, 1.0f, 0.0f);
 	dir = Matrix4::Rotation(dist(mt), Vector3(1.0f, 0.0f, 0.0f)) * Matrix4::Rotation(dist(mt), Vector3(0,0,1))* dir;
 	dir.Normalise();
-	/*Vector3 dir;
-	dir.x = dist(mt);
-	dir.y = dist(mt);
-	dir.z = dist(mt);
-	dir.Normalise();*/
 	return dir;
 }
