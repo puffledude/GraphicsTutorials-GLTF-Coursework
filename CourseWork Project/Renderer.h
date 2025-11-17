@@ -25,6 +25,8 @@ protected:
 	GLTFScene Tree;
 	GLTFScene Campfire;
 	GLTFScene Tent;
+	GLTFScene Cabin;
+
 
 	void LoadEnvironment();
 

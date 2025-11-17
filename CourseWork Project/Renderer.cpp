@@ -145,6 +145,10 @@ void Renderer::LoadEnvironment() {
 	if (Tent.meshes.size() == 0) {
 		return;
 	}
+	GLTFLoader::Load("../GLTF/Cabin/Cabin.gltf", Cabin);
+	if (Cabin.meshes.size() == 0) {
+		return;
+	}
 	summerPointLights = vector<Light*>();
 	winterPointLights = vector<Light*>();
 	sun = new Light(Vector3(23.6744, 58.4126, 3.97436), Vector4(1, 1, 1, 1), 100.0f);
@@ -216,7 +220,6 @@ void Renderer::loadWinterScene() {
 
 	Vector3 treePositions[] = {
 		Vector3(44.5433, 36.0f, 26.3742),
-		Vector3(23.1988,36.5f,32.4063),
 		Vector3(50.0999,37.3,33.0351),
 		Vector3(45.7918,37.0f,40.43),
 		Vector3(37.3799,37.4,51.1133),
@@ -241,6 +244,11 @@ void Renderer::loadWinterScene() {
 	pointLights->push_back(sun);
 	pointLights->push_back(campFireLight);
 	
+	SceneNode* houseNode = new SceneNode(&Cabin, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for house
+	houseNode->SetTransform(Matrix4::Translation(Vector3(37.8515, 38.0f, 37.5047)) * Matrix4::Rotation(-90, Vector3(1, 0, 0)));
+	//*Matrix4::Rotation(30, Vector3(0,1,0)));
+	houseNode->SetModelScale(Vector3(0.5f, 0.5f, 0.5f));
+	ground->AddChild(houseNode);
 
 	//Put house here.
 
