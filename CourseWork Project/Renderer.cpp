@@ -149,6 +149,12 @@ void Renderer::LoadEnvironment() {
 	if (Cabin.meshes.size() == 0) {
 		return;
 	}
+	GLTFLoader::Load("../GLTF/Snowman/Snowman.gltf", Snowman);
+	if (Snowman.meshes.size() == 0) {
+		return;
+	}
+	/*Snowman = Mesh::LoadFromMeshFile("Snowman.msh");
+	SnowmanMat = new MeshMaterial("Snowman.Mat");*/
 	summerPointLights = vector<Light*>();
 	winterPointLights = vector<Light*>();
 	sun = new Light(Vector3(23.6744, 58.4126, 3.97436), Vector4(1, 1, 1, 1), 100.0f);
@@ -248,7 +254,11 @@ void Renderer::loadWinterScene() {
 	//*Matrix4::Rotation(30, Vector3(0,1,0)));
 	houseNode->SetModelScale(Vector3(0.5f, 0.5f, 0.5f));
 	ground->AddChild(houseNode);
-
+	SceneNode* snowmanNode = new SceneNode(&Snowman,Vector4(1, 1, 1, 1), environmentShader); //Scenenode for snowman
+	//SceneNode* snowmanNode = new SceneNode(&Snowman, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for snowman
+	snowmanNode->SetTransform(Matrix4::Translation(Vector3(33.8391, 36.5952, 30.2964)) * Matrix4::Rotation(-90, Vector3(0, 1, 0)));
+	snowmanNode->SetModelScale(Vector3(0.02f, 0.02f, 0.02f));
+	ground->AddChild(snowmanNode);
 
 
 	/*sun = new Light(Vector3(23.6744, 58.4126, 3.97436), Vector4(1, 1, 1, 1), 100.0f);

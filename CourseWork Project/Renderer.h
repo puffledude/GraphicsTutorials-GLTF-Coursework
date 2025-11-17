@@ -26,7 +26,8 @@ protected:
 	GLTFScene Campfire;
 	GLTFScene Tent;
 	GLTFScene Cabin;
-
+	GLTFScene Snowman;
+	//MeshMaterial* SnowmanMat;
 
 	void LoadEnvironment();
 
