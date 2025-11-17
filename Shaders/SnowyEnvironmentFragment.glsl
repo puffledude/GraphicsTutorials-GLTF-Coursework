@@ -26,13 +26,12 @@ if (texture(diffuseTex, IN.texCoord).a < 0.1){
 }
 //I want to make it so the closer the normal is to (0,1,0) the more it blends to white
 
-float cosangle = clamp(dot(normal, vec3(0.0, 1.0, 0.0)), 0.7, 1);
-//closer to 1 cosangle is, closer to (0,1,0)
-//If angle=1, blend 100% to white
-// If angle=0, blend 0% to white
-vec4 snowAmount = vec4(1.0) * cosangle;
+float up = clamp(dot(normalize(IN.normal), vec3(0,1,0)), 0.0, 1.0);
+float amount = pow(up, 3.0);
+
+vec4 snow = vec4(1.0);
 vec4 texIn = texture(diffuseTex, IN.texCoord);
-vec4 output = mix(texIn, snowAmount, cosangle);
+vec4 output = mix(texIn, snow, amount);
 output.a = texIn.a;
 fragColour[0] = output;
 //fragColour[0] = texture(diffuseTex, IN.texCoord);
