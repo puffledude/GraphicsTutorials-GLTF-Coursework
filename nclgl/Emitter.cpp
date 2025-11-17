@@ -115,7 +115,10 @@ void Emitter::Update(float dt) {
 		p.velocity *= 0.98f; //Slow down over time
 	}
 	std::cout << "Alive Particles: " << aliveCount << std::endl;
-	if (light){ light->SetRadius(maxLightRadius * ((float)aliveCount*2 / (float)maxParticles)); }
+	if (light) {
+		float radius = std::clamp(maxLightRadius * ((float)aliveCount * 2.0f / (float)maxParticles), maxLightRadius/2, maxLightRadius+2);
+		light->SetRadius(radius);
+	}
 	
 	UpdateInstanceData();
 }
