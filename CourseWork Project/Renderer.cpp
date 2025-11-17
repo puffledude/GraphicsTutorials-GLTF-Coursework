@@ -53,7 +53,7 @@ void Renderer::SetupDeferred() {
 	environmentShader = new Shader("bumpVertex.glsl", "bufferFragment.glsl");
 	pointLightShader = new Shader("pointLightVertex.glsl", "pointLightFragment.glsl");
 	combineShader = new Shader("combineVertex.glsl", "combineFragment.glsl");
-
+	winterEnvironmentShader = new Shader("SnowyEnvironmentVertex.glsl", "SnowyEnvironmentFragment.glsl");
 	if (!environmentShader->LoadSuccess() ||
 		!pointLightShader->LoadSuccess() ||
 		!combineShader->LoadSuccess()){
@@ -219,7 +219,7 @@ void Renderer::loadSummerScene() {
 
 void Renderer::loadWinterScene() {
 
-	SceneNode* ground = new SceneNode(&Environment, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for environment
+	SceneNode* ground = new SceneNode(&Environment, Vector4(1, 1, 1, 1), winterEnvironmentShader); //Scenenode for environment
 	ground->SetModelScale(Vector3(75.0f, 75.0f, 75.0f));
 	ground->SetBoundingRadius(1000.0f);
 	winterRoot.AddChild(ground);
@@ -356,7 +356,7 @@ void Renderer::RenderScene() {
 
 	CombineBuffers();
 
-	std::cout << "Camera location is : " << camera->GetPosition()<< std::endl;
+	//std::cout << "Camera location is : " << camera->GetPosition()<< std::endl;
 	//DrawPostProcessing();
 }
 

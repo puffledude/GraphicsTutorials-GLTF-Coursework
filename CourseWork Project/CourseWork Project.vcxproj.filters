@@ -91,6 +91,12 @@
     <None Include="..\Shaders\FireVertexShader.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="..\Shaders\SnowyEnvironmentFragment.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\SnowyEnvironmentVertex.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Readme.txt" />

@@ -53,6 +53,7 @@ protected:
 
 	//For deferred rendering.
 	Shader* environmentShader;
+	Shader* winterEnvironmentShader;
 	Shader* pointLightShader;
 	Shader* combineShader;
 	void GenerateScreenTexture(GLuint& into, bool depth = false);
