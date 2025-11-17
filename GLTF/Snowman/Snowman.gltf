@@ -11,18 +11,70 @@
 		{
 			"name":"Scene",
 			"nodes":[
-				0
+				4
 			]
 		}
 	],
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"Snowman_LOD0",
+			"name":"mu\ufffd\ufffdecop de nieve_mu\ufffd\ufffdeco de nieve_0"
+		},
+		{
+			"children":[
+				0
+			],
+			"name":"mu\ufffd\ufffdecop de nieve",
+			"rotation":[
+				-0.7071070075035095,
+				0,
+				0,
+				0.7071065902709961
+			],
+			"scale":[
+				53.87417221069336,
+				53.87417221069336,
+				53.87417221069336
+			],
+			"translation":[
+				660.6367797851562,
+				-2.031726360321045,
+				-577.7321166992188
+			]
+		},
+		{
+			"children":[
+				1
+			],
+			"name":"RootNode"
+		},
+		{
+			"children":[
+				2
+			],
+			"name":"39369b82b7c0407eb4d9b8814b86d8bd.fbx",
+			"rotation":[
+				0.70710688829422,
+				0,
+				0,
+				0.7071066498756409
+			],
 			"scale":[
 				0.009999999776482582,
-				0.009999999776482582,
-				0.009999999776482582
+				0.010000000707805157,
+				0.010000000707805157
+			]
+		},
+		{
+			"children":[
+				3
+			],
+			"name":"Sketchfab_model",
+			"rotation":[
+				-0.70710688829422,
+				0,
+				0,
+				0.7071066498756409
 			]
 		}
 	],
@@ -31,10 +83,10 @@
 			"doubleSided":true,
 			"extensions":{
 				"KHR_materials_specular":{
-					"specularFactor":0
+					"specularFactor":0.11428606510162354
 				}
 			},
-			"name":"07 - Default",
+			"name":"mueco_de_nieve",
 			"normalTexture":{
 				"index":0
 			},
@@ -42,13 +94,15 @@
 				"baseColorTexture":{
 					"index":1
 				},
-				"roughnessFactor":0.858578622341156
+				"metallicRoughnessTexture":{
+					"index":2
+				}
 			}
 		}
 	],
 	"meshes":[
 		{
-			"name":"Mesh",
+			"name":"mu\ufffd\ufffdecop de nieve_mu\ufffd\ufffdeco de nieve_0",
 			"primitives":[
 				{
 					"attributes":{
@@ -72,103 +126,112 @@
 		{
 			"sampler":0,
 			"source":1
+		},
+		{
+			"sampler":0,
+			"source":2
 		}
 	],
 	"images":[
 		{
 			"mimeType":"image/png",
-			"name":"Snowman_Normal",
-			"uri":"Snowman_Normal.png"
+			"name":"Image_2",
+			"uri":"Image_2.png"
+		},
+		{
+			"mimeType":"image/jpeg",
+			"name":"Image_0",
+			"uri":"Image_0.jpg"
 		},
 		{
 			"mimeType":"image/png",
-			"name":"Snowman_Albedo_01",
-			"uri":"Snowman_Albedo_01%20%28A%20Smoothness%29.png"
+			"name":"Image_1",
+			"uri":"Image_1.png"
 		}
 	],
 	"accessors":[
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":1235,
+			"count":5936,
 			"max":[
-				105.23360443115234,
-				206.0736083984375,
-				64.57337951660156
+				2.53825044631958,
+				1.2640775442123413,
+				4.5655598640441895
 			],
 			"min":[
-				-102.25231170654297,
-				1.1672838926315308,
-				-47.493072509765625
+				-2.372326612472534,
+				-1.5737905502319336,
+				-0.1307302713394165
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":1235,
+			"count":5936,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":1235,
+			"count":5936,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5126,
-			"count":1235,
+			"count":5936,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":4,
 			"componentType":5126,
-			"count":1235,
+			"count":5936,
 			"type":"VEC4"
 		},
 		{
 			"bufferView":5,
 			"componentType":5123,
-			"count":5670,
+			"count":26676,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":14820,
+			"byteLength":71232,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":14820,
-			"byteOffset":14820,
+			"byteLength":71232,
+			"byteOffset":71232,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":9880,
-			"byteOffset":29640,
+			"byteLength":47488,
+			"byteOffset":142464,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":9880,
-			"byteOffset":39520,
+			"byteLength":47488,
+			"byteOffset":189952,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":19760,
-			"byteOffset":49400,
+			"byteLength":94976,
+			"byteOffset":237440,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":11340,
-			"byteOffset":69160,
+			"byteLength":53352,
+			"byteOffset":332416,
 			"target":34963
 		}
 	],
@@ -180,7 +243,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":80500,
+			"byteLength":385768,
 			"uri":"Snowman.bin"
 		}
 	]

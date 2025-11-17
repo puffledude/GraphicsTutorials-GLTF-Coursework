@@ -256,8 +256,8 @@ void Renderer::loadWinterScene() {
 	ground->AddChild(houseNode);
 	SceneNode* snowmanNode = new SceneNode(&Snowman,Vector4(1, 1, 1, 1), environmentShader); //Scenenode for snowman
 	//SceneNode* snowmanNode = new SceneNode(&Snowman, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for snowman
-	snowmanNode->SetTransform(Matrix4::Translation(Vector3(33.8391, 36.5952, 30.2964)) * Matrix4::Rotation(-90, Vector3(0, 1, 0)));
-	snowmanNode->SetModelScale(Vector3(0.02f, 0.02f, 0.02f));
+	snowmanNode->SetTransform(Matrix4::Translation(Vector3(32.9472, 37.0f, 19.8575)) * Matrix4::Rotation(-45, Vector3(0, 1, 0)) *Matrix4::Rotation((-90), Vector3(1,0,0)));
+	//snowmanNode->SetModelScale(Vector3(0.02f, 0.02f, 0.02f));
 	ground->AddChild(snowmanNode);
 
 

@@ -17,3 +17,6 @@ Amazing Watercolor Texture Red Yellow Tones by rocketPixel on Freepik used under
 
 Wooden Cabin taken from https://sketchfab.com/3d-models/small-cabin-house-9c17c12568314e849a990628e0f4931f
 Small Cabin House (uploaded 05.06.21) used under creative commons Attribution licence.
+
+Snowman model taken from https://sketchfab.com/3d-models/snowman-7d683ce4a9c54f158cc73d65a16a9a29
+Snowman by alixor22 (uploaded 29.03.23) used under creative commons Attribution licence.
