@@ -24,6 +24,11 @@ int main() {
 			cooldown = 0.2f;
 			renderer.switchSeason();
 		}
+		if (Window::GetKeyboard()->KeyDown(KEYBOARD_F) &&cooldown<=0.0f) {
+			cooldown = 0.2f;
+			renderer.setFXAA();
+		}
+
 		cooldown -= w.GetTimer()->GetTimeDeltaSeconds();
 	}
 	return 0;

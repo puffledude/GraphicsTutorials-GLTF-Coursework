@@ -118,5 +118,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Readme.txt" />
+    <Text Include="License.txt" />
   </ItemGroup>
 </Project>

@@ -588,10 +588,18 @@ void Renderer::DrawPostProcessing() {
 	}
 	else if (useFXAA) {
 		BindShader(FXAAShader);
-		glUniform1i(glGetUniformLocation(transitionShader->GetProgram(),
+		glUniform1i(glGetUniformLocation(FXAAShader->GetProgram(),
 			"sceneTex"), 0);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, combineTex);
+		glUniform1i (glGetUniformLocation(FXAAShader->GetProgram(),
+			"depthTex"), 1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, bufferDepthTex);
+		glUniform1i(glGetUniformLocation(FXAAShader->GetProgram(),
+			"width"), width);
+		glUniform1i(glGetUniformLocation(FXAAShader->GetProgram(),
+			"height"), height);
 		quad->Draw();
 	}
 	else {

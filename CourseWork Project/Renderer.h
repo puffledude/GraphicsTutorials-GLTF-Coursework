@@ -16,6 +16,8 @@ public:
 
 	void switchSeason();
 
+	void setFXAA() { useFXAA = !useFXAA; }
+
 
 protected:
 	void DrawNode(SceneNode* n, bool shadow=false);
@@ -99,7 +101,7 @@ protected:
 	bool useFXAA = false;
 	void SetUpPostProcessing();
 	void DrawPostProcessing();
-	void setFXAA(){useFXAA = !useFXAA;}
+	
 
 	//Water stuff
 	UniqueOGLTexture waterTex;
