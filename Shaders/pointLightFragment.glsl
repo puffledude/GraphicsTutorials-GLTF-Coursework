@@ -2,6 +2,7 @@
 
 uniform sampler2D depthTex;
 uniform sampler2D normalTex;
+uniform sampler2D materialTex;
 uniform sampler2D shadowTex;
 
 uniform vec3 cameraPos;
@@ -29,12 +30,6 @@ vec3 worldPos = invClipPos.xyz / invClipPos.w;
 float dist = length(lightPos - worldPos);
 float atten = 1.0 - clamp(dist / lightRadius, 0.0, 1.0);
 
-//diffuseOutput = vec4(vec3(atten), 1.0);
-
-
-//diffuseOutput = vec4(vec3(0,0,1),1.0);
-//specularOutput = vec4(vec3(1,0,0),1.0);
-//return;
 if(atten <= 0.0){
 	discard;
 }
@@ -46,10 +41,14 @@ vec3 viewDir = normalize(cameraPos - worldPos);
 vec3 halfDir = normalize(incident + viewDir);
 
 float lambert = clamp(dot(incident, normal), 0.0, 1.0);
-//diffuseOutput = vec4(lambert, lambert, lambert, 1.0);
+
+float specular = texture(materialTex, texCoord.xy).r;
+float shininess = texture(materialTex, texCoord.xy).g;
+
 float rFactor = clamp(dot(halfDir, normal), 0.0, 1.0);
-float specFactor = clamp(dot(halfDir, normal), 0.0, 1.0);
-specFactor = pow(specFactor, 60.0);
+float specFactor = pow(max(dot(normal, halfDir), 0.0), shininess) * specular;
+//float specFactor = clamp(dot(halfDir, normal), 0.0, 1.0);
+//specFactor = pow(specFactor, 60.0);
 
 
 //For shadowing

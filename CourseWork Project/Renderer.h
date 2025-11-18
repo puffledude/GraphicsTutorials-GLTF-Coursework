@@ -82,6 +82,7 @@ protected:
 	GLuint bufferColourTex;
 	GLuint bufferNormalTex;
 	GLuint bufferDepthTex;
+	GLuint bufferMaterialTex;
 
 	//Point light stuff
 	GLuint pointLightFBO;

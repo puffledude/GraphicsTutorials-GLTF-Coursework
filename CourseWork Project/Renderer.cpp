@@ -63,13 +63,15 @@ void Renderer::SetupDeferred() {
 	glGenFramebuffers(1, &gBufferFBO);
 	glGenFramebuffers(1, &pointLightFBO);
 
-	GLenum buffers[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	GLenum buffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
 
 	GenerateScreenTexture(bufferDepthTex, true);
 	GenerateScreenTexture(bufferColourTex);
 	GenerateScreenTexture(bufferNormalTex);
+	GenerateScreenTexture(bufferMaterialTex);
 	GenerateScreenTexture(lightDiffuseTex);
 	GenerateScreenTexture(lightSpecularTex);
+
 
 	glBindFramebuffer(GL_FRAMEBUFFER, gBufferFBO);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
@@ -78,10 +80,13 @@ void Renderer::SetupDeferred() {
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1,
 		GL_TEXTURE_2D, bufferNormalTex, 0);
 
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2,
+		GL_TEXTURE_2D, bufferMaterialTex, 0);
+
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
 		GL_TEXTURE_2D, bufferDepthTex, 0);
 
-	glDrawBuffers(2, buffers);
+	glDrawBuffers(3, buffers);
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 		return;
@@ -455,8 +460,13 @@ void Renderer::DrawLights() {
 	glBindTexture(GL_TEXTURE_2D, bufferNormalTex);
 
 	glUniform1i(glGetUniformLocation(pointLightShader->GetProgram(),
-		"shadowTex"), 2);
+		"materialTex"), 2);
 	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, bufferMaterialTex);
+
+	glUniform1i(glGetUniformLocation(pointLightShader->GetProgram(),
+		"shadowTex"), 3);
+	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
 	const Vector3 camPos = camera->GetPosition();
 	glUniform3fv(glGetUniformLocation(pointLightShader->GetProgram(), "cameraPos"), 1, (float*)&camPos);
@@ -579,11 +589,6 @@ void Renderer::DrawNode(SceneNode* n, bool shadow) {
 			viewMatrix = camera->BuildViewMatrix();
 			projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
 				(float)width / (float)height, 45.0f);
-			int loc = glGetUniformLocation(nodeShader->GetProgram(), "cameraPos");
-			if (loc >= 0) {
-				const Vector3 camPos = camera->GetPosition();
-				glUniform3fv(loc, 1, (float*)&camPos);
-			}
 		}
 
 		UpdateShaderMatrices();
