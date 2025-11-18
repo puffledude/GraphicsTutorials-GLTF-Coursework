@@ -259,11 +259,20 @@ void Renderer::loadWinterScene() {
 	//*Matrix4::Rotation(30, Vector3(0,1,0)));
 	houseNode->SetModelScale(Vector3(0.5f, 0.5f, 0.5f));
 	ground->AddChild(houseNode);
+
+	SceneNode* secondHouseNode = new SceneNode(&Cabin, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for house
+	secondHouseNode->SetTransform(Matrix4::Translation(Vector3(26.5793, 37.8, 41.7133)) * Matrix4::Rotation(-90, Vector3(1, 0, 0)));
+	secondHouseNode->SetModelScale(Vector3(0.5f, 0.5f, 0.5f));
+	ground->AddChild(secondHouseNode);
+
 	SceneNode* snowmanNode = new SceneNode(&Snowman,Vector4(1, 1, 1, 1), environmentShader); //Scenenode for snowman
 	//SceneNode* snowmanNode = new SceneNode(&Snowman, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for snowman
-	snowmanNode->SetTransform(Matrix4::Translation(Vector3(32.9472, 37.0f, 19.8575)) * Matrix4::Rotation(-45, Vector3(0, 1, 0)) *Matrix4::Rotation((-90), Vector3(1,0,0)));
-	//snowmanNode->SetModelScale(Vector3(0.02f, 0.02f, 0.02f));
+	snowmanNode->SetTransform(Matrix4::Translation(Vector3(32.9472, 37.0f, 19.8575)) *Matrix4::Rotation((-90), Vector3(1,0,0)) * Matrix4::Rotation(-115, Vector3(0, 0, 1)));
 	ground->AddChild(snowmanNode);
+
+	SceneNode* secondSnowmanNode = new SceneNode(&Snowman, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for snowman
+	secondSnowmanNode->SetTransform(Matrix4::Translation(Vector3(29.801, 37.2549, 52.9451)) * Matrix4::Rotation(30, Vector3(0, 1, 0)) * Matrix4::Rotation((-90), Vector3(1, 0, 0)));
+	ground->AddChild(secondSnowmanNode);
 
 
 	/*sun = new Light(Vector3(23.6744, 58.4126, 3.97436), Vector4(1, 1, 1, 1), 100.0f);
@@ -361,7 +370,7 @@ void Renderer::RenderScene() {
 
 	CombineBuffers();
 
-	//std::cout << "Camera location is : " << camera->GetPosition()<< std::endl;
+	std::cout << "Camera location is : " << camera->GetPosition()<< std::endl;
 	//DrawPostProcessing();
 }
 
