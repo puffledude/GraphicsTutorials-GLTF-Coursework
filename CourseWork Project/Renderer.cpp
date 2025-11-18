@@ -549,6 +549,7 @@ void Renderer::CombineBuffers() {
 	projMatrix.ToIdentity();
 	UpdateShaderMatrices();
 	glBindFramebuffer(GL_FRAMEBUFFER, combineFBO);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUniform1i(glGetUniformLocation(combineShader->GetProgram(),
 		"diffuseTex"), 0);
 	glActiveTexture(GL_TEXTURE0);
@@ -594,6 +595,7 @@ void Renderer::DrawPostProcessing() {
 		quad->Draw();
 	}
 	else {
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		BindShader(basicOutShader);
 		glUniform1i(glGetUniformLocation(basicOutShader->GetProgram(),
 			"sceneTex"), 0);
