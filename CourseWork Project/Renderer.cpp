@@ -2,22 +2,6 @@
 #include "../nclgl/Light.h"
 #include "../nclgl/Extra/GLTFLoader.h"
 
-/*
-* Finish deferred lighting. Move sun using arrow keys.
-
-Objectives
-Leaves falling off of trees
-Trees..
-Sea water and pond water.
-Maybe fish in pond?
-
-Then for winter.
-Snow particles.
-Snow on ground and extra specular on snow.
-Frozen pond.
-
-Plus need to set up some form of camera trail.*/
-
 Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
 	projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
 		(float)width / (float)height, 45.0f);
@@ -35,6 +19,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
 	this->LoadEnvironment();
 	this->LoadSkyBox();
 	this->LoadWater();
+	this->SetUpPostProcessing();
 	Shader* fireShader = new Shader("FireVertexShader.glsl", "FireFragmentShader.glsl");
 	fireEmitter = new Emitter(Vector3(28.0235, 38.3, 35.7914), 100, Vector4(1, 0.5, 0, 1), nullptr, fireShader);
 	fireTex = OGLTexture::TextureFromFile(TEXTUREDIR"fire.png");
@@ -62,6 +47,7 @@ void Renderer::SetupDeferred() {
 
 	glGenFramebuffers(1, &gBufferFBO);
 	glGenFramebuffers(1, &pointLightFBO);
+	glGenFramebuffers(1, &combineFBO);
 
 	GLenum buffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
 
@@ -71,7 +57,7 @@ void Renderer::SetupDeferred() {
 	GenerateScreenTexture(bufferMaterialTex);
 	GenerateScreenTexture(lightDiffuseTex);
 	GenerateScreenTexture(lightSpecularTex);
-
+	GenerateScreenTexture(combineTex);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, gBufferFBO);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
@@ -98,6 +84,16 @@ void Renderer::SetupDeferred() {
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1,
 		GL_TEXTURE_2D, lightSpecularTex, 0);
 	glDrawBuffers(2, buffers);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		return;
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, combineFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+		GL_TEXTURE_2D, combineTex, 0);
+
+	glDrawBuffers(1, buffers);
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 		return;
@@ -131,6 +127,12 @@ void Renderer::SetupShadow() {
 	glDrawBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+}
+
+void Renderer::SetUpPostProcessing() {
+	basicOutShader = new Shader("SceneOutVertex.glsl", "SceneOutFragment.glsl");
+	transitionShader = new Shader("TransitionVertex.glsl", "TransitionFragment.glsl");
+	FXAAShader = new Shader("FXAAVertex.glsl", "FXAAFragment.glsl");
 }
 
 void Renderer::LoadEnvironment() {
@@ -338,10 +340,12 @@ Renderer::~Renderer(void)	{
 	glDeleteTextures(1, &bufferDepthTex);
 	glDeleteTextures(1, &lightDiffuseTex);
 	glDeleteTextures(1, &lightSpecularTex);
+	glDeleteTextures(1, &combineTex);
 	glDeleteTextures(1, &shadowTex);
 	glDeleteFramebuffers(1, &shadowFBO);
 	glDeleteFramebuffers(1, &gBufferFBO);
 	glDeleteFramebuffers(1, &pointLightFBO);
+	glDeleteFramebuffers(1, &combineFBO);
 }
 
 void Renderer::switchSeason() {
@@ -370,7 +374,7 @@ void Renderer::RenderScene() {
 
 	CombineBuffers();
 
-	std::cout << "Camera location is : " << camera->GetPosition()<< std::endl;
+	//std::cout << "Camera location is : " << camera->GetPosition()<< std::endl;
 	//DrawPostProcessing();
 }
 
@@ -544,7 +548,7 @@ void Renderer::CombineBuffers() {
 	viewMatrix.ToIdentity();
 	projMatrix.ToIdentity();
 	UpdateShaderMatrices();
-
+	glBindBuffer(GL_FRAMEBUFFER, combineFBO);
 	glUniform1i(glGetUniformLocation(combineShader->GetProgram(),
 		"diffuseTex"), 0);
 	glActiveTexture(GL_TEXTURE0);
@@ -566,6 +570,38 @@ void Renderer::CombineBuffers() {
 	glBindTexture(GL_TEXTURE_2D, bufferDepthTex);
 
 	quad->Draw();
+	glBindBuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::DrawPostProcessing() {
+
+	if (transitionTimer > 0.0f){
+		BindShader(transitionShader);
+		glUniform1i(glGetUniformLocation(transitionShader->GetProgram(),
+			"sceneTex"), 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, combineTex);
+		glUniform1f(glGetUniformLocation(transitionShader->GetProgram(),
+			"timer"), transitionTimer);
+		quad->Draw();
+	}
+	else if (useFXAA) {
+		BindShader(FXAAShader);
+		glUniform1i(glGetUniformLocation(transitionShader->GetProgram(),
+			"sceneTex"), 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, combineTex);
+		quad->Draw();
+	}
+	else {
+		BindShader(basicOutShader);
+		glUniform1i(glGetUniformLocation(basicOutShader->GetProgram(),
+			"sceneTex"), 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, combineTex);
+		quad->Draw();
+	}
+
 }
 
 

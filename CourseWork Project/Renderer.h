@@ -89,6 +89,18 @@ protected:
 	GLuint lightDiffuseTex;
 	GLuint lightSpecularTex;
 
+	//So I can post process
+	GLuint combineFBO;
+	GLuint combineTex;
+
+	Shader* transitionShader;
+	Shader* basicOutShader;
+	Shader* FXAAShader;
+	bool useFXAA = false;
+	void SetUpPostProcessing();
+	void DrawPostProcessing();
+	void setFXAA(){useFXAA = !useFXAA;}
+
 	//Water stuff
 	UniqueOGLTexture waterTex;
 	Shader* waterShader;
@@ -113,6 +125,7 @@ protected:
 
 	int currentFrame = 0.0f;
 	float frameTime = 0.0f;
-
 	float gameFrameTime = 0.0f;
+
+	float transitionTimer = 0.0f;
 };

@@ -146,6 +146,7 @@ void SceneNode::Draw(const OGLRenderer &r, bool shadow)
 			for (int i = 0; i < mesh->GetSubMeshCount(); ++i) {
 				glUniform1i(glGetUniformLocation(shader->GetProgram(), "diffuseTex"), 0);
 				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, materialTextures[i]->GetObjectID());
 				glUniform1i(glGetUniformLocation(shader->GetProgram(), "normalTex"), 1);
 				glActiveTexture(GL_TEXTURE1);
 				glBindTexture(GL_TEXTURE_2D, materialTextures[i++]->GetObjectID());

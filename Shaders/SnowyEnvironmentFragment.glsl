@@ -34,9 +34,9 @@ amount *= smoothstep(0.0, 1.0, IN.normal.y); //Snooth out the transition. If les
 
 vec4 snow = vec4(1.0);
 vec4 texIn = texture(diffuseTex, IN.texCoord);
-vec4 output = mix(texIn, snow, amount);
-output.a = texIn.a;
-fragColour[0] = output;
+vec4  finalColour = mix(texIn, snow, amount);
+finalColour.a = texIn.a;
+fragColour[0] = finalColour;
 //fragColour[0] = texture(diffuseTex, IN.texCoord);
 fragColour[1] = vec4(normal * 0.5 + 0.5, 1.0);
 
