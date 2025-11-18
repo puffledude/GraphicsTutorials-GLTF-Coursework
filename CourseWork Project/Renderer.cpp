@@ -375,7 +375,7 @@ void Renderer::RenderScene() {
 	CombineBuffers();
 
 	//std::cout << "Camera location is : " << camera->GetPosition()<< std::endl;
-	//DrawPostProcessing();
+	DrawPostProcessing();
 }
 
 void Renderer::DrawEnvironment(bool shadow) {
@@ -548,7 +548,7 @@ void Renderer::CombineBuffers() {
 	viewMatrix.ToIdentity();
 	projMatrix.ToIdentity();
 	UpdateShaderMatrices();
-	glBindBuffer(GL_FRAMEBUFFER, combineFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, combineFBO);
 	glUniform1i(glGetUniformLocation(combineShader->GetProgram(),
 		"diffuseTex"), 0);
 	glActiveTexture(GL_TEXTURE0);
@@ -570,7 +570,7 @@ void Renderer::CombineBuffers() {
 	glBindTexture(GL_TEXTURE_2D, bufferDepthTex);
 
 	quad->Draw();
-	glBindBuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Renderer::DrawPostProcessing() {
@@ -599,6 +599,10 @@ void Renderer::DrawPostProcessing() {
 			"sceneTex"), 0);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, combineTex);
+		glUniform1i(glGetUniformLocation(basicOutShader->GetProgram(),
+			"depthTex"), 1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, bufferDepthTex);
 		quad->Draw();
 	}
 
