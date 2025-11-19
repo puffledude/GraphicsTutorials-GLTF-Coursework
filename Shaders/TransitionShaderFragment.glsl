@@ -12,6 +12,6 @@ out vec4 fragColour;
 
 void main(){
 //Use texture lod
-	vec4 sceneColor = textureLod(sceneTex, IN.texCoord, time*10);
+	vec4 sceneColor = textureLod(sceneTex, IN.texCoord, time);
 	fragColour = sceneColor;
 }

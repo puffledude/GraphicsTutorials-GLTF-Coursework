@@ -93,6 +93,13 @@ void Renderer::SetupDeferred() {
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 		GL_TEXTURE_2D, combineTex, 0);
 
+	//Need to move these to where combineTex is generated
+	
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, combineTex);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 	glDrawBuffers(1, buffers);
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
@@ -289,6 +296,7 @@ void Renderer::UpdateScene(float dt) {
 	summerRoot.Update(dt);
 	winterRoot.Update(dt);
 	fireEmitter->Update(dt);
+	transitionTimer -= dt;
 }
 
 void Renderer::LoadSkyBox() { //Actual load order is right, left, up, down , front, back. Need to either rename or just keep it.
@@ -354,6 +362,8 @@ Renderer::~Renderer(void)	{
 }
 
 void Renderer::switchSeason() {
+
+	transitionTimer = 3.0f;
 	isSummer = !isSummer;
 	if (pointLights == &summerPointLights) {
 		pointLights = &winterPointLights;
@@ -576,7 +586,7 @@ void Renderer::DrawPostProcessing() {
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, combineTex);
-	
+	glGenerateMipmap(GL_TEXTURE_2D); 
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, bufferDepthTex);
@@ -589,16 +599,12 @@ void Renderer::DrawPostProcessing() {
 	
 		glUniform1i(glGetUniformLocation(transitionShader->GetProgram(),
 			"sceneTex"), 0);
-		glActiveTexture(GL_TEXTURE0);
-		
-		//Need to move these to where combineTex is generated
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
+		//glActiveTexture(GL_TEXTURE0);
 		glUniform1f(glGetUniformLocation(transitionShader->GetProgram(),
-			"timer"), transitionTimer);
+			"time"), transitionTimer);
 		quad->Draw();
 	}
+
 	else if (useFXAA) {
 		BindShader(FXAAShader);
 		glUniform1i(glGetUniformLocation(FXAAShader->GetProgram(),

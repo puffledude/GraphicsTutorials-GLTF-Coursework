@@ -166,8 +166,8 @@
     <None Include="..\Shaders\SkyboxVertex.glsl" />
     <None Include="..\Shaders\SnowyEnvironmentFragment.glsl" />
     <None Include="..\Shaders\SnowyEnvironmentVertex.glsl" />
+    <None Include="..\Shaders\TransitionShaderFragment.glsl" />
     <None Include="..\Shaders\TransitionShaderVertex.glsl" />
-    <None Include="..\Shaders\TransitionVertexFragment.glsl" />
     <None Include="..\Shaders\WaterFragment.glsl" />
     <None Include="..\Shaders\WaterVertex.glsl" />
   </ItemGroup>
