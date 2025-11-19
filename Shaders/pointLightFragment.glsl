@@ -49,6 +49,18 @@ float rFactor = clamp(dot(halfDir, normal), 0.0, 1.0);
 float specFactor = pow(max(dot(normal, halfDir), 0.0), shininess) * specular;
 //float specFactor = clamp(dot(halfDir, normal), 0.0, 1.0);
 //specFactor = pow(specFactor, 60.0);
+float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 5.0);
+float snowReflectivity =1;  // tweak this value
+float fresnelSpecular = snowReflectivity* fresnel;
+
+float up = clamp(dot(normal, vec3(0,1,0)), 0.0, 1.0);
+float snowMask = pow(up, 3.0);
+
+fresnelSpecular *= snowMask;
+
+
+specFactor = fresnelSpecular + specFactor;
+
 
 
 //For shadowing
@@ -64,4 +76,6 @@ vec3 attenuated = lightColour.xyz * atten;
 
 diffuseOutput = vec4(attenuated * lambert * visability, 1.0);
 specularOutput = vec4(attenuated * specFactor * visability *0.33, 1.0);
+
+
 }
