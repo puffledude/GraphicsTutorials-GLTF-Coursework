@@ -39,7 +39,7 @@ void Renderer::SetupDeferred() {
 	pointLightShader = new Shader("pointLightVertex.glsl", "pointLightFragment.glsl");
 	combineShader = new Shader("combineVertex.glsl", "combineFragment.glsl");
 	winterEnvironmentShader = new Shader("SnowyEnvironmentVertex.glsl", "SnowyEnvironmentFragment.glsl");
-	skeletonShader = new Shader("SkinningVertex.glsl", "bufferFragment.glsl");
+	skeletonShader = new Shader("DeferredSkinningVertex.glsl", "bufferFragment.glsl");
 	if (!environmentShader->LoadSuccess() ||
 		!pointLightShader->LoadSuccess() ||
 		!combineShader->LoadSuccess()){

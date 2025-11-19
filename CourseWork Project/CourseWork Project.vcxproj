@@ -152,6 +152,7 @@
     <None Include="..\Shaders\bumpVertex.glsl" />
     <None Include="..\Shaders\CombineFragment.glsl" />
     <None Include="..\Shaders\CombineVertex.glsl" />
+    <None Include="..\Shaders\DeferredSkinningVertex.glsl" />
     <None Include="..\Shaders\FireFragmentShader.glsl" />
     <None Include="..\Shaders\FireVertexShader.glsl" />
     <None Include="..\Shaders\FXAAFragment.glsl" />

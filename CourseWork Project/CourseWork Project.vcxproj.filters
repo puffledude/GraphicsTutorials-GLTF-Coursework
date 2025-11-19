@@ -118,6 +118,9 @@
     <None Include="..\Shaders\SkinningVertex.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="..\Shaders\DeferredSkinningVertex.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Readme.txt" />
