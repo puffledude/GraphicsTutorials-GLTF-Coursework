@@ -3,6 +3,7 @@ uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projMatrix;
 in vec3 position;
+in vec2 texCoord;
 
 out Vertex{
 vec3 viewDir;

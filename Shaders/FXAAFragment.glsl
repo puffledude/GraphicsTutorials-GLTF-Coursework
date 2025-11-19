@@ -113,9 +113,6 @@ vec4 applyFXAA(vec2 fragCoord, sampler2D tex)
 
 void main(void)
 {
-    float sceneDepth = texture(depthTex, IN.texCoord).r;
-    if (sceneDepth >= 0.9999)
-        discard;
 
    vec2 fragCoord = IN.texCoord * vec2(width, height);
     fragColour = applyFXAA(fragCoord, sceneTex);

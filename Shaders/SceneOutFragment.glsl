@@ -12,8 +12,7 @@ out vec4 fragColour;
 
 void main(void)
 {
-	float sceneDepth = texture(depthTex, IN.texCoord).r;
-	if (sceneDepth >= 0.9999)
-		discard;
+
+
 	fragColour = texture(sceneTex, IN.texCoord);
 }

@@ -2,6 +2,7 @@
 
 uniform samplerCube cubeTex;
 
+
 in Vertex{
 	vec3 viewDir;
 	} IN;

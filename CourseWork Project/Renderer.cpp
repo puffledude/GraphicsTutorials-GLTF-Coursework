@@ -131,7 +131,7 @@ void Renderer::SetupShadow() {
 
 void Renderer::SetUpPostProcessing() {
 	basicOutShader = new Shader("SceneOutVertex.glsl", "SceneOutFragment.glsl");
-	transitionShader = new Shader("TransitionVertex.glsl", "TransitionFragment.glsl");
+	transitionShader = new Shader("TransitionShaderVertex.glsl", "TransitionShaderFragment.glsl");
 	FXAAShader = new Shader("FXAAVertex.glsl", "FXAAFragment.glsl");
 }
 
@@ -333,6 +333,11 @@ Renderer::~Renderer(void)	{
 	delete shadowShader;
 	delete skyboxShader;
 	delete waterShader;
+
+	delete transitionShader;
+	delete FXAAShader;
+	delete basicOutShader;
+
 	delete sphere;
 	delete quad;
 	glDeleteTextures(1, &bufferColourTex);
@@ -365,7 +370,7 @@ void Renderer::switchSeason() {
 /// </summary>
 void Renderer::RenderScene() {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-	DrawSkybox();  
+	//DrawSkybox();  
 	DrawShadowScene();
 
 	DrawEnvironment();
@@ -509,47 +514,40 @@ void Renderer::DrawLights() {
 }
 
 void Renderer::DrawSkybox(bool shadow) {
-	// Draw skybox using LEQUAL so it will render correctly when depth already exists
-	GLint prevDepthFunc = 0;
-	glGetIntegerv(GL_DEPTH_FUNC, &prevDepthFunc);
+	
+	BindShader(skyboxShader);
+	glUniform1i(glGetUniformLocation(skyboxShader->GetProgram(),
+		"cubeTex"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->GetObjectID());
 
-	glDepthMask(GL_FALSE);
-	glDepthFunc(GL_LEQUAL);
 
-	if (!shadow) {
-		BindShader(skyboxShader);
-		glUniform1i(glGetUniformLocation(skyboxShader->GetProgram(),
-			"cubeTex"), 0);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->GetObjectID());
-
-		// Use a view matrix without translation so the skybox appears infinitely far away
-		Matrix4 camView = camera->BuildViewMatrix();
-		// zero out translation components (values 12,13,14 hold translation)
-		camView.values[12] = 0.0f;
-		camView.values[13] = 0.0f;
-		camView.values[14] = 0.0f;
-		viewMatrix = camView;
-		projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
-			(float)width / (float)height, 45.0f);
-	}
+	// Use a view matrix without translation so the skybox appears infinitely far away
+	Matrix4 camView = camera->BuildViewMatrix();
+	// zero out translation components (values 12,13,14 hold translation)
+	camView.values[12] = 0.0f;
+	camView.values[13] = 0.0f;
+	camView.values[14] = 0.0f;
+	viewMatrix = camView;
+	projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
+	(float)width / (float)height, 45.0f);
+	//glEnable(GL_DEPTH_TEST);
 	UpdateShaderMatrices();
 	quad->Draw();
-	glDepthMask(GL_TRUE);
 
-	// restore previous depth func
-	glDepthFunc(prevDepthFunc);
 }
 
 
 void Renderer::CombineBuffers() {
-	BindShader(combineShader);
 	modelMatrix.ToIdentity();
 	viewMatrix.ToIdentity();
 	projMatrix.ToIdentity();
 	UpdateShaderMatrices();
 	glBindFramebuffer(GL_FRAMEBUFFER, combineFBO);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	DrawSkybox();
+	BindShader(combineShader);
+
 	glUniform1i(glGetUniformLocation(combineShader->GetProgram(),
 		"diffuseTex"), 0);
 	glActiveTexture(GL_TEXTURE0);
@@ -576,12 +574,27 @@ void Renderer::CombineBuffers() {
 
 void Renderer::DrawPostProcessing() {
 
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, combineTex);
+	
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, bufferDepthTex);
+
+
 	if (transitionTimer > 0.0f){
+		//Idea. Generate mipmaps out of the combine texture.
+		//Then sample the mipmaps as time goes on. Lower mipmaps blown up are blurrier.
 		BindShader(transitionShader);
+	
 		glUniform1i(glGetUniformLocation(transitionShader->GetProgram(),
 			"sceneTex"), 0);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, combineTex);
+		
+		//Need to move these to where combineTex is generated
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 		glUniform1f(glGetUniformLocation(transitionShader->GetProgram(),
 			"timer"), transitionTimer);
 		quad->Draw();
@@ -590,12 +603,10 @@ void Renderer::DrawPostProcessing() {
 		BindShader(FXAAShader);
 		glUniform1i(glGetUniformLocation(FXAAShader->GetProgram(),
 			"sceneTex"), 0);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, combineTex);
+		
 		glUniform1i (glGetUniformLocation(FXAAShader->GetProgram(),
 			"depthTex"), 1);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, bufferDepthTex);
+		
 		glUniform1i(glGetUniformLocation(FXAAShader->GetProgram(),
 			"width"), width);
 		glUniform1i(glGetUniformLocation(FXAAShader->GetProgram(),
@@ -607,12 +618,10 @@ void Renderer::DrawPostProcessing() {
 		BindShader(basicOutShader);
 		glUniform1i(glGetUniformLocation(basicOutShader->GetProgram(),
 			"sceneTex"), 0);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, combineTex);
+		//glActiveTexture(GL_TEXTURE0);
+		//glBindTexture(GL_TEXTURE_2D, combineTex);
 		glUniform1i(glGetUniformLocation(basicOutShader->GetProgram(),
 			"depthTex"), 1);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, bufferDepthTex);
 		quad->Draw();
 	}
 
