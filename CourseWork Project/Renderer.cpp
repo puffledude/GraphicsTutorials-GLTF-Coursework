@@ -227,8 +227,8 @@ void Renderer::loadSummerScene() {
 	ground->AddChild(tentNode);
 	
 	SceneNode* birdNode = new SceneNode(&Bird, Vector4(1, 1, 1, 1), skeletonShader); //Scenenode for bird
-	birdNode->SetTransform(Matrix4::Translation(Vector3(40.0f, 50.0f, 20.0f)) * Matrix4::Rotation(-90, Vector3(1, 0, 0)) * Matrix4::Rotation(45, Vector3(0, 1, 0)));
-	birdNode->SetModelScale(Vector3(1.0f, 1.0f, 1.0f));
+	birdNode->SetTransform(Matrix4::Translation(Vector3(40.0f, 40.0f, 34.0f)));
+	birdNode->SetModelScale(Vector3(0.3f, 0.3f, 0.3f));
 	birdNode->SetBoundingRadius(2.0f);
 	ground->AddChild(birdNode);
 
@@ -293,8 +293,8 @@ void Renderer::loadWinterScene() {
 	ground->AddChild(secondSnowmanNode);
 
 	SceneNode* birdNode = new SceneNode(&Bird, Vector4(1, 1, 1, 1), skeletonShader); //Scenenode for bird
-	birdNode->SetTransform(Matrix4::Translation(Vector3(40.0f, 50.0f, 20.0f)) * Matrix4::Rotation(-90, Vector3(1, 0, 0)) * Matrix4::Rotation(45, Vector3(0, 1, 0)));
-	birdNode->SetModelScale(Vector3(1.0f, 1.0f, 1.0f));
+	birdNode->SetTransform(Matrix4::Translation(Vector3(40.0f, 35.0f, 20.0f)));
+	birdNode->SetModelScale(Vector3(0.1f, 0.1f, 0.1f));
 	birdNode->SetBoundingRadius(2.0f);
 	ground->AddChild(birdNode);
 	/*sun = new Light(Vector3(23.6744, 58.4126, 3.97436), Vector4(1, 1, 1, 1), 100.0f);

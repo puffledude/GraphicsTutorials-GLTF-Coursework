@@ -15,6 +15,8 @@ SceneNode::SceneNode()
 	boundingRadius = 1.0f;
 	distanceFromCamera = 0.0f;
 	texture = 0;
+	this->transform.ToIdentity();
+	this->worldTransform.ToIdentity();
 }
 
 /// <summary>
@@ -28,6 +30,8 @@ SceneNode::SceneNode(Mesh* m, MeshMaterial* mat, MeshAnimation* anim ,Vector4 co
 	this->mesh = m;
 	this->material = mat;
 	this->animation = anim;
+	this->transform.ToIdentity();
+	this->worldTransform.ToIdentity();
 	if (material) {
 		for (int i = 0; i < mesh->GetSubMeshCount(); ++i) {
 			const MeshMaterialEntry* matEntry =
@@ -63,6 +67,7 @@ SceneNode::SceneNode(GLTFScene* gltfScene, Vector4 colour, Shader* shader) {
 	this->mesh = nullptr;
 	this->material = nullptr;
 	this->animation = nullptr;
+
 	this->gltfScene = gltfScene;
 	this->colour = colour;
 	this->shader = shader;
@@ -71,6 +76,8 @@ SceneNode::SceneNode(GLTFScene* gltfScene, Vector4 colour, Shader* shader) {
 	boundingRadius = 1.0f;
 	distanceFromCamera = 0.0f;
 	texture = 0;
+	this->transform.ToIdentity();
+	this->worldTransform.ToIdentity();
 }
 
 SceneNode::SceneNode(HeightMap* heightMap, Vector4 colour, Shader* shader) {
@@ -84,6 +91,8 @@ SceneNode::SceneNode(HeightMap* heightMap, Vector4 colour, Shader* shader) {
 	boundingRadius = 1.0f;
 	distanceFromCamera = 0.0f;
 	texture = 0;
+	this->transform.ToIdentity();
+	this->worldTransform.ToIdentity();
 }
 
 
@@ -192,23 +201,6 @@ void SceneNode::Draw(const OGLRenderer &r, bool shadow)
 			}
 
 			if (anim != nullptr) {
-				//frameTime -= gameFrameTime;
-
-				//if (frameTime <= 0) {
-				//	currentFrame++;
-
-				//	frameTime += 1.0f / anim->GetFrameRate();
-				//	currentFrame = currentFrame % anim->GetFrameCount();
-
-				//	const Matrix4* inverseBindPose = mesh->GetInverseBindPose();
-
-				//	const Matrix4* joints = anim->GetJointData(currentFrame);
-
-				//	/*for (int i = 0; i < skeleton.size(); ++i) {
-				//		skeleton[i] = joints[i] * inverseBindPose[i];
-				//	}*/
-				//}
-				
 				glUniform1i(glGetUniformLocation(shader->GetProgram(), "diffuseTex"), 0);
 
 				vector<Matrix4> frameMatrices;
@@ -256,11 +248,13 @@ void SceneNode::Update(float dt)
 				frameTime += 1.0f / animation->GetFrameRate();
 			}
 		}
-		SharedMeshAnim anim = gltfScene->animations.size() > 0 ? gltfScene->animations[0] : nullptr;
-		if (anim) {
-			while (frameTime < 0.0f) {
-				currentFrame = (currentFrame + 1) % anim->GetFrameCount();
-				frameTime += 1.0f / anim->GetFrameRate();
+		if (gltfScene) {
+			SharedMeshAnim anim = gltfScene->animations.size() > 0 ? gltfScene->animations[0] : nullptr;
+			if (anim) {
+				while (frameTime < 0.0f) {
+					currentFrame = (currentFrame + 1) % anim->GetFrameCount();
+					frameTime += 1.0f / anim->GetFrameRate();
+				}
 			}
 		}
 	}
@@ -273,6 +267,16 @@ void SceneNode::Update(float dt)
 			frameTime += 1.0f / animation->GetFrameRate();
 			}
 		}
+		if (gltfScene) {
+			SharedMeshAnim anim = gltfScene->animations.size() > 0 ? gltfScene->animations[0] : nullptr;
+			if (anim) {
+				while (frameTime < 0.0f) {
+					currentFrame = (currentFrame + 1) % anim->GetFrameCount();
+					frameTime += 1.0f / anim->GetFrameRate();
+				}
+			}
+		}
+
 	}
 	for (vector<SceneNode*>::iterator i = children.begin(); i != children.end(); ++i) {
 		(*i)->Update(dt);
