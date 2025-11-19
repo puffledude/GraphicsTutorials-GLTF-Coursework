@@ -14,8 +14,12 @@ public:
 	void RenderScene()				override;
 	void UpdateScene(float dt)	override;
 
-	void switchSeason();
+	
 
+	void startTransition() {
+		transitionTimer = transitionDuration;
+		transitioned = false;
+	}
 	void setFXAA() { useFXAA = !useFXAA; }
 
 
@@ -101,7 +105,7 @@ protected:
 	bool useFXAA = false;
 	void SetUpPostProcessing();
 	void DrawPostProcessing();
-	
+	void switchSeason();
 
 	//Water stuff
 	UniqueOGLTexture waterTex;
@@ -129,5 +133,7 @@ protected:
 	float frameTime = 0.0f;
 	float gameFrameTime = 0.0f;
 
+	float transitionDuration = 4.0f;
 	float transitionTimer = 0.0f;
+	bool transitioned = true;
 };

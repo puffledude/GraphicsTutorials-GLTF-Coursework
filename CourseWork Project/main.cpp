@@ -22,7 +22,7 @@ int main() {
 		}
 		if (Window::GetKeyboard()->KeyDown(KEYBOARD_C) &&cooldown<=0.0f) {
 			cooldown = 0.2f;
-			renderer.switchSeason();
+			renderer.startTransition();
 		}
 		if (Window::GetKeyboard()->KeyDown(KEYBOARD_F) &&cooldown<=0.0f) {
 			cooldown = 0.2f;

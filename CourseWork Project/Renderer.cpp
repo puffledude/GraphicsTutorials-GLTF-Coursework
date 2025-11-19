@@ -363,7 +363,6 @@ Renderer::~Renderer(void)	{
 
 void Renderer::switchSeason() {
 
-	transitionTimer = 3.0f;
 	isSummer = !isSummer;
 	if (pointLights == &summerPointLights) {
 		pointLights = &winterPointLights;
@@ -596,13 +595,27 @@ void Renderer::DrawPostProcessing() {
 		//Idea. Generate mipmaps out of the combine texture.
 		//Then sample the mipmaps as time goes on. Lower mipmaps blown up are blurrier.
 		BindShader(transitionShader);
-	
-		glUniform1i(glGetUniformLocation(transitionShader->GetProgram(),
-			"sceneTex"), 0);
-		//glActiveTexture(GL_TEXTURE0);
-		glUniform1f(glGetUniformLocation(transitionShader->GetProgram(),
-			"time"), transitionTimer);
-		quad->Draw();
+		for (int i = 0; i < 5; i++) {
+
+			glUniform1i(glGetUniformLocation(transitionShader->GetProgram(),
+				"sceneTex"), 0);
+			//glActiveTexture(GL_TEXTURE0);
+			glUniform1f(glGetUniformLocation(transitionShader->GetProgram(),
+				"time"), transitionTimer);
+			glUniform1i(glGetUniformLocation(transitionShader->GetProgram(),
+				"isVertical"), 0);
+			quad->Draw();
+
+			glUniform1i(glGetUniformLocation(transitionShader->GetProgram(),
+				"isVertical"), 1);
+			quad->Draw();
+
+		}
+		if (!transitioned) {
+			switchSeason();
+			transitioned = true;
+		}
+		
 	}
 
 	else if (useFXAA) {
