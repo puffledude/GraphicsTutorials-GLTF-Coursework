@@ -9,7 +9,7 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
 		(float)width / (float)height, 45.0f);
 	camera = new Camera(0.0f, 180.0f, Vector3(-0.5f, 1.5, -3.0f));
 
-	GLTFLoader::Load("../GLTF/CesiumMan/CesiumMan.gltf", animatedScene);
+	GLTFLoader::Load("../GLTF/Bird/Bird.gltf", animatedScene);
 	GLTFLoader::Load("../GLTF/Tent/Tent.gltf", staticScene);
 	std::cout<<"Loaded static scene with "<< staticScene.meshes.size()<<" meshes and "
 		<< staticScene.materials.size() << " materials." << std::endl;
@@ -98,9 +98,9 @@ void Renderer::DrawAnimatedScene() {
 
 		const Matrix4* joints = anim->GetJointData(currentFrame);
 
-		for (int i = 0; i < skeleton.size(); ++i) {
+		/*for (int i = 0; i < skeleton.size(); ++i) {
 			skeleton[i] = joints[i] * inverseBindPose[i];
-		}
+		}*/
 	}
 
 	BindShader(skeletonShader);

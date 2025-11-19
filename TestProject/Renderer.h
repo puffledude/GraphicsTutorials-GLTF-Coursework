@@ -19,7 +19,7 @@ protected:
 	GLTFScene staticScene;
 
 
-	std::vector<Matrix4> skeleton;
+	//std::vector<Matrix4> skeleton;
 
 	Shader* skeletonShader;
 	Shader* staticShader;

@@ -159,6 +159,8 @@ void SceneNode::Draw(const OGLRenderer &r, bool shadow)
 	}
 	else if (gltfScene && gltfScene->meshes.size() > 0) {
 		SharedMesh		mesh = gltfScene->meshes[0];
+		//SharedMeshAnim anim = gltfScene->animations[0];
+		SharedMeshAnim anim = gltfScene->animations.size() > 0 ? gltfScene->animations[0] : nullptr;
 		GLTFMaterial	material = gltfScene->materials[0];
 
 		for (int i = 0; i < mesh->GetSubMeshCount(); ++i) {
@@ -189,6 +191,51 @@ void SceneNode::Draw(const OGLRenderer &r, bool shadow)
 				//glActiveTexture(GL_TEXTURE0);
 			}
 
+			if (anim != nullptr) {
+				//frameTime -= gameFrameTime;
+
+				//if (frameTime <= 0) {
+				//	currentFrame++;
+
+				//	frameTime += 1.0f / anim->GetFrameRate();
+				//	currentFrame = currentFrame % anim->GetFrameCount();
+
+				//	const Matrix4* inverseBindPose = mesh->GetInverseBindPose();
+
+				//	const Matrix4* joints = anim->GetJointData(currentFrame);
+
+				//	/*for (int i = 0; i < skeleton.size(); ++i) {
+				//		skeleton[i] = joints[i] * inverseBindPose[i];
+				//	}*/
+				//}
+				
+				glUniform1i(glGetUniformLocation(shader->GetProgram(), "diffuseTex"), 0);
+
+				vector<Matrix4> frameMatrices;
+				frameMatrices.resize(mesh->GetJointCount());
+
+				const Matrix4* invBindPose = mesh->GetInverseBindPose();
+				const Matrix4* frameData = anim->GetJointData(currentFrame);
+
+				for (unsigned int i = 0; i < mesh->GetJointCount(); ++i) {
+					frameMatrices[i] = (frameData[i] * invBindPose[i]);
+				}
+
+				int j = glGetUniformLocation(shader->GetProgram(), "joints");
+				glUniformMatrix4fv(j, frameMatrices.size(), false,
+					(float*)frameMatrices.data());
+
+				glActiveTexture(GL_TEXTURE0);
+				for (int i = 0; i < mesh->GetSubMeshCount(); ++i) {
+
+					//Material layer n refers to submesh n
+					GLTFMaterialLayer& layer = material.allLayers[i];
+
+					glBindTexture(GL_TEXTURE_2D, layer.albedo->GetObjectID());
+					mesh->DrawSubMesh(i);
+				}
+				continue;
+			}
 			mesh->DrawSubMesh(i);
 		}
 	}
@@ -207,6 +254,13 @@ void SceneNode::Update(float dt)
 			while (frameTime < 0.0f) {
 				currentFrame = (currentFrame + 1) % animation->GetFrameCount();
 				frameTime += 1.0f / animation->GetFrameRate();
+			}
+		}
+		SharedMeshAnim anim = gltfScene->animations.size() > 0 ? gltfScene->animations[0] : nullptr;
+		if (anim) {
+			while (frameTime < 0.0f) {
+				currentFrame = (currentFrame + 1) % anim->GetFrameCount();
+				frameTime += 1.0f / anim->GetFrameRate();
 			}
 		}
 	}

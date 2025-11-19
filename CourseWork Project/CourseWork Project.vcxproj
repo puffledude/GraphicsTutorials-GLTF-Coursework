@@ -162,6 +162,7 @@
     <None Include="..\Shaders\SceneOutVertex.glsl" />
     <None Include="..\Shaders\ShadowFragment.glsl" />
     <None Include="..\Shaders\ShadowVertex.glsl" />
+    <None Include="..\Shaders\SkinningVertex.glsl" />
     <None Include="..\Shaders\SkyboxFragment.glsl" />
     <None Include="..\Shaders\SkyboxVertex.glsl" />
     <None Include="..\Shaders\SnowyEnvironmentFragment.glsl" />

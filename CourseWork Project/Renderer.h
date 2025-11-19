@@ -33,7 +33,9 @@ protected:
 	GLTFScene Tent;
 	GLTFScene Cabin;
 	GLTFScene Snowman;
-	//MeshMaterial* SnowmanMat;
+	GLTFScene Bird;
+
+	Shader* skeletonShader;
 
 	void LoadEnvironment();
 

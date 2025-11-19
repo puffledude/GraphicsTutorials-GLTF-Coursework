@@ -39,6 +39,7 @@ void Renderer::SetupDeferred() {
 	pointLightShader = new Shader("pointLightVertex.glsl", "pointLightFragment.glsl");
 	combineShader = new Shader("combineVertex.glsl", "combineFragment.glsl");
 	winterEnvironmentShader = new Shader("SnowyEnvironmentVertex.glsl", "SnowyEnvironmentFragment.glsl");
+	skeletonShader = new Shader("SkinningVertex.glsl", "bufferFragment.glsl");
 	if (!environmentShader->LoadSuccess() ||
 		!pointLightShader->LoadSuccess() ||
 		!combineShader->LoadSuccess()){
@@ -167,6 +168,10 @@ void Renderer::LoadEnvironment() {
 	if (Snowman.meshes.size() == 0) {
 		return;
 	}
+	GLTFLoader::Load("../GLTF/Bird/Bird.gltf", Bird);
+	if (Bird.meshes.size() == 0) {
+		return;
+	}
 	/*Snowman = Mesh::LoadFromMeshFile("Snowman.msh");
 	SnowmanMat = new MeshMaterial("Snowman.Mat");*/
 	summerPointLights = vector<Light*>();
@@ -221,7 +226,11 @@ void Renderer::loadSummerScene() {
 	tentNode->SetBoundingRadius(5.0f);
 	ground->AddChild(tentNode);
 	
-
+	SceneNode* birdNode = new SceneNode(&Bird, Vector4(1, 1, 1, 1), skeletonShader); //Scenenode for bird
+	birdNode->SetTransform(Matrix4::Translation(Vector3(40.0f, 50.0f, 20.0f)) * Matrix4::Rotation(-90, Vector3(1, 0, 0)) * Matrix4::Rotation(45, Vector3(0, 1, 0)));
+	birdNode->SetModelScale(Vector3(1.0f, 1.0f, 1.0f));
+	birdNode->SetBoundingRadius(2.0f);
+	ground->AddChild(birdNode);
 
 	pointLights->push_back(sun);
 
@@ -283,7 +292,11 @@ void Renderer::loadWinterScene() {
 	secondSnowmanNode->SetTransform(Matrix4::Translation(Vector3(29.801, 37.2549, 52.9451)) * Matrix4::Rotation(30, Vector3(0, 1, 0)) * Matrix4::Rotation((-90), Vector3(1, 0, 0)));
 	ground->AddChild(secondSnowmanNode);
 
-
+	SceneNode* birdNode = new SceneNode(&Bird, Vector4(1, 1, 1, 1), skeletonShader); //Scenenode for bird
+	birdNode->SetTransform(Matrix4::Translation(Vector3(40.0f, 50.0f, 20.0f)) * Matrix4::Rotation(-90, Vector3(1, 0, 0)) * Matrix4::Rotation(45, Vector3(0, 1, 0)));
+	birdNode->SetModelScale(Vector3(1.0f, 1.0f, 1.0f));
+	birdNode->SetBoundingRadius(2.0f);
+	ground->AddChild(birdNode);
 	/*sun = new Light(Vector3(23.6744, 58.4126, 3.97436), Vector4(1, 1, 1, 1), 100.0f);
 	pointLights->push_back(sun);*/
 }
