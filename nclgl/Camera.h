@@ -37,7 +37,7 @@ public:
 
 	~Camera(void){};
 
-	void UpdateCamera(float msec = 10.0f);
+	void UpdateCamera(float dt = 10.0f);
 
 	//Builds a view matrix for the current camera variables, suitable for sending straight
 	//to a vertex skeletonShader (i.e it's already an 'inverse camera matrix').
@@ -58,12 +58,21 @@ public:
 	//Sets pitch, in degrees
 	void	SetPitch(float p) {pitch = p;}
 
+	CameraRail* getRail(){ return rail; }
+
+	void SetRail(CameraRail* track) {
+		rail = track;
+		freeCam = false;
+	}
+
 protected:
 	float cameraSpeed;
 	float yaw;
 	float pitch;
 	float roll;
-	bool freeCam;
-	CameraRail rail;
+	bool freeCam =true;
+	CameraRail* rail;
 	Vector3 position;
+	Vector3 targetPos = Vector3(0,0,0);
+	Vector2 targetRot = Vector2(0,0);
 };

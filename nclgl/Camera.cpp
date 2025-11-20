@@ -17,6 +17,19 @@ void Camera::UpdateCamera(float dt) {
 		yaw -= 360.0f;
 	}
 
+	/*if (rail && !freeCam) {
+		if (targetPos == Vector3(0, 0, 0))
+		{
+			this->targetPos = rail->points[0].first;
+			this->targetRot = rail->points[0].second;
+		}
+		Vector3 posDir = targetPos - this->GetPosition();
+		posDir.Normalise();
+		Vector2 rotDir = targetRot - Vector2(this->yaw, this->pitch);
+		rotDir.n
+
+	}*/
+
 	Matrix4 rotation = Matrix4::Rotation(yaw, Vector3(0, 1, 0));
 
 	Vector3 forward = rotation * Vector3(0, 0, -1);
@@ -26,28 +39,36 @@ void Camera::UpdateCamera(float dt) {
 
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_W)) {
 		position += forward * speed;
+		freeCam = true;
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_S)) {
 		position -= forward * speed;
+		freeCam = true;
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_A)) {
 		position -= right * speed;
+		freeCam = true;
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_D)) {
 		position += right * speed;
+		freeCam = true;
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_Q)) {
 		roll -= 0.2;
+		freeCam = true;
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_E)) {
 		roll += 0.2;
+		freeCam = true;
 	}
 
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_SPACE)) {
 		position.y += speed;
+		freeCam = true;
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_CONTROL)) {
 		position.y -= speed;
+		freeCam = true;
 	}
 }
 
