@@ -190,26 +190,54 @@ void Renderer::LoadEnvironment() {
 }
 
 void Renderer::SetupCameraRail() {
-	std::vector<Vector3> locations =
-	{
-		Vector3(64.1425,41.2855,-7.66836),
+
+	/*	Vector3(64.1425,41.2855,-7.66836),
 		Vector3(52.3752,55.0436,5.2218),
 		Vector3(45.0861,39.3052,14.1977),
 		Vector3(42.3031,58.3789,12.7155),
 		Vector3(64.059,55.4009,26.7602),
 		Vector3(47.4524,56.9612,64.813),
-		Vector3(4.94905,57.5148,51.193)
+		Vector3(4.94905,57.5148,51.193)*/
+	std::vector<Vector3> locations =
+	{
+		Vector3(77.7753,66.8221,41.516),
+		Vector3(73.1291,41.876,41.7384),
+		Vector3(65.5819,41.876,59.1553),
+		Vector3(53.1012,41.876,64.9889),
+		Vector3(33.2492,41.876,68.9408),
+		Vector3(15.7839,41.876,63.6034),
+		Vector3(3.71925,41.876,42.4278),
+		Vector3(3.59332,41.876,24.7504),
+		Vector3(31.5524,41.876,3.37514),
+		Vector3(31.8229,48.9634,10.6924),
+		Vector3(8.6363,48.9634,24.0381),
+		Vector3(65.6591,54.4532,41.735),
+		Vector3(50.5269,40.9728,77.6047)
 	};
 
+	/*	Vector2(146.54, -14.49),
+	Vector2(151.999, -35.07),
+	Vector2(161.801, -4.06001),
+	Vector2(163.341, -43.1899),
+	Vector2(107.13, -36.4699),
+	Vector2(19.7001, -38.0799),
+	Vector2(285.687, -37.4499)*/
 	std::vector<Vector2> rotations =
 	{
-		Vector2(146.54, -14.49),
-		Vector2(151.999, -35.07),
-		Vector2(161.801, -4.06001),
-		Vector2(163.341, -43.1899),
-		Vector2(107.13, -36.4699),
-		Vector2(19.7001, -38.0799),
-		Vector2(285.687, -37.4499)
+		Vector2(82.9856,-36.8606),
+		Vector2(81.4456,-11.4508),
+		Vector2(51.1357,-7.46077),
+		Vector2(34.0557,-6.69077),
+		Vector2(354.715,-4.94077),
+		Vector2(327.904,-5.85077),
+		Vector2(280.163,-7.11078),
+		Vector2(248.452,-6.69077),
+		Vector2(190.63,-3.33077),
+		Vector2(199.17,-26.4307),
+		Vector2(250.552,-20.9708),
+		Vector2(75.5507,-31.1907),
+		Vector2(18.1508,-7.88073)
+
 	};
 	std::vector<std::pair<Vector3, Vector2>> points;
 	for (size_t i = 0; i < locations.size(); ++i) {
@@ -786,5 +814,5 @@ void Renderer::GenerateScreenTexture(GLuint& into, bool depth) {
 }
 
 void Renderer::OutputCameraPos() {
-	std::cout << "Camera location is : " << camera->GetPosition()<< " Camera Pitch is: " <<camera->GetPitch()<< " Camera yaw is: "<<camera->GetYaw() << std::endl;
+	std::cout << "Camera location is : " << camera->GetPosition()<< " Camera Rotation is: " << Vector2(camera->GetYaw(), camera->GetPitch())<< std::endl;
 }
