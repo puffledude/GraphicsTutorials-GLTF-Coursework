@@ -193,13 +193,16 @@ void Renderer::SetupCameraRail() {
 	{
 		Vector3(64.1425,41.2855,-7.66836),
 		Vector3(52.3752,55.0436,5.2218),
-
+		Vector3(45.0861,39.3052,14.1977),
+		Vector3(42.3031,58.3789,12.7155)
 	};
 
 	std::vector<Vector2> rotations =
 	{
 		Vector2(146.54, -14.49),
-		Vector2(151.999, -35.07)
+		Vector2(151.999, -35.07),
+		Vector2(161.801, -4.06001),
+		Vector2(163.341, -43.1899),
 	};
 }
 
