@@ -27,5 +27,5 @@ if (texture(diffuseTex, IN.texCoord).a < 0.1){
 
 fragColour[0] = texture(diffuseTex, IN.texCoord);
 fragColour[1] = vec4(normal * 0.5 + 0.5, 1.0);
-fragColour[2] = fragColour[2] = vec4(0.1, 16.0, 0.0, 1.0);  //Default values
+fragColour[2] = vec4(0.1, 16.0, 0.0, 1.0);  //Default values
 }

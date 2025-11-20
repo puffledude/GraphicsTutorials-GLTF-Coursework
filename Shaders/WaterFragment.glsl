@@ -11,7 +11,7 @@ in Vertex{
 	vec3 worldPos;
 } IN;
 
-out vec4 fragColour;
+out vec4 fragColour[3];
 
 void main(void)
 {
@@ -21,6 +21,8 @@ void main(void)
 	vec3 reflectDir = reflect(-viewDir, normalize(IN.normal));
 	vec4 reflectTex = texture(cubeTex, reflectDir);
 
-	fragColour = reflectTex +(diffuse * 0.25);
-	fragColour.a = 1.0;
+	fragColour[0] = reflectTex +(diffuse * 0.25);
+	fragColour[0].a = 1.0;
+	fragColour[1] = vec4(0,1,0,1);
+	fragColour[2] = vec4(0.5, 64.0, 0.0, 1.0); 
 }
