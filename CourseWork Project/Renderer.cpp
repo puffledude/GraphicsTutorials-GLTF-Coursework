@@ -188,6 +188,21 @@ void Renderer::LoadEnvironment() {
 	centre = new Light(Vector3(36.8914, 30.1335, 34.4191), Vector4(0, 0, 0, 0), 0);
 }
 
+void Renderer::SetupCameraRail() {
+	std::vector<Vector3> locations =
+	{
+		Vector3(64.1425,41.2855,-7.66836),
+		Vector3(52.3752,55.0436,5.2218),
+
+	};
+
+	std::vector<Vector2> rotations =
+	{
+		Vector2(146.54, -14.49),
+		Vector2(151.999, -35.07)
+	};
+}
+
 void Renderer::loadSummerScene() {
 	this->summerRoot = SceneNode();
 	SceneNode* ground = new SceneNode(&Environment, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for environment
@@ -401,7 +416,6 @@ void Renderer::RenderScene() {
 
 	CombineBuffers();
 
-	//std::cout << "Camera location is : " << camera->GetPosition()<< std::endl;
 	DrawPostProcessing();
 }
 
@@ -751,4 +765,8 @@ void Renderer::GenerateScreenTexture(GLuint& into, bool depth) {
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+}
+
+void Renderer::OutputCameraPos() {
+	std::cout << "Camera location is : " << camera->GetPosition()<< " Camera Pitch is: " <<camera->GetPitch()<< " Camera yaw is: "<<camera->GetYaw() << std::endl;
 }

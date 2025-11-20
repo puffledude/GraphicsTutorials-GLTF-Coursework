@@ -5,6 +5,7 @@
 #include "../NCLGL/SceneNode.h"
 #include "../nclgl/Light.h"
 #include "../nclgl/Emitter.h"
+#include "../nclgl/CameraRail.h"
 #include "waterStruct.h"
 class Renderer : public OGLRenderer {
 public:
@@ -21,7 +22,7 @@ public:
 		transitioned = false;
 	}
 	void setFXAA() { useFXAA = !useFXAA; }
-
+	void OutputCameraPos();
 
 protected:
 	void DrawNode(SceneNode* n, bool shadow=false);
@@ -129,7 +130,9 @@ protected:
 
 
 	Camera* camera;
-
+	CameraRail cameraRail;
+	
+	void SetupCameraRail();
 
 	int currentFrame = 0.0f;
 	float frameTime = 0.0f;

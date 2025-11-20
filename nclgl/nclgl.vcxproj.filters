@@ -99,6 +99,7 @@
     <ClInclude Include="Light.h" />
     <ClInclude Include="Emitter.h" />
     <ClInclude Include="particle.h" />
+    <ClInclude Include="CameraRail.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GLAD">

@@ -28,6 +28,10 @@ int main() {
 			cooldown = 0.2f;
 			renderer.setFXAA();
 		}
+		if (Window::GetKeyboard()->KeyDown(KEYBOARD_P) && cooldown <= 0.0f) {
+			cooldown = 0.2f;
+			renderer.OutputCameraPos();
+		}
 
 		cooldown -= w.GetTimer()->GetTimeDeltaSeconds();
 	}
