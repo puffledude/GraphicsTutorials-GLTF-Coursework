@@ -17,17 +17,22 @@ _-_-_-_-_-_-_-""  ""
 #include "Matrix4.h"
 #include "Vector3.h"
 
+
 class Camera	{
 public:
-	Camera(void){
-		yaw		= 0.0f;
-		pitch	= 0.0f;
+	Camera(void) {
+		yaw = 0.0f;
+		pitch = 0.0f;
+		this->roll = 0.0f;
+		cameraSpeed = 10.0f;
 	};
 
-	Camera(float pitch, float yaw, Vector3 position){
-		this->pitch		= pitch;
-		this->yaw		= yaw;
-		this->position	= position;
+	Camera(float pitch, float yaw, Vector3 position) {
+		this->pitch = pitch;
+		this->yaw = yaw;
+		this->roll = 0.0f;
+		this->position = position;
+		cameraSpeed = 10.0f;
 	}
 
 	~Camera(void){};
@@ -54,7 +59,9 @@ public:
 	void	SetPitch(float p) {pitch = p;}
 
 protected:
-	float	yaw;
-	float	pitch;
+	float cameraSpeed;
+	float yaw;
+	float pitch;
+	float roll;
 	Vector3 position;
 };
