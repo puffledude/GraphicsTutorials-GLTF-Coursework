@@ -478,7 +478,7 @@ void Renderer::DrawShadowScene() {
 
 	viewMatrix = Matrix4::BuildViewMatrix(sun->GetPosition(),
 		centre->GetPosition());
-	projMatrix = Matrix4::Perspective(1.0f, 1000, 1.0f, 45.0f);
+	projMatrix = Matrix4::Perspective(1.0f, 1000, 1.0f, 75.0f);
 	shadowMatrix = projMatrix * viewMatrix;
 
 	DrawEnvironment(true);
@@ -569,7 +569,7 @@ void Renderer::DrawSkybox(bool shadow) {
 	camView.values[14] = 0.0f;
 	viewMatrix = camView;
 	projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
-	(float)width / (float)height, 45.0f);
+	(float)width / (float)height, 90.0f);
 	//glEnable(GL_DEPTH_TEST);
 	UpdateShaderMatrices();
 	quad->Draw();
