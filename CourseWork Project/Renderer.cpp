@@ -742,8 +742,8 @@ void Renderer::DrawWater(bool shadow) {
 
 	//Want to cover entrie size of the scene at height 32. Go from x,z(0,0) to x,z (75,75)
 
-	modelMatrix = Matrix4::Translation(Vector3(0,32,0)) *
-		Matrix4::Scale(Vector3(75.0f, 1.0f, 75.0f))*
+	modelMatrix = Matrix4::Translation(Vector3(50,32,35)) *
+		Matrix4::Scale(Vector3(55.0f, 1.0f, 50.0f))*
 		Matrix4::Rotation(-90, Vector3(1, 0, 0));
 	UpdateShaderMatrices();
 	quad->Draw();

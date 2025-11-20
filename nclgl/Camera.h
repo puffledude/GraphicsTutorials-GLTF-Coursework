@@ -16,7 +16,7 @@ _-_-_-_-_-_-_-""  ""
 #include "Window.h"
 #include "Matrix4.h"
 #include "Vector3.h"
-
+#include "CameraRail.h"
 
 class Camera	{
 public:
@@ -63,5 +63,7 @@ protected:
 	float yaw;
 	float pitch;
 	float roll;
+	bool freeCam;
+	CameraRail rail;
 	Vector3 position;
 };
