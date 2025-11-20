@@ -34,6 +34,18 @@ public:
 		y = 0.0f;
 	}
 
+	void Normalize() {
+		float length = sqrt(x * x + y * y);
+		if (length != 0.0f){
+			x /= length;
+			y /= length;
+		}
+	}
+
+	float Length() {
+		return sqrt(x * x + y * y);
+	}
+
 	inline friend std::ostream& operator<<(std::ostream& o, const Vector2& v){
 		o << "Vector2(" << v.x << "," << v.y << ")" << std::endl;
 		return o;

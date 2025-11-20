@@ -72,6 +72,7 @@ protected:
 	float roll;
 	bool freeCam =true;
 	CameraRail* rail;
+	int railIndex = 0;
 	Vector3 position;
 	Vector3 targetPos = Vector3(0,0,0);
 	Vector2 targetRot = Vector2(0,0);

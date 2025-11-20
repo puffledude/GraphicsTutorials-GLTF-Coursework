@@ -19,6 +19,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
 	this->LoadEnvironment();
 	this->LoadSkyBox();
 	this->LoadWater();
+	this->SetupCameraRail();
 	this->SetUpPostProcessing();
 	Shader* fireShader = new Shader("FireVertexShader.glsl", "FireFragmentShader.glsl");
 	fireEmitter = new Emitter(Vector3(28.0235, 38.3, 35.7914), 100, Vector4(1, 0.5, 0, 1), nullptr, fireShader);
@@ -210,6 +211,12 @@ void Renderer::SetupCameraRail() {
 		Vector2(19.7001, -38.0799),
 		Vector2(285.687, -37.4499)
 	};
+	std::vector<std::pair<Vector3, Vector2>> points;
+	for (size_t i = 0; i < locations.size(); ++i) {
+		std::pair<Vector3, Vector2> point = std::make_pair(locations[i], rotations[i]);
+		points.push_back(point);
+	}
+	camera->SetRail(new CameraRail(points, 10.0f));
 }
 
 void Renderer::loadSummerScene() {
