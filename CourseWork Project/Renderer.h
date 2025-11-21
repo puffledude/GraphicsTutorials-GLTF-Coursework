@@ -117,7 +117,7 @@ protected:
 	UniqueOGLTexture waterTex;
 	Shader* waterShader;
 	Shader* iceShader;
-	vector<WaterStruct> waterData;
+	UniqueOGLTexture iceTex;
 	void LoadWater();
 	void DrawWater(bool shadow = false);
 

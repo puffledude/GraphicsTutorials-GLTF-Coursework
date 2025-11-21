@@ -21,9 +21,9 @@ void main(void)
 	vec3 reflectDir = reflect(-viewDir, normalize(IN.normal));
 	vec4 reflectTex = texture(cubeTex, reflectDir);
 
-	fragColour[0] = reflectTex +(diffuse * 0.25);
+	fragColour[0] = reflectTex +(diffuse * 0.5);
 	fragColour[0] += 0.5;
 	fragColour[0].a = 1.0;
 	fragColour[1] = vec4(0,1,0,1);
-	fragColour[2] = vec4(0.6, 128.0, 100.0, 1.0); 
+	fragColour[2] = vec4(0.4, 64.0, 100.0, 1.0); 
 }

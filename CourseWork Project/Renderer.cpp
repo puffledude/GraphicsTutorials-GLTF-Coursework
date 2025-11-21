@@ -406,6 +406,11 @@ void Renderer::LoadWater() {
 	if (!waterTex) {
 		return;
 	}
+	iceTex = OGLTexture::TextureFromFile(
+		TEXTUREDIR"IceTex.png");
+	if (!iceTex) {
+		return;
+	}
 }
 
 
@@ -819,7 +824,7 @@ void Renderer::DrawWater(bool shadow) {
 		glUniform1i(glGetUniformLocation(iceShader->GetProgram(), "cubeTex"), 2);
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, waterTex->GetObjectID());
+		glBindTexture(GL_TEXTURE_2D, iceTex->GetObjectID());
 
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->GetObjectID());
