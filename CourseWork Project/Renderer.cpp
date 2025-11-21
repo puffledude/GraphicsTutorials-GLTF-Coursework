@@ -142,6 +142,7 @@ void Renderer::SetUpPostProcessing() {
 	basicOutShader = new Shader("SceneOutVertex.glsl", "SceneOutFragment.glsl");
 	transitionShader = new Shader("TransitionShaderVertex.glsl", "TransitionShaderFragment.glsl");
 	FXAAShader = new Shader("FXAAVertex.glsl", "FXAAFragment.glsl");
+	DOFShader = new Shader("SceneOutVertex.glsl", "DOFFragment.glsl");
 }
 
 void Renderer::LoadEnvironment() {
@@ -394,6 +395,10 @@ void Renderer::LoadSkyBox() { //Actual load order is right, left, up, down , fro
 void Renderer::LoadWater() {
 	waterShader = new Shader("waterVertex.glsl", "waterFragment.glsl");
 	if (!waterShader->LoadSuccess()) {
+		return;
+	}
+	iceShader = new Shader("waterVertex.glsl", "IceFragment.glsl");
+	if (!iceShader->LoadSuccess()) {
 		return;
 	}
 	waterTex = OGLTexture::TextureFromFile(
@@ -653,10 +658,12 @@ void Renderer::CombineBuffers() {
 }
 
 void Renderer::DrawPostProcessing() {
+	//Could I do all this is the combine buffer?
 
+	//glBindFramebuffer(GL_FRAMEBUFFER, combineFBO);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, combineTex);
-	glGenerateMipmap(GL_TEXTURE_2D); 
+	glGenerateMipmap(GL_TEXTURE_2D);
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, bufferDepthTex);
@@ -688,9 +695,32 @@ void Renderer::DrawPostProcessing() {
 		}
 		
 	}
+	else if (useDOF) 
+	{
+		BindShader(DOFShader);
+		glUniform1i(glGetUniformLocation(DOFShader->GetProgram(),
+			"sceneTex"), 0);
+		glUniform1f(glGetUniformLocation(DOFShader->GetProgram(),
+			"borderDistance"), 70.0f);
+
+		glUniform1i(glGetUniformLocation(DOFShader->GetProgram(),
+			"width"), width);
+		glUniform1i(glGetUniformLocation(DOFShader->GetProgram(),
+			"height"), height);
+
+		glUniform1i(glGetUniformLocation(DOFShader->GetProgram(),
+			"isVertical"), 0);
+		quad->Draw();
+	
+		glUniform1i(glGetUniformLocation(DOFShader->GetProgram(),
+			"isVertical"), 1);
+		quad->Draw();
+
+	}
 
 	else if (useFXAA) {
 		BindShader(FXAAShader);
+		glGenerateMipmap(GL_TEXTURE_2D);
 		glUniform1i(glGetUniformLocation(FXAAShader->GetProgram(),
 			"sceneTex"), 0);
 		
@@ -703,18 +733,16 @@ void Renderer::DrawPostProcessing() {
 			"height"), height);
 		quad->Draw();
 	}
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	else {
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		BindShader(basicOutShader);
 		glUniform1i(glGetUniformLocation(basicOutShader->GetProgram(),
 			"sceneTex"), 0);
-		//glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_2D, combineTex);
-		glUniform1i(glGetUniformLocation(basicOutShader->GetProgram(),
-			"depthTex"), 1);
+		
+		
 		quad->Draw();
 	}
-
 }
 
 
@@ -760,9 +788,9 @@ void Renderer::DrawNode(SceneNode* n, bool shadow) {
 
 void Renderer::DrawWater(bool shadow) {
 	glDisable(GL_BLEND);
+	const Vector3 camPos = camera->GetPosition();
 	if (!shadow) {
 	BindShader(waterShader);
-	const Vector3 camPos = camera->GetPosition();
 	glUniform3fv(glGetUniformLocation(waterShader->GetProgram(), "cameraPos"), 1, (float*)&camPos);
 	glUniform1i(glGetUniformLocation(waterShader->GetProgram(), "diffuseTex"), 0);
 	glUniform1i(glGetUniformLocation(waterShader->GetProgram(), "cubeTex"), 2);
@@ -784,6 +812,18 @@ void Renderer::DrawWater(bool shadow) {
 	UpdateShaderMatrices();
 	quad->Draw();
 
+	if (!isSummer) {
+		BindShader(iceShader);
+		glUniform3fv(glGetUniformLocation(iceShader->GetProgram(), "cameraPos"), 1, (float*)&camPos);
+		glUniform1i(glGetUniformLocation(iceShader->GetProgram(), "diffuseTex"), 0);
+		glUniform1i(glGetUniformLocation(iceShader->GetProgram(), "cubeTex"), 2);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, waterTex->GetObjectID());
+
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->GetObjectID());
+	}
 	//Pond
 	modelMatrix = Matrix4::Translation(Vector3(37.5f, 34.5, 29.0)) *
 		Matrix4::Scale(Vector3(5.0f, 3.0f, 5.0f))*

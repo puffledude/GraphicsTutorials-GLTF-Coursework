@@ -32,6 +32,11 @@ int main() {
 			cooldown = 0.2f;
 			renderer.OutputCameraPos();
 		}
+		if (Window::GetKeyboard()->KeyDown(KEYBOARD_O) && cooldown <= 0.0f) 
+		{
+			cooldown = 0.2f;
+			renderer.setDOF();
+		}
 
 		cooldown -= w.GetTimer()->GetTimeDeltaSeconds();
 	}

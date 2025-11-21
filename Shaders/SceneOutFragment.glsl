@@ -2,7 +2,6 @@
 
 
 uniform sampler2D sceneTex;
-uniform sampler2D depthTex;
 
 in Vertex{
 	vec2 texCoord;

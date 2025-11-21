@@ -22,6 +22,7 @@ public:
 		transitioned = false;
 	}
 	void setFXAA() { useFXAA = !useFXAA; }
+	void setDOF() { useDOF = !useDOF; }
 	void OutputCameraPos();
 
 protected:
@@ -105,6 +106,8 @@ protected:
 	Shader* transitionShader;
 	Shader* basicOutShader;
 	Shader* FXAAShader;
+	Shader* DOFShader;
+	bool useDOF = false;
 	bool useFXAA = false;
 	void SetUpPostProcessing();
 	void DrawPostProcessing();
@@ -113,6 +116,7 @@ protected:
 	//Water stuff
 	UniqueOGLTexture waterTex;
 	Shader* waterShader;
+	Shader* iceShader;
 	vector<WaterStruct> waterData;
 	void LoadWater();
 	void DrawWater(bool shadow = false);

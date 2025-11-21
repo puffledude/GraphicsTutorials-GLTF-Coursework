@@ -46,8 +46,8 @@ void Camera::UpdateCamera(float dt) {
 		}
 
 		position += posDir * std::min(rail->velocity * dt, posDist);
-		yaw += rotDir.x * std::min(rail->velocity * dt *2, rotDist);
-		pitch += rotDir.y * std::min(rail->velocity * dt *2, rotDist);
+		yaw += rotDir.x * std::min(rail->velocity * dt *4, rotDist);
+		pitch += rotDir.y * std::min(rail->velocity * dt *4, rotDist);
 
 	}
 

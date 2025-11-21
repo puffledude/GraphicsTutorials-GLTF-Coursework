@@ -121,6 +121,12 @@
     <None Include="..\Shaders\DeferredSkinningVertex.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="..\Shaders\DOFFragment.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\IceFragment.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Readme.txt" />
