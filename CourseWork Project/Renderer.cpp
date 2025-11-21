@@ -2,7 +2,7 @@
 #include "../nclgl/Light.h"
 #include "../nclgl/Extra/GLTFLoader.h"
 
-Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
+Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
 		(float)width / (float)height, 45.0f);
 	camera = new Camera(0.0f, 180.0f, Vector3(50, 40, 30.0f));
@@ -13,7 +13,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
 	}
 	quad = Mesh::GenerateQuad();
 	cone = Mesh::LoadFromMeshFile("Cone.msh");
-	
+
 	this->SetupDeferred();
 	this->SetupShadow();
 	this->LoadEnvironment();
@@ -24,9 +24,9 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)	{
 	Shader* fireShader = new Shader("FireVertexShader.glsl", "FireFragmentShader.glsl");
 	fireEmitter = new Emitter(Vector3(28.0235, 38.3, 35.7914), 100, Vector4(1, 0.5, 0, 1), nullptr, fireShader);
 	fireTex = OGLTexture::TextureFromFile(TEXTUREDIR"fire.png");
-	
-	
-	
+
+
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
@@ -43,7 +43,7 @@ void Renderer::SetupDeferred() {
 	skeletonShader = new Shader("DeferredSkinningVertex.glsl", "bufferFragment.glsl");
 	if (!environmentShader->LoadSuccess() ||
 		!pointLightShader->LoadSuccess() ||
-		!combineShader->LoadSuccess()){
+		!combineShader->LoadSuccess()) {
 		return;
 	}
 
@@ -51,7 +51,7 @@ void Renderer::SetupDeferred() {
 	glGenFramebuffers(1, &pointLightFBO);
 	glGenFramebuffers(1, &combineFBO);
 
-	GLenum buffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
+	GLenum buffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 
 	GenerateScreenTexture(bufferDepthTex, true);
 	GenerateScreenTexture(bufferColourTex);
@@ -96,7 +96,7 @@ void Renderer::SetupDeferred() {
 		GL_TEXTURE_2D, combineTex, 0);
 
 	//Need to move these to where combineTex is generated
-	
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, combineTex);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -184,9 +184,9 @@ void Renderer::LoadEnvironment() {
 	pointLights = &winterPointLights;
 	loadWinterScene();
 
-	
-	
-	
+
+
+
 	centre = new Light(Vector3(36.8914, 30.1335, 34.4191), Vector4(0, 0, 0, 0), 0);
 }
 
@@ -285,7 +285,7 @@ void Renderer::loadSummerScene() {
 	tentNode->SetModelScale(Vector3(0.01f, 0.01f, 0.01f));
 	tentNode->SetBoundingRadius(5.0f);
 	ground->AddChild(tentNode);
-	
+
 	SceneNode* birdNode = new SceneNode(&Bird, Vector4(1, 1, 1, 1), skeletonShader); //Scenenode for bird
 	birdNode->SetTransform(Matrix4::Translation(Vector3(40.0f, 40.0f, 34.0f)));
 	birdNode->SetModelScale(Vector3(0.3f, 0.3f, 0.3f));
@@ -331,7 +331,7 @@ void Renderer::loadWinterScene() {
 
 	pointLights->push_back(sun);
 	pointLights->push_back(campFireLight);
-	
+
 	SceneNode* houseNode = new SceneNode(&Cabin, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for house
 	houseNode->SetTransform(Matrix4::Translation(Vector3(37.8515, 38.0f, 37.5047)) * Matrix4::Rotation(-90, Vector3(1, 0, 0)));
 	//*Matrix4::Rotation(30, Vector3(0,1,0)));
@@ -343,9 +343,9 @@ void Renderer::loadWinterScene() {
 	secondHouseNode->SetModelScale(Vector3(0.5f, 0.5f, 0.5f));
 	ground->AddChild(secondHouseNode);
 
-	SceneNode* snowmanNode = new SceneNode(&Snowman,Vector4(1, 1, 1, 1), environmentShader); //Scenenode for snowman
+	SceneNode* snowmanNode = new SceneNode(&Snowman, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for snowman
 	//SceneNode* snowmanNode = new SceneNode(&Snowman, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for snowman
-	snowmanNode->SetTransform(Matrix4::Translation(Vector3(32.9472, 37.0f, 19.8575)) *Matrix4::Rotation((-90), Vector3(1,0,0)) * Matrix4::Rotation(-115, Vector3(0, 0, 1)));
+	snowmanNode->SetTransform(Matrix4::Translation(Vector3(32.9472, 37.0f, 19.8575)) * Matrix4::Rotation((-90), Vector3(1, 0, 0)) * Matrix4::Rotation(-115, Vector3(0, 0, 1)));
 	ground->AddChild(snowmanNode);
 
 	SceneNode* secondSnowmanNode = new SceneNode(&Snowman, Vector4(1, 1, 1, 1), environmentShader); //Scenenode for snowman
@@ -386,7 +386,7 @@ void Renderer::LoadSkyBox() { //Actual load order is right, left, up, down , fro
 		TEXTUREDIR"CubeMapDown.jpg",
 		TEXTUREDIR"CubeMapBack.jpg",
 		TEXTUREDIR"CubeMapFront.jpg"
-		);
+	);
 	if (!this->cubeMap) {
 		return;
 	}
@@ -414,7 +414,7 @@ void Renderer::LoadWater() {
 }
 
 
-Renderer::~Renderer(void)	{
+Renderer::~Renderer(void) {
 	delete environmentShader;
 	delete camera;
 
@@ -448,7 +448,7 @@ void Renderer::switchSeason() {
 	isSummer = !isSummer;
 	if (pointLights == &summerPointLights) {
 		pointLights = &winterPointLights;
-		
+
 	}
 	else {
 		pointLights = &summerPointLights;
@@ -516,9 +516,10 @@ void Renderer::DrawEnvironment(bool shadow) {
 
 		sphere->Draw();
 	}*/
-	if (!shadow){ 
-		
-	glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+	if (!shadow) {
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
 }
 void Renderer::DrawShadowScene() {
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
@@ -587,7 +588,7 @@ void Renderer::DrawLights() {
 		"invProjViewMatrix"), 1, false, invViewProj.values);
 
 	UpdateShaderMatrices();
-	for(Light* l : *pointLights) {
+	for (Light* l : *pointLights) {
 		SetShaderLight(*l);
 		sphere->Draw();
 	}
@@ -604,7 +605,7 @@ void Renderer::DrawLights() {
 }
 
 void Renderer::DrawSkybox(bool shadow) {
-	
+
 	BindShader(skyboxShader);
 	glUniform1i(glGetUniformLocation(skyboxShader->GetProgram(),
 		"cubeTex"), 0);
@@ -620,7 +621,7 @@ void Renderer::DrawSkybox(bool shadow) {
 	camView.values[14] = 0.0f;
 	viewMatrix = camView;
 	projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
-	(float)width / (float)height, 90.0f);
+		(float)width / (float)height, 90.0f);
 	//glEnable(GL_DEPTH_TEST);
 	UpdateShaderMatrices();
 	quad->Draw();
@@ -674,7 +675,7 @@ void Renderer::DrawPostProcessing() {
 	glBindTexture(GL_TEXTURE_2D, bufferDepthTex);
 
 
-	if (transitionTimer > 0.0f){
+	if (transitionTimer > 0.0f) {
 		//Idea. Generate mipmaps out of the combine texture.
 		//Then sample the mipmaps as time goes on. Lower mipmaps blown up are blurrier.
 		BindShader(transitionShader);
@@ -698,29 +699,30 @@ void Renderer::DrawPostProcessing() {
 			switchSeason();
 			transitioned = true;
 		}
-		
+
 	}
-	else if (useDOF) 
+	else if (useDOF)
 	{
 		BindShader(DOFShader);
-		glUniform1i(glGetUniformLocation(DOFShader->GetProgram(),
-			"sceneTex"), 0);
-		glUniform1f(glGetUniformLocation(DOFShader->GetProgram(),
-			"borderDistance"), 70.0f);
+		for (int i = 0; i < 5; i++) {
+			glUniform1i(glGetUniformLocation(DOFShader->GetProgram(),
+				"sceneTex"), 0);
+			glUniform1f(glGetUniformLocation(DOFShader->GetProgram(),
+				"borderDistance"), 70.0f);
 
-		glUniform1i(glGetUniformLocation(DOFShader->GetProgram(),
-			"width"), width);
-		glUniform1i(glGetUniformLocation(DOFShader->GetProgram(),
-			"height"), height);
+			glUniform1i(glGetUniformLocation(DOFShader->GetProgram(),
+				"width"), width);
+			glUniform1i(glGetUniformLocation(DOFShader->GetProgram(),
+				"height"), height);
 
-		glUniform1i(glGetUniformLocation(DOFShader->GetProgram(),
-			"isVertical"), 0);
-		quad->Draw();
-	
-		glUniform1i(glGetUniformLocation(DOFShader->GetProgram(),
-			"isVertical"), 1);
-		quad->Draw();
+			glUniform1i(glGetUniformLocation(DOFShader->GetProgram(),
+				"isVertical"), 0);
+			quad->Draw();
 
+			glUniform1i(glGetUniformLocation(DOFShader->GetProgram(),
+				"isVertical"), 1);
+			quad->Draw();
+		}
 	}
 
 	else if (useFXAA) {
@@ -728,10 +730,10 @@ void Renderer::DrawPostProcessing() {
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glUniform1i(glGetUniformLocation(FXAAShader->GetProgram(),
 			"sceneTex"), 0);
-		
-		glUniform1i (glGetUniformLocation(FXAAShader->GetProgram(),
+
+		glUniform1i(glGetUniformLocation(FXAAShader->GetProgram(),
 			"depthTex"), 1);
-		
+
 		glUniform1i(glGetUniformLocation(FXAAShader->GetProgram(),
 			"width"), width);
 		glUniform1i(glGetUniformLocation(FXAAShader->GetProgram(),
@@ -744,8 +746,8 @@ void Renderer::DrawPostProcessing() {
 		BindShader(basicOutShader);
 		glUniform1i(glGetUniformLocation(basicOutShader->GetProgram(),
 			"sceneTex"), 0);
-		
-		
+
+
 		quad->Draw();
 	}
 }
@@ -795,24 +797,24 @@ void Renderer::DrawWater(bool shadow) {
 	glDisable(GL_BLEND);
 	const Vector3 camPos = camera->GetPosition();
 	if (!shadow) {
-	BindShader(waterShader);
-	glUniform3fv(glGetUniformLocation(waterShader->GetProgram(), "cameraPos"), 1, (float*)&camPos);
-	glUniform1i(glGetUniformLocation(waterShader->GetProgram(), "diffuseTex"), 0);
-	glUniform1i(glGetUniformLocation(waterShader->GetProgram(), "cubeTex"), 2);
+		BindShader(waterShader);
+		glUniform3fv(glGetUniformLocation(waterShader->GetProgram(), "cameraPos"), 1, (float*)&camPos);
+		glUniform1i(glGetUniformLocation(waterShader->GetProgram(), "diffuseTex"), 0);
+		glUniform1i(glGetUniformLocation(waterShader->GetProgram(), "cubeTex"), 2);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, waterTex->GetObjectID());
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, waterTex->GetObjectID());
 
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->GetObjectID());
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->GetObjectID());
 	}
-	
+
 
 	//Want to cover entrie size of the scene at height 32.
-	
+
 	//Sea
-	modelMatrix = Matrix4::Translation(Vector3(50,32,35)) *
-		Matrix4::Scale(Vector3(55.0f, 1.0f, 50.0f))*
+	modelMatrix = Matrix4::Translation(Vector3(50, 32, 35)) *
+		Matrix4::Scale(Vector3(55.0f, 1.0f, 50.0f)) *
 		Matrix4::Rotation(-90, Vector3(1, 0, 0));
 	UpdateShaderMatrices();
 	quad->Draw();
@@ -831,7 +833,7 @@ void Renderer::DrawWater(bool shadow) {
 	}
 	//Pond
 	modelMatrix = Matrix4::Translation(Vector3(37.5f, 34.5, 29.0)) *
-		Matrix4::Scale(Vector3(5.0f, 3.0f, 5.0f))*
+		Matrix4::Scale(Vector3(5.0f, 3.0f, 5.0f)) *
 		Matrix4::Rotation(90, Vector3(1, 0, 0));
 	UpdateShaderMatrices();
 	cone->Draw();
@@ -859,5 +861,5 @@ void Renderer::GenerateScreenTexture(GLuint& into, bool depth) {
 }
 
 void Renderer::OutputCameraPos() {
-	std::cout << "Camera location is : " << camera->GetPosition()<< " Camera Rotation is: " << Vector2(camera->GetYaw(), camera->GetPitch())<< std::endl;
+	std::cout << "Camera location is : " << camera->GetPosition() << " Camera Rotation is: " << Vector2(camera->GetYaw(), camera->GetPitch()) << std::endl;
 }
