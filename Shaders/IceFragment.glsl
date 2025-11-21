@@ -25,5 +25,5 @@ void main(void)
 	fragColour[0] += 0.3;
 	fragColour[0].a = 1.0;
 	fragColour[1] = vec4(0,1,0,1);
-	fragColour[2] = vec4(0.5, 64.0, 300.0, 1.0); 
+	fragColour[2] = vec4(0.5, 64.0, 300.0, 1.0); //Output material properties. R is Specular. G is shininess. B is snow coverage. A is albedo override
 }

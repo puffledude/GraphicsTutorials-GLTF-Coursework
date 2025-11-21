@@ -42,7 +42,7 @@ fragColour[1] = vec4(normal * 0.5 + 0.5, 1.0);
 
 float specular = mix(0.1, 1.0, amount); // snow is shiny
 float shininess = mix(16.0, 128.0, amount);
-fragColour[2] = vec4(specular, shininess, amount, 1.0);  //Output material properties. R is Specular. G is shininess. B is snow coverage. A is albedo override
+fragColour[2] = vec4(specular, shininess, amount, 1.0);  //Output material properties. R is Specular. G is shininess. B is snow coverage.
 
 
 }
