@@ -32,6 +32,8 @@ void Camera::UpdateCamera(float dt) {
 		float posDist = posDir.Length();
 		posDir.Normalise();
 		Vector2 rotDir = targetRot - Vector2(this->yaw, this->pitch);
+		if (rotDir.x > 180) rotDir.x -= 360;
+		if (rotDir.x < -180) rotDir.x += 360;
 		float rotDist = rotDir.Length();
 		rotDir.Normalize();
 		if (posDist < 0.5 && rotDist < 0.5) 
