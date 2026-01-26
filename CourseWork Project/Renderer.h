@@ -57,7 +57,7 @@ protected:
 	Light* centre;
 
 	void DrawEnvironment(bool shadow=false);
-
+	
 	void DrawLights();
 	void CombineBuffers();
 
@@ -68,6 +68,14 @@ protected:
 	Shader* combineShader;
 	void GenerateScreenTexture(GLuint& into, bool depth = false);
 	void SetupDeferred();
+
+	//For SSAO
+	void DrawSSAO();
+	Shader* ssaoShader;
+	GLuint ssaoFBO;
+	GLuint ssaoColourBuffer;
+	GLuint ssaoBlurFBO;
+	GLuint ssaoColorBufferBlur;
 
 
 	//For particle emitting

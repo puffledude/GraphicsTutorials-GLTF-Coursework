@@ -127,6 +127,18 @@
     <None Include="..\Shaders\IceFragment.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="..\Shaders\SSAOFrag.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\SSAOVertex.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\SSAO_GFrag.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\SSAOBlurFrag.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Readme.txt" />

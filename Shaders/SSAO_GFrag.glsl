@@ -26,7 +26,6 @@ if (texture(diffuseTex, IN.texCoord).a < 0.1){
 	discard;
 }
 
-fragColour[0] = texture(diffuseTex, IN.texCoord);  
+fragColour[0] = texture(diffuseTex, IN.texCoord);
 fragColour[1] = vec4(normal * 0.5 + 0.5, 1.0);  //Outputted normals
-fragColour[2] = vec4(0.1, 16.0, 0.0, 1.0);  //Default values
-}
+fragColour[2] = vec4(0.1, 16.0, 0.0, 1.0);  //This is for specularity. 
