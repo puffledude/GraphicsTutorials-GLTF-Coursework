@@ -1,5 +1,5 @@
 #version 330 core
-out float FragColor;
+out vec4 fragColor;
   
 in Vertex{
 	vec2 texCoord;
@@ -18,5 +18,6 @@ void main() {
             result += texture(ssaoInput, IN.texCoord + offset).r;
         }
     }
-    FragColor = result / (4.0 * 4.0);
+    float avg = result / 16.0;
+    fragColor =vec4( vec3(avg), (1));
 }  

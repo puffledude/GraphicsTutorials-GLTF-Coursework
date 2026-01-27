@@ -76,11 +76,15 @@ projCoords = projCoords * 0.5 + 0.5;
 
 float shadowDepth = texture(shadowTex, projCoords.xy).r;
 float shadow = projCoords.z - shadowBias > shadowDepth ? 0.0 : 1.0;
-float visability = shadow * AmbientOcculsion;
+float visability = shadow;
 
 vec3 attenuated = lightColour.xyz * atten;
 
-diffuseOutput = vec4(attenuated * lambert * visability, 1.0);
+float ambientStrength = 0.2;
+vec3 ambient = attenuated *AmbientOcculsion * ambientStrength;
+
+
+diffuseOutput = vec4((attenuated * lambert * visability) + ambient, 1.0);
 specularOutput = vec4(attenuated * specFactor * visability *0.33, 1.0);
 
 
