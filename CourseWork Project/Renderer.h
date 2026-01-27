@@ -72,6 +72,11 @@ protected:
 	//For SSAO
 	void DrawSSAO();
 	Shader* ssaoShader;
+	Shader* ssaoBlurShader;
+	GLuint gpositionTex;
+	GLuint noiseTexture;
+	std::vector<Vector3> ssaoKernel;
+
 	GLuint ssaoFBO;
 	GLuint ssaoColourBuffer;
 	GLuint ssaoBlurFBO;
