@@ -633,6 +633,7 @@ void Renderer::DrawSSAO() {
 	glBindFramebuffer(GL_FRAMEBUFFER, ssaoFBO);
 	glClear(GL_COLOR_BUFFER_BIT);
 	BindShader(ssaoShader);
+	UpdateShaderMatrices();
 	glUniform1i(glGetUniformLocation(ssaoShader->GetProgram(), "gPosTex"), 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, gpositionTex);
