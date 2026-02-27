@@ -2,6 +2,14 @@
 #include "../nclgl/Light.h"
 #include "../nclgl/Extra/GLTFLoader.h"
 
+
+
+float lerp(float a, float b, float f)
+{
+	return a + f * (b - a);
+}
+
+
 Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	projMatrix = Matrix4::Perspective(1.0f, 10000.0f,
 		(float)width / (float)height, 45.0f);
@@ -41,6 +49,8 @@ void Renderer::SetupDeferred() {
 	combineShader = new Shader("combineVertex.glsl", "combineFragment.glsl");
 	winterEnvironmentShader = new Shader("SnowyEnvironmentVertex.glsl", "SnowyEnvironmentFragment.glsl");
 	skeletonShader = new Shader("DeferredSkinningVertex.glsl", "bufferFragment.glsl");
+	ssaoShader = new Shader("SceneOutVertex.glsl", "SSAOFrag.glsl");
+	ssaoBlurShader = new Shader("SceneOutVertex.glsl", "SSAOBlurFrag.glsl");
 	if (!environmentShader->LoadSuccess() ||
 		!pointLightShader->LoadSuccess() ||
 		!combineShader->LoadSuccess()) {
@@ -51,7 +61,7 @@ void Renderer::SetupDeferred() {
 	glGenFramebuffers(1, &pointLightFBO);
 	glGenFramebuffers(1, &combineFBO);
 
-	GLenum buffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3};
 
 	GenerateScreenTexture(bufferDepthTex, true);
 	GenerateScreenTexture(bufferColourTex);
@@ -71,10 +81,26 @@ void Renderer::SetupDeferred() {
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2,
 		GL_TEXTURE_2D, bufferMaterialTex, 0);
 
+	// g-position texture (3-channel float)
+	glGenTextures(1, &gpositionTex);
+	glBindTexture(GL_TEXTURE_2D, gpositionTex);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	// Use 16-bit floating-point RGB internal format and float data type (match internal/format)
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, NULL);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3,
+		GL_TEXTURE_2D, gpositionTex, 0);
+
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
 		GL_TEXTURE_2D, bufferDepthTex, 0);
 
-	glDrawBuffers(3, buffers);
+
+	glDrawBuffers(4, buffers);
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 		return;
@@ -109,6 +135,68 @@ void Renderer::SetupDeferred() {
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glGenFramebuffers(1, &ssaoFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, ssaoFBO);
+
+	glGenTextures(1, &ssaoColourBuffer);
+	glBindTexture(GL_TEXTURE_2D, ssaoColourBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ssaoColourBuffer, 0);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glGenFramebuffers(1, &ssaoBlurFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, ssaoBlurFBO);
+	glGenTextures(1, &ssaoColorBufferBlur);
+	glBindTexture(GL_TEXTURE_2D, ssaoColorBufferBlur);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ssaoColorBufferBlur, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+	std::uniform_real_distribution<float> randomFloats(0.0f, 1.0f);
+	std::default_random_engine generator;
+	
+	for (unsigned int i = 0; i < 64; ++i)
+	{
+		Vector3 sample(
+			randomFloats(generator) * 2.0 - 1.0,
+			randomFloats(generator) * 2.0 - 1.0,
+			randomFloats(generator)
+		);
+		sample.Normalise();
+
+		float scale = (float)i / 64.0f;
+		scale = lerp(0.1f, 1.0f, scale * scale);
+		sample = sample * scale;
+		sample = sample * randomFloats(generator);
+		ssaoKernel.push_back(sample);
+	}
+
+	std::vector<Vector3> ssaoNoise;
+	for (unsigned int i = 0; i < 16; i++)
+	{
+		Vector3 noise(
+			randomFloats(generator) * 2.0 - 1.0,
+			randomFloats(generator) * 2.0 - 1.0,
+			0.0f);
+		ssaoNoise.push_back(noise);
+	}
+
+	
+	glGenTextures(1, &noiseTexture);
+	glBindTexture(GL_TEXTURE_2D, noiseTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, 4, 4, 0, GL_RGB, GL_FLOAT, &ssaoNoise[0]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
 }
 
 void Renderer::SetupShadow() {
@@ -192,13 +280,6 @@ void Renderer::LoadEnvironment() {
 
 void Renderer::SetupCameraRail() {
 
-	/*	Vector3(64.1425,41.2855,-7.66836),
-		Vector3(52.3752,55.0436,5.2218),
-		Vector3(45.0861,39.3052,14.1977),
-		Vector3(42.3031,58.3789,12.7155),
-		Vector3(64.059,55.4009,26.7602),
-		Vector3(47.4524,56.9612,64.813),
-		Vector3(4.94905,57.5148,51.193)*/
 	std::vector<Vector3> locations =
 	{
 		Vector3(77.7753,66.8221,41.516),
@@ -519,8 +600,11 @@ void Renderer::DrawEnvironment(bool shadow) {
 	if (!shadow) {
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		DrawSSAO();
 	}
 }
+
+
 void Renderer::DrawShadowScene() {
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
@@ -539,6 +623,51 @@ void Renderer::DrawShadowScene() {
 	glViewport(0, 0, width, height);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+}
+
+
+//SSAO code taken from https://learnopengl.com/Advanced-Lighting/SSAO
+void Renderer::DrawSSAO() {
+	
+
+	glBindFramebuffer(GL_FRAMEBUFFER, ssaoFBO);
+	glClear(GL_COLOR_BUFFER_BIT);
+	BindShader(ssaoShader);
+	UpdateShaderMatrices();
+	glUniform1i(glGetUniformLocation(ssaoShader->GetProgram(), "gPosTex"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, gpositionTex);
+
+	glUniform1i(glGetUniformLocation(ssaoShader->GetProgram(), "normalTex"), 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, bufferNormalTex);
+
+	glUniform1i(glGetUniformLocation(ssaoShader->GetProgram(), "texNoise"), 2);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, noiseTexture);
+
+	glUniform3fv(
+		glGetUniformLocation(ssaoShader->GetProgram(), "samples"),
+		64,
+		&ssaoKernel[0].x
+	);
+	glUniform1f(glGetUniformLocation(ssaoShader->GetProgram(), "width"), (float)width);
+	glUniform1f(glGetUniformLocation(ssaoShader->GetProgram(), "height"), (float)height);
+
+	// draw full-screen quad
+	quad->Draw();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, ssaoBlurFBO);
+	glClear(GL_COLOR_BUFFER_BIT);
+	BindShader(ssaoBlurShader);
+	glUniform1i(glGetUniformLocation(ssaoBlurShader->GetProgram(), "ssaoInput"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, ssaoColourBuffer);
+
+	quad->Draw();
+
+	// unbind framebuffer (use glBindFramebuffer)
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Renderer::DrawLights() {
@@ -577,6 +706,11 @@ void Renderer::DrawLights() {
 		"shadowTex"), 3);
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
+
+	glUniform1i(glGetUniformLocation(pointLightShader->GetProgram(),
+		"ssaoTex"), 4);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, ssaoColorBufferBlur);
 	const Vector3 camPos = camera->GetPosition();
 	glUniform3fv(glGetUniformLocation(pointLightShader->GetProgram(), "cameraPos"), 1, (float*)&camPos);
 

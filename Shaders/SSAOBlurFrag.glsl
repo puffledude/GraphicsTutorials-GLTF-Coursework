@@ -1,0 +1,23 @@
+#version 330 core
+out vec4 fragColor;
+  
+in Vertex{
+	vec2 texCoord;
+}IN;
+  
+uniform sampler2D ssaoInput;
+
+void main() {
+    vec2 texelSize = 1.0 / vec2(textureSize(ssaoInput, 0));
+    float result = 0.0;
+    for (int x = -2; x < 2; ++x) 
+    {
+        for (int y = -2; y < 2; ++y) 
+        {
+            vec2 offset = vec2(float(x), float(y)) * texelSize;
+            result += texture(ssaoInput, IN.texCoord + offset).r;
+        }
+    }
+    float avg = result / 16.0;
+    fragColor =vec4( vec3(avg), (1));
+}  

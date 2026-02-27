@@ -16,7 +16,7 @@ vec2 texCoord;
 vec3 normal;
 vec3 tangent;
 vec3 binormal;
-vec3 worldPos;
+vec3 worldPos; //Frag pos
 } OUT;
 
 void main()
